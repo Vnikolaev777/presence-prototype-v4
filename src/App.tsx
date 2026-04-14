@@ -8,7 +8,7 @@ import { UtilitiesHubView } from './components/UtilitiesHubView';
 import { KnowledgeBaseView } from './components/KnowledgeBaseView';
 import {
   LayoutDashboard, Sparkles, Users, Layers, BookOpen,
-  ListTodo, ChevronDown, ChevronRight,
+  ListTodo, ChevronDown, ChevronRight, Menu, X,
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import type { AiAction } from './data/mockData';
@@ -26,6 +26,7 @@ export type TabType =
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [teamExpanded, setTeamExpanded] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // App-level state to power the demo continuity
   const [actions, setActions] = useState<AiAction[]>(MOCK_AI_ACTIONS);
@@ -56,12 +57,32 @@ function App() {
             <span className="text-xs text-slate-400 font-medium tracking-wide">AI Autonomous websites for K–12</span>
           </div>
         </div>
-        <div className="flex items-center space-x-6">
-          <div className="h-8 w-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-semibold text-slate-700">
+        <div className="flex items-center space-x-3">
+          <div className="h-8 w-8 rounded-full bg-slate-100 border border-slate-200 items-center justify-center text-sm font-semibold text-slate-700 hidden md:flex">
             JD
           </div>
+          <button
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+            onClick={() => setMobileMenuOpen(v => !v)}
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </header>
+
+      {/* Mobile nav dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-slate-200 z-30 p-3 space-y-1 shrink-0">
+          <NavItem active={activeTab === 'workspace'} onClick={() => { setActiveTab('workspace'); setMobileMenuOpen(false); }} icon={<Sparkles className="w-5 h-5" />} label="Presence Assistant" />
+          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<LayoutDashboard className="w-5 h-5" />} label="Inbox" />
+          {hasHiredAgents && <>
+            <NavItem active={activeTab === 'team'} onClick={() => { setActiveTab('team'); setMobileMenuOpen(false); }} icon={<Users className="w-5 h-5" />} label="Team" />
+            <NavItem active={activeTab === 'tasks'} onClick={() => { setActiveTab('tasks'); setMobileMenuOpen(false); }} icon={<ListTodo className="w-5 h-5" />} label="Tasks" />
+          </>}
+          <NavItem active={activeTab === 'utilities'} onClick={() => { setActiveTab('utilities'); setMobileMenuOpen(false); }} icon={<Layers className="w-5 h-5" />} label="Integrations" />
+          <NavItem active={activeTab === 'knowledge_base'} onClick={() => { setActiveTab('knowledge_base'); setMobileMenuOpen(false); }} icon={<BookOpen className="w-5 h-5" />} label="Knowledge Model" />
+        </div>
+      )}
 
       {/* Main layout wrapper */}
       <div className="flex-1 flex overflow-hidden z-10">
