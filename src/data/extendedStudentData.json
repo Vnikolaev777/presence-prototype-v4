@@ -1,0 +1,1518 @@
+{
+  "dailySchedule": [
+    {
+      "id": "l1",
+      "period": 1,
+      "subject": "Math",
+      "time": "8:00 AM - 8:50 AM",
+      "room": "Room 102"
+    },
+    {
+      "id": "l2",
+      "period": 2,
+      "subject": "Physics",
+      "time": "9:00 AM - 9:50 AM",
+      "room": "Lab 4"
+    },
+    {
+      "id": "l3",
+      "period": 3,
+      "subject": "English",
+      "time": "10:00 AM - 10:50 AM",
+      "room": "Room 205"
+    },
+    {
+      "id": "l4",
+      "period": 4,
+      "subject": "History",
+      "time": "11:00 AM - 11:50 AM",
+      "room": "Room 304"
+    },
+    {
+      "id": "l5",
+      "period": 5,
+      "subject": "Biology",
+      "time": "1:00 PM - 1:50 PM",
+      "room": "Lab 2"
+    },
+    {
+      "id": "l6",
+      "period": 6,
+      "subject": "Computer Science",
+      "time": "2:00 PM - 2:50 PM",
+      "room": "Computer Lab"
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_1",
+      "date": "2026-02-22T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Cafeteria",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_2",
+      "date": "2026-02-23T15:00:00.000Z",
+      "title": "Computer Science Quiz",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_3",
+      "date": "2026-02-23T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Cafeteria",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_4",
+      "date": "2026-02-24T15:00:00.000Z",
+      "title": "Biology Quiz",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_5",
+      "date": "2026-02-24T15:00:00.000Z",
+      "title": "Physics Coursework",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_6",
+      "date": "2026-02-24T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_7",
+      "date": "2026-02-25T15:00:00.000Z",
+      "title": "Math Lab Report",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_8",
+      "date": "2026-02-25T15:00:00.000Z",
+      "title": "Physics Pop Quiz",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_9",
+      "date": "2026-02-25T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Library",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_10",
+      "date": "2026-02-26T15:00:00.000Z",
+      "title": "English Homework",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_11",
+      "date": "2026-02-26T15:00:00.000Z",
+      "title": "Physics Midterm",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_12",
+      "date": "2026-02-27T15:00:00.000Z",
+      "title": "Computer Science Lab Report",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_13",
+      "date": "2026-02-27T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_14",
+      "date": "2026-02-28T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_15",
+      "date": "2026-03-01T15:00:00.000Z",
+      "title": "Student-Led Science Fair",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_16",
+      "date": "2026-03-02T15:00:00.000Z",
+      "title": "Math Essay",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_17",
+      "date": "2026-03-02T15:00:00.000Z",
+      "title": "Computer Science Quiz",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_18",
+      "date": "2026-03-03T15:00:00.000Z",
+      "title": "History Lab Report",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_19",
+      "date": "2026-03-03T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_20",
+      "date": "2026-03-04T15:00:00.000Z",
+      "title": "Computer Science Homework",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_21",
+      "date": "2026-03-04T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Library",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_22",
+      "date": "2026-03-05T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_23",
+      "date": "2026-03-05T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_24",
+      "date": "2026-03-06T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_25",
+      "date": "2026-03-06T15:00:00.000Z",
+      "title": "History Lab Report",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_26",
+      "date": "2026-03-06T15:00:00.000Z",
+      "title": "DIY Debate Practice",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_27",
+      "date": "2026-03-09T15:00:00.000Z",
+      "title": "Biology Pop Quiz",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_28",
+      "date": "2026-03-09T15:00:00.000Z",
+      "title": "Coding Club Meeting",
+      "description": "Main Hall",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_29",
+      "date": "2026-03-10T15:00:00.000Z",
+      "title": "Computer Science Homework",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_30",
+      "date": "2026-03-10T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_31",
+      "date": "2026-03-11T15:00:00.000Z",
+      "title": "English Pop Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_32",
+      "date": "2026-03-11T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Main Hall",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_33",
+      "date": "2026-03-12T15:00:00.000Z",
+      "title": "Math Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_34",
+      "date": "2026-03-12T15:00:00.000Z",
+      "title": "Math Lab Report",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_35",
+      "date": "2026-03-13T15:00:00.000Z",
+      "title": "Math Midterm",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_36",
+      "date": "2026-03-13T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_37",
+      "date": "2026-03-13T15:00:00.000Z",
+      "title": "Student Charity Bake Sale",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_38",
+      "date": "2026-03-13T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_39",
+      "date": "2026-03-14T15:00:00.000Z",
+      "title": "Independent Art Exhibition",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_40",
+      "date": "2026-03-16T15:00:00.000Z",
+      "title": "Computer Science Lab Report",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_41",
+      "date": "2026-03-16T15:00:00.000Z",
+      "title": "Math Pop Quiz",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_42",
+      "date": "2026-03-17T15:00:00.000Z",
+      "title": "English Essay",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_43",
+      "date": "2026-03-17T15:00:00.000Z",
+      "title": "Biology Quiz",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_44",
+      "date": "2026-03-17T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_45",
+      "date": "2026-03-18T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_46",
+      "date": "2026-03-18T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Cafeteria",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_47",
+      "date": "2026-03-19T15:00:00.000Z",
+      "title": "English Pop Quiz",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_48",
+      "date": "2026-03-19T15:00:00.000Z",
+      "title": "Basketball Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_49",
+      "date": "2026-03-20T15:00:00.000Z",
+      "title": "Physics Homework",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_50",
+      "date": "2026-03-20T15:00:00.000Z",
+      "title": "DIY Debate Practice",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_51",
+      "date": "2026-03-21T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_52",
+      "date": "2026-03-21T15:00:00.000Z",
+      "title": "Independent Art Exhibition",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_53",
+      "date": "2026-03-22T15:00:00.000Z",
+      "title": "DIY Debate Practice",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_54",
+      "date": "2026-03-23T15:00:00.000Z",
+      "title": "Math Quiz",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_55",
+      "date": "2026-03-23T15:00:00.000Z",
+      "title": "Robotics Club Meeting",
+      "description": "Gym",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_56",
+      "date": "2026-03-24T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_57",
+      "date": "2026-03-24T15:00:00.000Z",
+      "title": "History Quiz",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_58",
+      "date": "2026-03-24T15:00:00.000Z",
+      "title": "Basketball Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_59",
+      "date": "2026-03-25T15:00:00.000Z",
+      "title": "Biology Pop Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_60",
+      "date": "2026-03-25T15:00:00.000Z",
+      "title": "Math Essay",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_61",
+      "date": "2026-03-25T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Cafeteria",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_62",
+      "date": "2026-03-26T15:00:00.000Z",
+      "title": "Biology Homework",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_63",
+      "date": "2026-03-27T15:00:00.000Z",
+      "title": "Computer Science Homework",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_64",
+      "date": "2026-03-27T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Main Hall",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_65",
+      "date": "2026-03-28T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_66",
+      "date": "2026-03-28T15:00:00.000Z",
+      "title": "Student Initiative Reading Club",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_67",
+      "date": "2026-03-29T15:00:00.000Z",
+      "title": "Independent Art Exhibition",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_68",
+      "date": "2026-03-30T15:00:00.000Z",
+      "title": "History Homework",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_69",
+      "date": "2026-03-30T15:00:00.000Z",
+      "title": "Computer Science Quiz",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_70",
+      "date": "2026-03-31T15:00:00.000Z",
+      "title": "Math Midterm",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_71",
+      "date": "2026-03-31T15:00:00.000Z",
+      "title": "English Midterm",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_72",
+      "date": "2026-03-31T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_73",
+      "date": "2026-04-01T15:00:00.000Z",
+      "title": "Physics Lab Report",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_74",
+      "date": "2026-04-01T15:00:00.000Z",
+      "title": "Computer Science Midterm",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_75",
+      "date": "2026-04-01T15:00:00.000Z",
+      "title": "Coding Club Meeting",
+      "description": "Library",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_76",
+      "date": "2026-04-02T15:00:00.000Z",
+      "title": "Computer Science Midterm",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_77",
+      "date": "2026-04-02T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_78",
+      "date": "2026-04-03T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_79",
+      "date": "2026-04-03T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_80",
+      "date": "2026-04-03T15:00:00.000Z",
+      "title": "Independent Art Exhibition",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_81",
+      "date": "2026-04-03T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_82",
+      "date": "2026-04-04T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Cafeteria",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_83",
+      "date": "2026-04-06T15:00:00.000Z",
+      "title": "Biology Homework",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_84",
+      "date": "2026-04-06T15:00:00.000Z",
+      "title": "Computer Science Lab Report",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_85",
+      "date": "2026-04-06T15:00:00.000Z",
+      "title": "Drama Club Meeting",
+      "description": "Library",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_86",
+      "date": "2026-04-07T15:00:00.000Z",
+      "title": "Biology Quiz",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_87",
+      "date": "2026-04-07T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_88",
+      "date": "2026-04-08T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_89",
+      "date": "2026-04-09T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_90",
+      "date": "2026-04-10T15:00:00.000Z",
+      "title": "Computer Science Pop Quiz",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_91",
+      "date": "2026-04-10T15:00:00.000Z",
+      "title": "History Homework",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_92",
+      "date": "2026-04-10T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_93",
+      "date": "2026-04-10T15:00:00.000Z",
+      "title": "DIY Debate Practice",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_94",
+      "date": "2026-04-11T15:00:00.000Z",
+      "title": "Track & Field Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_95",
+      "date": "2026-04-11T15:00:00.000Z",
+      "title": "Student-Led Science Fair",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_96",
+      "date": "2026-04-11T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Main Hall",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_97",
+      "date": "2026-04-13T15:00:00.000Z",
+      "title": "Biology Coursework",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_98",
+      "date": "2026-04-14T15:00:00.000Z",
+      "title": "Biology Essay",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_99",
+      "date": "2026-04-14T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_100",
+      "date": "2026-04-15T15:00:00.000Z",
+      "title": "English Pop Quiz",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_101",
+      "date": "2026-04-15T15:00:00.000Z",
+      "title": "History Midterm",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_102",
+      "date": "2026-04-15T15:00:00.000Z",
+      "title": "Drama Club Meeting",
+      "description": "Science Wing",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_103",
+      "date": "2026-04-15T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_104",
+      "date": "2026-04-16T15:00:00.000Z",
+      "title": "Biology Pop Quiz",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_105",
+      "date": "2026-04-16T15:00:00.000Z",
+      "title": "Biology Coursework",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_106",
+      "date": "2026-04-17T15:00:00.000Z",
+      "title": "History Coursework",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_107",
+      "date": "2026-04-17T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_108",
+      "date": "2026-04-17T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Main Hall",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_109",
+      "date": "2026-04-17T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_110",
+      "date": "2026-04-20T15:00:00.000Z",
+      "title": "Biology Quiz",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_111",
+      "date": "2026-04-20T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Science Wing",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_112",
+      "date": "2026-04-21T15:00:00.000Z",
+      "title": "Math Quiz",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_113",
+      "date": "2026-04-21T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_114",
+      "date": "2026-04-21T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_115",
+      "date": "2026-04-22T15:00:00.000Z",
+      "title": "Biology Pop Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_116",
+      "date": "2026-04-22T15:00:00.000Z",
+      "title": "Robotics Club Meeting",
+      "description": "Library",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_117",
+      "date": "2026-04-23T15:00:00.000Z",
+      "title": "English Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_118",
+      "date": "2026-04-23T15:00:00.000Z",
+      "title": "Math Lab Report",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_119",
+      "date": "2026-04-23T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_120",
+      "date": "2026-04-24T15:00:00.000Z",
+      "title": "Math Pop Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_121",
+      "date": "2026-04-24T15:00:00.000Z",
+      "title": "Math Pop Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_122",
+      "date": "2026-04-24T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_123",
+      "date": "2026-04-24T15:00:00.000Z",
+      "title": "Student Charity Bake Sale",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_124",
+      "date": "2026-04-25T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_125",
+      "date": "2026-04-26T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    },
+    {
+      "id": "ev_126",
+      "date": "2026-04-27T15:00:00.000Z",
+      "title": "History Pop Quiz",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_127",
+      "date": "2026-04-27T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Science Wing",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_128",
+      "date": "2026-04-28T15:00:00.000Z",
+      "title": "Physics Homework",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_129",
+      "date": "2026-04-29T15:00:00.000Z",
+      "title": "Computer Science Pop Quiz",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_130",
+      "date": "2026-04-30T15:00:00.000Z",
+      "title": "English Lab Report",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_131",
+      "date": "2026-04-30T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_132",
+      "date": "2026-05-01T15:00:00.000Z",
+      "title": "Biology Quiz",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_133",
+      "date": "2026-05-01T15:00:00.000Z",
+      "title": "Physics Pop Quiz",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_134",
+      "date": "2026-05-01T15:00:00.000Z",
+      "title": "Student Charity Bake Sale",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_135",
+      "date": "2026-05-02T15:00:00.000Z",
+      "title": "Basketball Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_136",
+      "date": "2026-05-02T15:00:00.000Z",
+      "title": "Student Charity Bake Sale",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_137",
+      "date": "2026-05-03T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Gym",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_138",
+      "date": "2026-05-04T15:00:00.000Z",
+      "title": "Physics Lab Report",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_139",
+      "date": "2026-05-04T15:00:00.000Z",
+      "title": "Debate Team Meeting",
+      "description": "Gym",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_140",
+      "date": "2026-05-05T15:00:00.000Z",
+      "title": "History Quiz",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_141",
+      "date": "2026-05-05T15:00:00.000Z",
+      "title": "English Lab Report",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_142",
+      "date": "2026-05-06T15:00:00.000Z",
+      "title": "Math Essay",
+      "description": "A (95%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_143",
+      "date": "2026-05-06T15:00:00.000Z",
+      "title": "History Midterm",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_144",
+      "date": "2026-05-06T15:00:00.000Z",
+      "title": "Drama Club Meeting",
+      "description": "Main Hall",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_145",
+      "date": "2026-05-07T15:00:00.000Z",
+      "title": "Math Essay",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_146",
+      "date": "2026-05-08T15:00:00.000Z",
+      "title": "Physics Lab Report",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_147",
+      "date": "2026-05-08T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_148",
+      "date": "2026-05-08T15:00:00.000Z",
+      "title": "Student Initiative Reading Club",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_149",
+      "date": "2026-05-09T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_150",
+      "date": "2026-05-09T15:00:00.000Z",
+      "title": "Independent Art Exhibition",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_151",
+      "date": "2026-05-10T15:00:00.000Z",
+      "title": "Student-Led Science Fair",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_152",
+      "date": "2026-05-11T15:00:00.000Z",
+      "title": "Physics Lab Report",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_153",
+      "date": "2026-05-11T15:00:00.000Z",
+      "title": "Drama Club Meeting",
+      "description": "Gym",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_154",
+      "date": "2026-05-12T15:00:00.000Z",
+      "title": "English Coursework",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_155",
+      "date": "2026-05-12T15:00:00.000Z",
+      "title": "Biology Pop Quiz",
+      "description": "A- (92%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_156",
+      "date": "2026-05-12T15:00:00.000Z",
+      "title": "Basketball Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_157",
+      "date": "2026-05-13T15:00:00.000Z",
+      "title": "Math Essay",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_158",
+      "date": "2026-05-14T15:00:00.000Z",
+      "title": "History Homework",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_159",
+      "date": "2026-05-14T15:00:00.000Z",
+      "title": "Math Essay",
+      "description": "C+ (78%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_160",
+      "date": "2026-05-15T15:00:00.000Z",
+      "title": "English Midterm",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_161",
+      "date": "2026-05-15T15:00:00.000Z",
+      "title": "Math Coursework",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_162",
+      "date": "2026-05-15T15:00:00.000Z",
+      "title": "Varsity Soccer Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_163",
+      "date": "2026-05-15T15:00:00.000Z",
+      "title": "Student Charity Bake Sale",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_164",
+      "date": "2026-05-16T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_165",
+      "date": "2026-05-17T15:00:00.000Z",
+      "title": "Independent Art Exhibition",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_166",
+      "date": "2026-05-18T15:00:00.000Z",
+      "title": "English Midterm",
+      "description": "B- (81%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_167",
+      "date": "2026-05-18T15:00:00.000Z",
+      "title": "Biology Homework",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_168",
+      "date": "2026-05-18T15:00:00.000Z",
+      "title": "Drama Club Meeting",
+      "description": "Cafeteria",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_169",
+      "date": "2026-05-18T15:00:00.000Z",
+      "title": "PTA Monthly Meeting",
+      "description": "Cafeteria",
+      "category": "parents_committee",
+      "time": "6:30 PM"
+    },
+    {
+      "id": "ev_170",
+      "date": "2026-05-19T15:00:00.000Z",
+      "title": "History Lab Report",
+      "description": "B (85%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_171",
+      "date": "2026-05-19T15:00:00.000Z",
+      "title": "Tennis Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_172",
+      "date": "2026-05-20T15:00:00.000Z",
+      "title": "Biology Pop Quiz",
+      "description": "B+ (88%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_173",
+      "date": "2026-05-20T15:00:00.000Z",
+      "title": "Coding Club Meeting",
+      "description": "Library",
+      "category": "clubs",
+      "time": "3:15 PM"
+    },
+    {
+      "id": "ev_174",
+      "date": "2026-05-21T15:00:00.000Z",
+      "title": "Physics Essay",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_175",
+      "date": "2026-05-22T15:00:00.000Z",
+      "title": "Math Lab Report",
+      "description": "A+ (98%)",
+      "category": "grades",
+      "time": ""
+    },
+    {
+      "id": "ev_176",
+      "date": "2026-05-22T15:00:00.000Z",
+      "title": "Track & Field Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_177",
+      "date": "2026-05-22T15:00:00.000Z",
+      "title": "Student-Led Science Fair",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_178",
+      "date": "2026-05-23T15:00:00.000Z",
+      "title": "Swim Team Game/Practice",
+      "description": "",
+      "category": "sports",
+      "time": "4:00 PM"
+    },
+    {
+      "id": "ev_179",
+      "date": "2026-05-23T15:00:00.000Z",
+      "title": "DIY Debate Practice",
+      "description": "Student Initiative",
+      "category": "unofficial",
+      "time": "2:00 PM"
+    },
+    {
+      "id": "ev_180",
+      "date": "2026-05-23T15:00:00.000Z",
+      "title": "District Event/Fair",
+      "description": "State University",
+      "category": "other_schools",
+      "time": "9:00 AM"
+    }
+  ],
+  "deadlines": [
+    {
+      "id": "d1",
+      "dueDate": "2026-04-10T15:00:00.000Z",
+      "title": "Science Fair Proposal",
+      "subject": "Biology",
+      "urgency": "high"
+    },
+    {
+      "id": "d2",
+      "dueDate": "2026-04-14T15:00:00.000Z",
+      "title": "Midterm Paper",
+      "subject": "History",
+      "urgency": "high"
+    },
+    {
+      "id": "d3",
+      "dueDate": "2026-04-18T15:00:00.000Z",
+      "title": "Math Assignment",
+      "subject": "Math",
+      "urgency": "medium"
+    },
+    {
+      "id": "d4",
+      "dueDate": "2026-04-22T15:00:00.000Z",
+      "title": "Book Review",
+      "subject": "English",
+      "urgency": "low"
+    }
+  ]
+}
