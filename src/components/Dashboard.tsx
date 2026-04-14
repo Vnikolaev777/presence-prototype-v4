@@ -1,8 +1,155 @@
 import { useState } from 'react';
-import { Bot } from 'lucide-react';
+import { Bot, CheckCircle, Clock, Zap, Database, BarChart2, FileText, Link2, ShieldCheck, Users, Rss } from 'lucide-react';
 import type { AiAction } from '../data/mockData';
 import { AiReviewModal } from './AiReviewModal';
+import { cn } from '../lib/utils';
 
+// ─── Auto-update feed data ──────────────────────────────────────────────────
+// Realistic items driven by the 3 connected systems + the two web agents
+
+type AutoUpdate = {
+  id: string;
+  source: string;
+  sourceDomain?: string;
+  title: string;
+  detail: string;
+  time: string;
+  icon: React.ReactNode;
+  iconBg: string;
+};
+
+const AUTO_UPDATES: AutoUpdate[] = [
+  {
+    id: 'au_1',
+    source: 'PowerSchool',
+    sourceDomain: 'powerschool.com',
+    title: 'Faculty Directory Updated',
+    detail: 'Ms. Emily Chen added as AP Biology teacher. Faculty page updated and re-indexed automatically.',
+    time: '2 min ago',
+    icon: <Users className="w-3.5 h-3.5" />,
+    iconBg: 'bg-blue-100 text-blue-600',
+  },
+  {
+    id: 'au_2',
+    source: 'Google Analytics',
+    sourceDomain: 'analytics.google.com',
+    title: 'Athletics Page SEO Improved',
+    detail: 'Low search visibility detected for the Athletics schedule. Meta titles & descriptions auto-updated.',
+    time: '19 min ago',
+    icon: <BarChart2 className="w-3.5 h-3.5" />,
+    iconBg: 'bg-amber-100 text-amber-600',
+  },
+  {
+    id: 'au_3',
+    source: 'Google Workspace',
+    sourceDomain: 'workspace.google.com',
+    title: 'Parent Handbook 2026 Published',
+    detail: "New PDF detected in Principal's Drive. Old version replaced on the Resources page.",
+    time: '41 min ago',
+    icon: <FileText className="w-3.5 h-3.5" />,
+    iconBg: 'bg-indigo-100 text-indigo-600',
+  },
+  {
+    id: 'au_4',
+    source: 'PowerSchool',
+    sourceDomain: 'powerschool.com',
+    title: 'Class Schedule Synced',
+    detail: 'Mr. Davis assigned to Advanced Calculus (Period 3). Academic Calendar page updated.',
+    time: '1 hr ago',
+    icon: <Database className="w-3.5 h-3.5" />,
+    iconBg: 'bg-blue-100 text-blue-600',
+  },
+  {
+    id: 'au_5',
+    source: 'Web Admin Agent',
+    title: 'Broken Links Repaired',
+    detail: '3 broken navigation links detected and fixed across the Events and Contact pages.',
+    time: '3 hrs ago',
+    icon: <Link2 className="w-3.5 h-3.5" />,
+    iconBg: 'bg-purple-100 text-purple-600',
+  },
+  {
+    id: 'au_6',
+    source: 'ClassDojo',
+    sourceDomain: 'classdojo.com',
+    title: 'Engagement Digest Synced',
+    detail: 'Weekly parent engagement stats published. 94% read rate on last newsletter.',
+    time: '5 hrs ago',
+    icon: <Rss className="w-3.5 h-3.5" />,
+    iconBg: 'bg-emerald-100 text-emerald-600',
+  },
+  {
+    id: 'au_7',
+    source: 'Google Analytics',
+    sourceDomain: 'analytics.google.com',
+    title: 'Lunch Menu Page Boosted',
+    detail: 'Traffic spike detected (+180%) from parent searches. Quick-link widget added to homepage.',
+    time: 'Yesterday',
+    icon: <BarChart2 className="w-3.5 h-3.5" />,
+    iconBg: 'bg-amber-100 text-amber-600',
+  },
+  {
+    id: 'au_8',
+    source: 'Web Crawler α',
+    title: 'Accessibility Scan Passed',
+    detail: 'Full site scan completed — 0 WCAG violations found. Report saved to Knowledge Model.',
+    time: 'Yesterday',
+    icon: <ShieldCheck className="w-3.5 h-3.5" />,
+    iconBg: 'bg-emerald-100 text-emerald-600',
+  },
+  {
+    id: 'au_9',
+    source: 'PowerSchool',
+    sourceDomain: 'powerschool.com',
+    title: 'Enrollment Numbers Updated',
+    detail: 'Q2 enrollment data synced. "About Our School" page stats refreshed automatically.',
+    time: '2 days ago',
+    icon: <Users className="w-3.5 h-3.5" />,
+    iconBg: 'bg-blue-100 text-blue-600',
+  },
+];
+
+// ─── Auto-update row component ──────────────────────────────────────────────
+function AutoUpdateRow({ item }: { item: AutoUpdate }) {
+  return (
+    <div className="flex gap-3 items-start py-3 px-4 hover:bg-slate-50 transition-colors rounded-xl group">
+      {/* Source favicon or fallback icon */}
+      <div className="relative shrink-0 mt-0.5">
+        <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden bg-white border border-slate-200 shadow-sm')}>
+          {item.sourceDomain ? (
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${item.sourceDomain}&sz=64`}
+              alt={item.source}
+              className="w-5 h-5 object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) parent.className = cn('w-8 h-8 rounded-lg flex items-center justify-center', item.iconBg);
+              }}
+            />
+          ) : (
+            <div className={cn('w-full h-full flex items-center justify-center rounded-lg', item.iconBg)}>
+              {item.icon}
+            </div>
+          )}
+        </div>
+        {/* Green auto-done dot */}
+        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm font-semibold text-slate-800 leading-tight">{item.title}</p>
+          <span className="text-[10px] text-slate-400 shrink-0 mt-0.5 whitespace-nowrap">{item.time}</span>
+        </div>
+        <p className="text-xs text-slate-500 mt-0.5 leading-relaxed line-clamp-2">{item.detail}</p>
+        <span className="text-[10px] text-slate-400 font-medium mt-1 inline-block">{item.source}</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Dashboard ──────────────────────────────────────────────────────────────
 export function Dashboard({ hasHiredAgents }: any) {
   const [selectedAction, setSelectedAction] = useState<AiAction | null>(null);
   const [removedActions, setRemovedActions] = useState<string[]>([]);
@@ -48,61 +195,151 @@ export function Dashboard({ hasHiredAgents }: any) {
 
   const isCCPending = !removedActions.includes(CC_ACTION.id);
   const isWAPending = !removedActions.includes(WA_ACTION.id);
+  const pendingCount = [isCCPending, isWAPending].filter(Boolean).length;
 
   return (
-    <div className="animate-in fade-in duration-700 max-w-3xl mx-auto space-y-6">
+    <div className="animate-in fade-in duration-700 max-w-6xl mx-auto space-y-6">
+
       {/* Header */}
       <div>
         <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Inbox</h1>
-        <p className="text-slate-500 text-sm">Suggestions from your AI agents, ready for your review.</p>
+        <p className="text-slate-500 text-sm">AI-driven updates to your school website — review proposals or see what was already handled.</p>
       </div>
 
-      {/* Suggestions */}
-      {hasHiredAgents ? (
-        <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl shadow-sm space-y-4">
-          <div className="flex items-center gap-3 border-b border-blue-200 pb-3">
-            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><Bot className="w-5 h-5"/></div>
-            <div>
-              <h2 className="text-lg font-bold text-slate-800">Suggestions from your Hired Agents</h2>
-              <p className="text-xs text-slate-500">Your dedicated team has prepared updates based on recent activity.</p>
+      {/* Two-column grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+        {/* ── LEFT: Manual Reviews ───────────────────────────────────────── */}
+        <div className="flex flex-col">
+          {/* Column header */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
+              <Clock className="w-4 h-4" />
+            </div>
+            <h2 className="text-sm font-bold text-slate-700">Needs Your Review</h2>
+            {pendingCount > 0 && (
+              <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {pendingCount}
+              </span>
+            )}
+          </div>
+
+          {/* Column body */}
+          {hasHiredAgents ? (
+            <div className="bg-gradient-to-b from-blue-50/60 to-indigo-50/40 border border-blue-200/60 rounded-2xl shadow-sm overflow-hidden">
+              <div className="flex items-center gap-3 px-5 py-4 border-b border-blue-200/50">
+                <div className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-slate-800">Suggestions from your Hired Agents</p>
+                  <p className="text-xs text-slate-500">Your dedicated team has prepared updates based on recent activity.</p>
+                </div>
+              </div>
+
+              <div className="p-4 space-y-3">
+                {isCCPending && (
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex gap-4 items-start animate-in fade-in">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0 text-sm">CC</div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800 text-sm">New post: Celebrate our Science Fair winners</h3>
+                      <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
+                      <button
+                        onClick={() => setSelectedAction(CC_ACTION)}
+                        className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                      >
+                        Review Draft
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {isWAPending && (
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex gap-4 items-start animate-in fade-in">
+                    <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0 text-sm">WA</div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800 text-sm">Homepage friction detected — Quick Links widget ready</h3>
+                      <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
+                      <button
+                        onClick={() => setSelectedAction(WA_ACTION)}
+                        className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                      >
+                        Approve Widget Addition
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {(!isCCPending && !isWAPending) && (
+                  <div className="py-10 text-center text-slate-400 space-y-2">
+                    <CheckCircle className="w-8 h-8 mx-auto opacity-40" />
+                    <p className="text-sm font-medium">All caught up!</p>
+                    <p className="text-xs">No pending suggestions from your agents.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-12 text-center text-slate-400 space-y-3 h-full flex flex-col items-center justify-center">
+              <Bot className="w-10 h-10 opacity-30" />
+              <p className="font-medium text-sm">No agents hired yet.</p>
+              <p className="text-xs leading-relaxed max-w-xs">Complete the Presence Assistant onboarding to deploy agents that will send review requests here.</p>
+            </div>
+          )}
+        </div>
+
+        {/* ── RIGHT: Automatic Updates ───────────────────────────────────── */}
+        {hasHiredAgents && <div className="flex flex-col">
+          {/* Column header */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">
+              <Zap className="w-4 h-4" />
+            </div>
+            <h2 className="text-sm font-bold text-slate-700">Automatic Updates</h2>
+            <span className="ml-auto text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+              Live
+            </span>
+          </div>
+
+          {/* Column body */}
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            {/* Subheader */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-slate-50/60">
+              <div className="flex -space-x-1.5">
+                {['powerschool.com', 'analytics.google.com', 'classdojo.com'].map((domain) => (
+                  <div key={domain} className="w-5 h-5 rounded-full bg-white border border-slate-200 overflow-hidden shadow-sm flex items-center justify-center">
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+                      alt={domain}
+                      className="w-4 h-4 object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 font-medium">
+                Handled automatically by your connected systems
+              </p>
+            </div>
+
+            {/* Feed */}
+            <div className="divide-y divide-slate-100 max-h-[520px] overflow-y-auto">
+              {AUTO_UPDATES.map((item) => (
+                <AutoUpdateRow key={item.id} item={item} />
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between">
+              <p className="text-xs text-slate-400">{AUTO_UPDATES.length} updates this week</p>
+              <button className="text-xs font-semibold text-blue-600 hover:underline">View full history →</button>
             </div>
           </div>
-          <div className="grid gap-4">
-            {isCCPending && (
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex gap-4 items-start animate-in fade-in">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0 text-sm">CC</div>
-                <div>
-                  <h3 className="font-semibold text-slate-800 text-sm">Content Creator Agent</h3>
-                  <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
-                  <button onClick={() => setSelectedAction(CC_ACTION)} className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors">Review Draft</button>
-                </div>
-              </div>
-            )}
+        </div>}
 
-            {isWAPending && (
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex gap-4 items-start animate-in fade-in">
-                <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0 text-sm">WA</div>
-                <div>
-                  <h3 className="font-semibold text-slate-800 text-sm">Web Admin Agent</h3>
-                  <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
-                  <button onClick={() => setSelectedAction(WA_ACTION)} className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors">Approve Widget Addition</button>
-                </div>
-              </div>
-            )}
+      </div>
 
-            {(!isCCPending && !isWAPending) && (
-              <p className="text-sm text-slate-500 italic p-4 text-center">Your agents have no pending suggestions right now.</p>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-16 text-center text-slate-400 space-y-3">
-          <Bot className="w-10 h-10 mx-auto opacity-30" />
-          <p className="font-medium">No agents hired yet.</p>
-          <p className="text-sm">Complete the Presence Assistant onboarding to deploy agents that will send suggestions here.</p>
-        </div>
-      )}
-
+      {/* Review modal — unchanged */}
       {selectedAction && (
         <AiReviewModal
           action={selectedAction}

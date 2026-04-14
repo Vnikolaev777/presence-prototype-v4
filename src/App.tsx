@@ -2,20 +2,30 @@ import { useState } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { AiWorkspaceView } from './components/AiWorkspaceView';
 import { OurTeamView } from './components/OurTeamView';
-import { WebAdminAgentView } from './components/WebAdminAgentView';
-import { ContentCreatorAgentView } from './components/ContentCreatorAgentView';
+import { TasksView } from './components/TasksView';
 import { HiredAgentsChatView } from './components/HiredAgentsChatView';
 import { UtilitiesHubView } from './components/UtilitiesHubView';
 import { KnowledgeBaseView } from './components/KnowledgeBaseView';
-import { LayoutDashboard, Sparkles, Users, Layers, BookOpen, Code2, PenTool } from 'lucide-react';
+import {
+  LayoutDashboard, Sparkles, Users, Layers, BookOpen,
+  ListTodo, ChevronDown, ChevronRight,
+} from 'lucide-react';
 import { cn } from './lib/utils';
 import type { AiAction } from './data/mockData';
 import { MOCK_AI_ACTIONS, MOCK_STATS, MOCK_AGENTS } from './data/mockData';
 
-export type TabType = 'dashboard' | 'workspace' | 'team' | 'web_admin_agent' | 'content_creator_agent' | 'hired_agents' | 'utilities' | 'knowledge_base';
+export type TabType =
+  | 'dashboard'
+  | 'workspace'
+  | 'team'
+  | 'tasks'
+  | 'hired_agents'
+  | 'utilities'
+  | 'knowledge_base';
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+  const [teamExpanded, setTeamExpanded] = useState(true);
 
   // App-level state to power the demo continuity
   const [actions, setActions] = useState<AiAction[]>(MOCK_AI_ACTIONS);
@@ -41,19 +51,12 @@ function App() {
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-base tracking-tight text-slate-900 leading-tight">
-              Presence AI <span className="text-blue-600 font-semibold">by IONOS</span>
+              Presence <span className="text-blue-600 font-semibold">by IONOS</span>
             </span>
-            <span className="text-xs text-slate-400 font-medium tracking-wide">Autonomous websites for K–12</span>
+            <span className="text-xs text-slate-400 font-medium tracking-wide">AI Autonomous websites for K–12</span>
           </div>
         </div>
         <div className="flex items-center space-x-6">
-          <div className="flex items-center space-x-2">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-            </span>
-            <span className="text-sm text-slate-600 font-medium">System Online</span>
-          </div>
           <div className="h-8 w-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-semibold text-slate-700">
             JD
           </div>
@@ -65,7 +68,7 @@ function App() {
 
         {/* Sidebar Navigation */}
         <aside className="w-64 bg-white/50 border-r border-slate-200/60 backdrop-blur-md hidden md:flex flex-col p-4 shrink-0 overflow-y-auto">
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             <NavItem
               active={activeTab === 'workspace'}
               onClick={() => setActiveTab('workspace')}
@@ -80,38 +83,59 @@ function App() {
             />
 
             {hasHiredAgents && (
-              <>
-                <NavItem
-                  active={activeTab === 'team'}
-                  onClick={() => setActiveTab('team')}
-                  icon={<Users className="w-5 h-5 text-indigo-500" />}
-                  label="Our Team (AI)"
-                />
-                <NavItem
-                  active={activeTab === 'web_admin_agent'}
-                  onClick={() => setActiveTab('web_admin_agent')}
-                  icon={<Code2 className="w-5 h-5 text-blue-500" />}
-                  label="Web Admin Agent"
-                />
-                <NavItem
-                  active={activeTab === 'content_creator_agent'}
-                  onClick={() => setActiveTab('content_creator_agent')}
-                  icon={<PenTool className="w-5 h-5 text-emerald-500" />}
-                  label="Content Creator Agent"
-                />
-              </>
+              <div className="space-y-0.5">
+                {/* Expandable group header */}
+                <button
+                  onClick={() => setTeamExpanded(v => !v)}
+                  className={cn(
+                    'w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl font-medium transition-all text-sm border',
+                    (activeTab === 'team' || activeTab === 'tasks')
+                      ? 'bg-indigo-50 text-indigo-700 border-indigo-100'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent'
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <Users className="w-5 h-5 text-indigo-500" />
+                    Our Team (AI)
+                  </div>
+                  {teamExpanded
+                    ? <ChevronDown className="w-4 h-4 opacity-50" />
+                    : <ChevronRight className="w-4 h-4 opacity-50" />}
+                </button>
+
+                {/* Sub-items */}
+                {teamExpanded && (
+                  <div className="ml-4 pl-3 border-l border-slate-200 space-y-0.5">
+                    <NavItem
+                      active={activeTab === 'team'}
+                      onClick={() => setActiveTab('team')}
+                      icon={<Users className="w-4 h-4" />}
+                      label="Team"
+                      small
+                    />
+                    <NavItem
+                      active={activeTab === 'tasks'}
+                      onClick={() => setActiveTab('tasks')}
+                      icon={<ListTodo className="w-4 h-4" />}
+                      label="Tasks"
+                      small
+                    />
+                  </div>
+                )}
+              </div>
             )}
+
             <NavItem
               active={activeTab === 'utilities'}
               onClick={() => setActiveTab('utilities')}
               icon={<Layers className="w-5 h-5" />}
-              label="Utilities Hub"
+              label="Integrations"
             />
             <NavItem
               active={activeTab === 'knowledge_base'}
               onClick={() => setActiveTab('knowledge_base')}
               icon={<BookOpen className="w-5 h-5" />}
-              label="Knowledge Base"
+              label="Knowledge Model"
             />
           </nav>
         </aside>
@@ -150,14 +174,9 @@ function App() {
               autoUpdatesCount={actions.filter((a: any) => a.status === 'auto-applied' && a.isInternal).length}
             />
           )}
-          {activeTab === 'web_admin_agent' && <WebAdminAgentView />}
-          {activeTab === 'content_creator_agent' && <ContentCreatorAgentView />}
-          {activeTab === 'utilities' && (
-            <UtilitiesHubView />
-          )}
-          {activeTab === 'knowledge_base' && (
-            <KnowledgeBaseView />
-          )}
+          {activeTab === 'tasks' && <TasksView />}
+          {activeTab === 'utilities' && <UtilitiesHubView />}
+          {activeTab === 'knowledge_base' && <KnowledgeBaseView />}
         </main>
       </div>
 
@@ -165,14 +184,25 @@ function App() {
   );
 }
 
-function NavItem({ active, onClick, icon, label, badge }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string, badge?: number }) {
+function NavItem({
+  active, onClick, icon, label, badge, small,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  badge?: number;
+  small?: boolean;
+}) {
   return (
     <button
       onClick={onClick}
-      className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl font-medium transition-all text-sm",
+      className={cn(
+        'w-full flex items-center justify-between gap-3 px-4 rounded-xl font-medium transition-all text-sm border',
+        small ? 'py-2' : 'py-3',
         active
-          ? "bg-blue-50 text-blue-700 shadow-sm border border-blue-100"
-          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent"
+          ? 'bg-blue-50 text-blue-700 shadow-sm border-blue-100'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent'
       )}
     >
       <div className="flex items-center gap-3">

@@ -41,11 +41,13 @@ Every push to `main` auto-redeploys. The `vercel.json` is already configured.
 
 ## 📤 Push to GitHub (one-time setup)
 
+> ⚠️ `~/Documents/Presence Prototype` is **not** the project directory — replace `path/to/project` below with the actual path on your machine.
+
 1. Create a new repo at **https://github.com/new** (name it `presence-prototype`)
 2. Run these commands in your terminal:
 
 ```bash
-cd ~/Documents/Presence\ Prototype
+cd path/to/project
 git remote add origin https://github.com/YOUR_USERNAME/presence-prototype.git
 git add .
 git commit -m "Initial commit"
@@ -55,7 +57,7 @@ git push -u origin main
 After that, every future update is just:
 
 ```bash
-cd ~/Documents/Presence\ Prototype && git add . && git commit -m "Update" && git push
+cd path/to/project && git add . && git commit -m "Update" && git push
 ```
 
 ---
@@ -63,7 +65,7 @@ cd ~/Documents/Presence\ Prototype && git add . && git commit -m "Update" && git
 ## 💻 Run locally
 
 ```bash
-cd ~/Documents/Presence\ Prototype && npm install && npm run dev
+cd path/to/project && npm install && npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173)

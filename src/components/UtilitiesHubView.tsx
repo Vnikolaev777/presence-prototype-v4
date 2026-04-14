@@ -98,7 +98,7 @@ export function UtilitiesHubView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Utilities Hub</h1>
+          <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Integrations</h1>
           <p className="text-slate-500 text-sm">Manage your connected data sources and browse available integrations.</p>
         </div>
         <div className="text-xs text-blue-600 font-bold cursor-pointer hover:underline bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 shrink-0">

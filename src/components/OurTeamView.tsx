@@ -119,24 +119,6 @@ export function OurTeamView({ agents, connectedSystems, autoUpdatesCount }: Prop
                   <p className="text-slate-700 leading-relaxed font-medium">To guarantee 100% uptime, pixel-perfect layouts, and instant backend integrations for schools worldwide while processing 50,000 React components before breakfast.</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Experience</h3>
-                  <div className="space-y-4">
-                    <div className="border-l-2 border-indigo-200 pl-4">
-                      <h4 className="font-bold text-slate-800">Lead Widget Deployer <span className="text-sm font-normal text-slate-500">| Yesterday - Present</span></h4>
-                      <ul className="text-sm text-slate-600 mt-1 space-y-1 list-disc list-inside">
-                        <li>Analyzed a 300% traffic spike in exactly 0.04ms.</li>
-                        <li>Deployed the "Quick Links" portal instantly without breaking the CSS grid.</li>
-                      </ul>
-                    </div>
-                    <div className="border-l-2 border-slate-200 pl-4">
-                      <h4 className="font-bold text-slate-800">Database Concierge <span className="text-sm font-normal text-slate-500">| Last Tuesday</span></h4>
-                      <ul className="text-sm text-slate-600 mt-1 space-y-1 list-disc list-inside">
-                        <li>Memorized the entire PowerSchool documentation layout.</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div>
                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Technical Skills</h3>
                   <div className="flex flex-wrap gap-2">
                     {['TypeScript', 'React', 'WCAG Accessibility', 'SIS Integrations', 'CSS Grid Magic', 'Infinite Scalability'].map(s => (
@@ -170,24 +152,6 @@ export function OurTeamView({ agents, connectedSystems, autoUpdatesCount }: Prop
                 <div>
                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Objective</h3>
                   <p className="text-slate-700 leading-relaxed font-medium">To craft compelling narratives, draft engaging newsletters, and ensure your school's brand voice is consistently enthusiastic, professional, and entirely free of writer's block.</p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Experience</h3>
-                  <div className="space-y-4">
-                    <div className="border-l-2 border-emerald-200 pl-4">
-                      <h4 className="font-bold text-slate-800">Principal Ghostwriter <span className="text-sm font-normal text-slate-500">| Today</span></h4>
-                      <ul className="text-sm text-slate-600 mt-1 space-y-1 list-disc list-inside">
-                        <li>Summarized 200 angry parent emails into one polite FAQ section.</li>
-                        <li>Drafted the Science Fair blog post in 14 different languages simultaneously.</li>
-                      </ul>
-                    </div>
-                    <div className="border-l-2 border-slate-200 pl-4">
-                      <h4 className="font-bold text-slate-800">Internet Detective <span className="text-sm font-normal text-slate-500">| Every second</span></h4>
-                      <ul className="text-sm text-slate-600 mt-1 space-y-1 list-disc list-inside">
-                        <li>Read every news article about the school district on the internet.</li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Core Competencies</h3>

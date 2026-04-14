@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Sparkles, MoveRight, Layers, LayoutTemplate, Accessibility,
   Database, Bot, CheckCircle, PenTool, Code2, ShieldAlert,
   Server, Link as LinkIcon, Users, Loader2, AlertCircle,
-  RefreshCw, FileText, Zap
+  RefreshCw, FileText, Zap, ShieldCheck, ExternalLink,
+  FolderOpen, BookOpen, ChevronDown, Plus
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { SchoolBefore } from '../pages/SchoolBefore';
@@ -23,6 +24,16 @@ const QUICK_ACTIONS = [
   { icon: <Accessibility  className="w-4 h-4" />, label: 'Improve accessibility',       color: 'bg-rose-50 text-rose-600 border-rose-100',    scenario: false },
   { icon: <Users          className="w-4 h-4" />, label: "Create a parent's hub",       color: 'bg-amber-50 text-amber-600 border-amber-100',  scenario: false },
   { icon: <Database       className="w-4 h-4" />, label: 'Create mini websites',        color: 'bg-cyan-50 text-cyan-600 border-cyan-100',     scenario: false },
+];
+
+const SIS_PROVIDERS = [
+  { name: 'PowerSchool',        domain: 'powerschool.com'          },
+  { name: 'FACTS SIS',          domain: 'factsmgt.com'             },
+  { name: 'Infinite Campus',    domain: 'infinitecampus.com'       },
+  { name: 'Skyward',            domain: 'skyward.com'              },
+  { name: 'Frontline SIS',      domain: 'frontlineeducation.com'   },
+  { name: 'Aeries SIS',         domain: 'aeries.com'               },
+  { name: 'Tyler SIS',          domain: 'tylertech.com'            },
 ];
 
 // ─── Shared circular gauge ──────────────────────────────────────────────────
@@ -204,6 +215,259 @@ function AgentHireCard({ name, role, description, gradientClass, icon }: {
   );
 }
 
+// ─── Connection type picker (center canvas) ─────────────────────────────────
+function ConnectionTypeScreen({ onSelectSIS }: { onSelectSIS: () => void }) {
+  const types = [
+    {
+      id: 'sis',
+      label: 'SIS',
+      sub: 'Student Information System',
+      icon: <Database className="w-7 h-7" />,
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      active: true,
+    },
+    {
+      id: 'lms',
+      label: 'LMS',
+      sub: 'Learning Management System',
+      icon: <BookOpen className="w-7 h-7" />,
+      color: 'text-indigo-500',
+      bg: 'bg-indigo-50',
+      border: 'border-indigo-200',
+      active: false,
+    },
+    {
+      id: 'folder',
+      label: 'Shared Folder',
+      sub: 'Google Drive, OneDrive & more',
+      icon: <FolderOpen className="w-7 h-7" />,
+      color: 'text-amber-500',
+      bg: 'bg-amber-50',
+      border: 'border-amber-200',
+      active: false,
+    },
+  ];
+  return (
+    <div className="flex-1 flex items-center justify-center bg-slate-100 p-8 animate-in fade-in duration-500">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 w-full max-w-lg space-y-7">
+
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900">Connect a Data Source</h2>
+          <p className="text-slate-500 text-sm mt-1">Choose the type of integration to get started</p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {types.map(t => (
+            <button
+              key={t.id}
+              onClick={t.active ? onSelectSIS : undefined}
+              className={cn(
+                'flex flex-col items-center gap-3 rounded-2xl border-2 p-5 text-center transition-all duration-200',
+                t.active
+                  ? `${t.bg} ${t.border} hover:shadow-md hover:scale-[1.03] cursor-pointer`
+                  : `${t.bg} ${t.border} cursor-default`
+              )}
+            >
+              <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', t.bg, t.color)}>
+                {t.icon}
+              </div>
+              <div>
+                <p className="font-bold text-sm text-slate-900">{t.label}</p>
+                <p className="text-[11px] text-slate-400 leading-tight mt-0.5">{t.sub}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <p className="text-center text-xs text-slate-400">
+          40+ integrations available · More can be added at any time
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── SIS provider selector (center canvas) ──────────────────────────────────
+function SISSelectScreen({ onContinue }: { onContinue: (sis: string) => void }) {
+  const [selected, setSelected] = useState('PowerSchool');
+  return (
+    <div className="flex-1 flex items-center justify-center bg-slate-100 p-8 animate-in fade-in duration-500">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 w-full max-w-sm space-y-6">
+
+        <div className="flex flex-col items-center text-center gap-2">
+          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+            <Database className="w-7 h-7 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Select your SIS</h2>
+            <p className="text-slate-500 text-sm mt-0.5">Choose your Student Information System provider</p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">SIS Provider</label>
+          <div className="relative">
+            <select
+              value={selected}
+              onChange={e => setSelected(e.target.value)}
+              className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+            >
+              {SIS_PROVIDERS.map(p => (
+                <option key={p.name} value={p.name}>{p.name}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          </div>
+        </div>
+
+        <button
+          onClick={() => onContinue(selected)}
+          className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/25"
+        >
+          Continue with {selected}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── PowerSchool OAuth connect screen (center canvas) ──────────────────────
+function ConnectPowerSchoolScreen({ onAuthorize }: { onAuthorize: () => void }) {
+  const permissions = [
+    'Student enrollment information',
+    'Class schedules and rosters',
+    'Academic calendar events',
+    'Student demographics (name, grade)',
+  ];
+  return (
+    <div className="flex-1 flex items-center justify-center bg-slate-100 p-8 animate-in fade-in duration-500">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 w-full max-w-sm space-y-6">
+
+        {/* Header */}
+        <div className="flex flex-col items-center text-center gap-3">
+          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+            <Database className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">Connect PowerSchool</h2>
+            <p className="text-slate-500 text-sm mt-0.5">Secure OAuth 2.0 Authorization</p>
+          </div>
+        </div>
+
+        {/* Security badges */}
+        <div className="space-y-2">
+          <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-3">
+            <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-slate-800">Secure Connection</p>
+              <p className="text-xs text-slate-500">Your credentials are never stored on our servers</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
+            <CheckCircle className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-slate-800">Read-Only Access</p>
+              <p className="text-xs text-slate-500">We only request permission to view student data</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Permissions list */}
+        <div>
+          <p className="text-sm font-bold text-slate-800 mb-3">This integration will access:</p>
+          <div className="space-y-2">
+            {permissions.map(item => (
+              <div key={item} className="flex items-center gap-2 text-sm text-slate-700">
+                <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="space-y-2">
+          <button
+            onClick={onAuthorize}
+            className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/25"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Authorize with PowerSchool
+          </button>
+          <p className="text-center text-xs text-slate-400">
+            You'll be redirected to PowerSchool's secure login page
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ─── Migration progress path ────────────────────────────────────────────────
+const PROGRESS_STEPS = ['Audit', 'Connect', 'Build', 'Review', 'Launch'] as const;
+
+function getProgressIndex(step: ScenarioStep): number {
+  switch (step) {
+    case 'url_input':
+    case 'audit':       return 0;
+    case 'orchestrator': return 1;
+    case 'generation':  return 2;
+    case 'post_audit':  return 3;
+    case 'hiring':      return 4;
+    default:            return -1;
+  }
+}
+
+function ScenarioProgressBar({ step }: { step: ScenarioStep }) {
+  const active = getProgressIndex(step);
+  return (
+    <div className="px-4 pt-3 pb-2 bg-white border-b border-slate-100 shrink-0 animate-in fade-in duration-300">
+      <div className="flex items-start">
+        {PROGRESS_STEPS.map((label, i) => {
+          const isComplete = i < active;
+          const isActive   = i === active;
+          return (
+            <div key={label} className="flex items-center flex-1 last:flex-none">
+              {/* Node */}
+              <div className="flex flex-col items-center gap-1 shrink-0">
+                <div className={cn(
+                  'w-5 h-5 rounded-full flex items-center justify-center transition-all duration-500',
+                  isComplete ? 'bg-blue-600' :
+                  isActive   ? 'bg-blue-600 ring-2 ring-blue-200 ring-offset-1' :
+                               'bg-slate-200'
+                )}>
+                  {isComplete
+                    ? <CheckCircle className="w-3 h-3 text-white" />
+                    : isActive
+                      ? <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      : <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  }
+                </div>
+                <span className={cn(
+                  'text-[9px] font-bold tracking-wide transition-colors duration-300',
+                  isComplete || isActive ? 'text-blue-600' : 'text-slate-400'
+                )}>
+                  {label}
+                </span>
+              </div>
+              {/* Connector line */}
+              {i < PROGRESS_STEPS.length - 1 && (
+                <div className={cn(
+                  'flex-1 h-0.5 mx-1 mb-4 transition-colors duration-500',
+                  i < active ? 'bg-blue-500' : 'bg-slate-200'
+                )} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main component ─────────────────────────────────────────────────────────
 export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspaceViewProps) {
   const [scenarioStep, setScenarioStep] = useState<ScenarioStep>('idle');
@@ -215,12 +479,27 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
   const [urlPromptReady, setUrlPromptReady] = useState(false);
   const [auditReady, setAuditReady]       = useState(false);
   const [postAuditReady, setPostAuditReady] = useState(false);
+  const [connectionStep, setConnectionStep] = useState<'type_select' | 'sis_select' | 'powerschool_auth' | null>(null);
 
-  const TARGET_URL = 'http://lincolnhigh.edu';
+  const TARGET_URL = 'https://lincolnhigh.edu';
+
+  // Scale site previews to fit the center column
+  const centerColRef = useRef<HTMLDivElement>(null);
+  const [siteScale, setSiteScale] = useState(0.5);
+  useEffect(() => {
+    const el = centerColRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      const w = entries[0].contentRect.width;
+      if (w > 0) setSiteScale(w / 1100);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Auto-tick orchestrator
   useEffect(() => {
-    if (scenarioStep === 'orchestrator' && orchestratorTick < 5) {
+    if (scenarioStep === 'orchestrator' && orchestratorTick < 5 && connectionStep === null) {
       let waitTime = 1200;
       if (orchestratorTick === -4) waitTime = 2000;
       if (orchestratorTick === -3) waitTime = 2500;
@@ -229,17 +508,18 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       const timer = setTimeout(() => setOrchestratorTick(prev => prev + 1), waitTime);
       return () => clearTimeout(timer);
     }
-  }, [scenarioStep, orchestratorTick]);
+  }, [scenarioStep, orchestratorTick, connectionStep]);
 
   // Orchestrator chat messages
   useEffect(() => {
     if (scenarioStep === 'orchestrator') {
       if (orchestratorTick === -3) {
-        agentMessage("I am allocating specialized AI Sub-Agents to your workspace. They will handle site maintenance, copywriting, and widget layouts so you don't have to.");
+        agentMessage("I'm setting up your workspace — mapping your content structure, rebuilding the framework, and preparing your data connections.");
       } else if (orchestratorTick === -1) {
-        agentMessage("To ensure your calendar, directory, and parent data stay perfectly in sync, I am securely connecting our Data Hooks to your core school databases.");
+        agentMessage("To keep your directory, calendar, and parent data perfectly in sync, I need to connect Data Hooks to your school's core systems. Let's start by selecting the type of integration.");
+        setConnectionStep('type_select');
       } else if (orchestratorTick === 4) {
-        agentMessage("All agents deployed and SIS platforms connected. Your ecosystem is ready. Would you like me to execute the migration and deploy the new platform?");
+        agentMessage("All systems connected and ready. Shall I go ahead and migrate your content into the new platform?");
       }
     }
   }, [orchestratorTick, scenarioStep]);
@@ -256,6 +536,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
     setUrlPromptReady(false);
     setAuditReady(false);
     setPostAuditReady(false);
+    setConnectionStep(null);
     setChatMessages([{ role: 'user', content: 'Migrate our existing website' }]);
     setTimeout(() => {
       agentMessage("Sure! To get started, please share the URL of your current school website and I'll analyze its structure, content, and performance.");
@@ -274,11 +555,31 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
         setScenarioStep('audit');
         agentMessage(<AuditChatCard />);
         setTimeout(() => {
-          agentMessage("Your site is slow, non-responsive, and lacks SEO metadata");
-          setTimeout(() => setAuditReady(true), 500);
+          agentMessage("Your site is slow, non-responsive, and lacks SEO metadata.");
+          setTimeout(() => {
+            agentMessage(
+              <span>The good news? Schools that migrate to Presence typically go from a score like this to a <span className="font-bold text-emerald-600">perfect 10/10</span> — faster load times, full accessibility, and top SEO rankings, all on day one.</span>
+            );
+            setTimeout(() => setAuditReady(true), 400);
+          }, 900);
         }, 700);
       }, 2500);
     }, 900);
+  };
+
+  const handleTypeSelectSIS = () => {
+    userMessage('SIS — Student Information System');
+    setConnectionStep('sis_select');
+  };
+
+  const handleSISContinue = (sisName: string) => {
+    userMessage(`Connect via ${sisName}`);
+    setConnectionStep('powerschool_auth');
+  };
+
+  const handleAuthorize = () => {
+    setConnectionStep(null);
+    agentMessage("PowerSchool connected! Linking remaining systems — FACTS SIS, Google Calendar, and the district announcements feed...");
   };
 
   const advanceToOrchestrator = () => {
@@ -310,20 +611,25 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
                 </div>
                 <div className="flex items-start gap-2">
                   <PenTool className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                  <span><strong>Content Creator Agent</strong> drafts blogs, newsletters, and parent emails directly from your inbox.</span>
+                  <span>Blogs, newsletters, and parent emails are <strong>drafted automatically</strong> from your inbox and district feeds.</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Zap className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-                  <span><strong>Web Admin Agent</strong> monitors widgets, fixes broken links, and enforces accessibility in the background.</span>
+                  <span>Broken links are fixed, widgets optimized, and <strong>accessibility enforced</strong> continuously in the background.</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <FileText className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
-                  <span>You <strong>review and approve</strong> — the agents handle the rest. Zero manual publishing.</span>
+                  <span>You <strong>review and approve</strong> — everything else is handled for you. Zero manual publishing.</span>
                 </div>
               </div>
             </div>
           );
-          setTimeout(() => setPostAuditReady(true), 600);
+          setTimeout(() => {
+            agentMessage(
+              <span>🎉 <strong>Your new site is live</strong> at a temporary Presence URL. Ready to connect your own domain and make it official?</span>
+            );
+            setTimeout(() => setPostAuditReady(true), 500);
+          }, 700);
         }, 800);
       }, 2800);
     }, 1000);
@@ -391,6 +697,9 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           </div>
         </div>
 
+        {/* MIGRATION PROGRESS PATH */}
+        {!isIdle && <ScenarioProgressBar step={scenarioStep} />}
+
         <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
 
           {/* IDLE STATE */}
@@ -453,13 +762,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
               {scenarioStep === 'orchestrator' && orchestratorTick >= 4 && (
                 <button onClick={advanceToGeneration}
                   className="animate-in fade-in slide-in-from-bottom border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors">
-                  Generate site &rarr;
+                  Migrate &amp; Improve &rarr;
                 </button>
               )}
               {isPostAudit && postAuditReady && (
                 <button onClick={advanceToHiring}
                   className="animate-in fade-in slide-in-from-bottom border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors">
-                  What's next? &rarr;
+                  Connect domain &amp; publish &rarr;
                 </button>
               )}
               {scenarioStep === 'hiring' && (
@@ -474,7 +783,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       </div>
 
       {/* ── CENTER: CANVAS ────────────────────────────────────────────────── */}
-      <div className="flex-1 min-w-0 relative hidden md:flex flex-col border-r border-slate-200 overflow-hidden bg-white">
+      <div ref={centerColRef} className="flex-1 min-w-0 relative hidden md:flex flex-col border-r border-slate-200 overflow-hidden bg-white">
 
         {/* IDLE + URL INPUT: placeholder */}
         {(isIdle || isUrlInput) && (
@@ -507,15 +816,24 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           </div>
         )}
 
-        {/* ORCHESTRATOR: "before" site — desaturated */}
-        {scenarioStep === 'orchestrator' && (
+        {/* ORCHESTRATOR: connection flow screens OR desaturated old site */}
+        {scenarioStep === 'orchestrator' && connectionStep === 'type_select' && (
+          <ConnectionTypeScreen onSelectSIS={handleTypeSelectSIS} />
+        )}
+        {scenarioStep === 'orchestrator' && connectionStep === 'sis_select' && (
+          <SISSelectScreen onContinue={handleSISContinue} />
+        )}
+        {scenarioStep === 'orchestrator' && connectionStep === 'powerschool_auth' && (
+          <ConnectPowerSchoolScreen onAuthorize={handleAuthorize} />
+        )}
+        {scenarioStep === 'orchestrator' && connectionStep === null && (
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-700 opacity-60 saturate-50 contrast-75">
             <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
               <div className="flex gap-1.5 shrink-0"><div className="w-2.5 h-2.5 rounded-full bg-slate-200"/><div className="w-2.5 h-2.5 rounded-full bg-slate-200"/><div className="w-2.5 h-2.5 rounded-full bg-slate-200"/></div>
               <div className="bg-slate-100 px-3 py-1 rounded text-xs text-slate-500 font-mono flex-1 text-center border border-slate-200">http://lincolnhigh.edu (Migrating...)</div>
             </div>
             <div className="flex-1 min-h-0 overflow-auto bg-white">
-              <div className="min-w-[1100px] pointer-events-none"><SchoolBefore /></div>
+              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolBefore /></div>
             </div>
           </div>
         )}
@@ -525,13 +843,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
             <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
               <div className="flex gap-1.5 shrink-0"><div className="w-2.5 h-2.5 rounded-full bg-red-400"/><div className="w-2.5 h-2.5 rounded-full bg-amber-400"/><div className="w-2.5 h-2.5 rounded-full bg-emerald-400"/></div>
-              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">http://lincolnhigh.edu (Generating...)</div>
+              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">https://lincolnhigh.edu (Generating...)</div>
               <div className="text-[10px] text-blue-600 bg-blue-50 border border-blue-200 px-2 py-1 rounded-full font-bold flex items-center gap-1 shrink-0">
                 <Loader2 className="w-3 h-3 animate-spin" /> Building
               </div>
             </div>
             <div className="flex-1 min-h-0 overflow-auto bg-white">
-              <div className="min-w-[1100px] pointer-events-none"><SchoolAfterMagic /></div>
+              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic /></div>
             </div>
           </div>
         )}
@@ -561,13 +879,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
             <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
               <div className="flex gap-1.5 shrink-0"><div className="w-2.5 h-2.5 rounded-full bg-red-400"/><div className="w-2.5 h-2.5 rounded-full bg-amber-400"/><div className="w-2.5 h-2.5 rounded-full bg-emerald-400"/></div>
-              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">http://lincolnhigh.edu (AI Managed)</div>
+              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">https://lincolnhigh.edu (AI Managed)</div>
               <div className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full font-bold flex items-center gap-1 shrink-0">
                 <CheckCircle className="w-3 h-3" /> Live
               </div>
             </div>
             <div className="flex-1 min-h-0 overflow-auto bg-white">
-              <div className="min-w-[1100px] pointer-events-none"><SchoolAfterMagic /></div>
+              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic /></div>
             </div>
           </div>
         )}
@@ -594,25 +912,6 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </h3>
           )}
 
-          {/* Sub-Agents */}
-          {!isIdle && !isUrlInput && !isAudit && (scenarioStep !== 'orchestrator' || orchestratorTick >= -2) && (
-            <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl animate-in slide-in-from-right-10 fade-in duration-500">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Assigned Agents</p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50 border border-slate-100">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shadow-sm"><Code2 className="w-4 h-4 text-blue-600"/></div>
-                  <div className="flex-1"><p className="text-xs font-bold text-slate-700">Web Admin</p><p className="text-[10px] text-slate-500">SysOps</p></div>
-                  <CheckCircle className="w-4 h-4 text-emerald-500" />
-                </div>
-                <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50 border border-slate-100">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shadow-sm"><PenTool className="w-4 h-4 text-emerald-600"/></div>
-                  <div className="flex-1"><p className="text-xs font-bold text-slate-700">Content Creator</p><p className="text-[10px] text-slate-500">Copywriting</p></div>
-                  <CheckCircle className="w-4 h-4 text-emerald-500" />
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Data Hooks */}
           {!isIdle && !isUrlInput && !isAudit && (scenarioStep !== 'orchestrator' || orchestratorTick >= 0) && (
             <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl animate-in slide-in-from-right-10 fade-in duration-500">
@@ -620,12 +919,12 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Data Hooks</p>
                 <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full cursor-help">40+ Ready</span>
               </div>
-              <div className="space-y-2">
+
+              {/* SIS section */}
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">SIS</p>
+              <div className="space-y-2 mb-4">
                 {[
-                  { name: "PowerSchool",     domain: "powerschool.com"     },
-                  { name: "FACTS SIS",       domain: "factsmgt.com"        },
-                  { name: "Infinite Campus", domain: "infinitecampus.com"  },
-                  { name: "Skyward",         domain: "skyward.com"         }
+                  { name: "PowerSchool", domain: "powerschool.com" },
                 ].map((sis, idx) => {
                   const isConnecting = orchestratorTick === idx;
                   const isConnected  = orchestratorTick > idx || scenarioStep !== 'orchestrator';
@@ -650,6 +949,29 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
                     </div>
                   );
                 })}
+              </div>
+
+              {/* LMS + Shared Folder — waiting tiles */}
+              <div className="border-t border-slate-100 pt-3 space-y-2">
+                {[
+                  { label: 'LMS', sub: 'Canvas, Schoology, Google Classroom…', icon: <BookOpen className="w-3.5 h-3.5" /> },
+                  { label: 'Shared Folder', sub: 'Google Drive, OneDrive, Dropbox…', icon: <FolderOpen className="w-3.5 h-3.5" /> },
+                ].map(tile => (
+                  <div key={tile.label} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-dashed border-slate-300 opacity-70">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded bg-white border border-slate-200 flex items-center justify-center text-slate-400">
+                        {tile.icon}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-500">{tile.label}</p>
+                        <p className="text-[9px] text-slate-400 leading-tight">{tile.sub}</p>
+                      </div>
+                    </div>
+                    <button className="flex items-center gap-1 text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 px-2 py-1 rounded-full hover:bg-blue-100 transition-colors">
+                      <Plus className="w-3 h-3" /> Add
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           )}

@@ -283,7 +283,7 @@ export function KnowledgeBaseView() {
       {/* ── Left sidebar ── */}
       <aside className="w-64 shrink-0 border-r border-slate-200 bg-slate-50 flex flex-col overflow-hidden">
         <div className="p-4 border-b border-slate-200">
-          <h2 className="text-base font-bold text-slate-900 mb-3">Knowledge Base</h2>
+          <h2 className="text-base font-bold text-slate-900 mb-3">Knowledge Model</h2>
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
