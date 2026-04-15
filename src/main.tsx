@@ -7,8 +7,10 @@ import { SchoolAfter } from './pages/SchoolAfter.tsx';
 import { SchoolAfterMagic } from './pages/SchoolAfterMagic.tsx';
 import { DesignSelection } from './pages/DesignSelection.tsx';
 import { StudentDashboard } from './pages/StudentDashboard.tsx';
+import { AcademicsPage } from './pages/AcademicsPage.tsx';
+import { AuditPreviewPage } from './components/AuditPreviews.tsx';
 
-const path = window.location.pathname;
+const path = window.location.pathname.replace('/presence-prototype-v2', '');
 
 let ComponentToRender = App;
 if (path === '/school-before') {
@@ -21,6 +23,10 @@ if (path === '/school-before') {
   ComponentToRender = DesignSelection;
 } else if (path === '/student-dashboard') {
   ComponentToRender = StudentDashboard;
+} else if (path === '/academics') {
+  ComponentToRender = AcademicsPage;
+} else if (path === '/audit-preview') {
+  ComponentToRender = AuditPreviewPage;
 }
 
 createRoot(document.getElementById('root')!).render(

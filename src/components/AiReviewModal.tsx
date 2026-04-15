@@ -154,7 +154,7 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
                 className="w-full py-2.5 rounded-lg text-sm font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Zap className="w-4 h-4" />
-                Always Auto-Apply this type of update
+                Always apply this type automatically
               </button>
             </div>
           </div>
@@ -187,10 +187,11 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
             {/* Preview Canvas */}
             <div className="flex-1 relative overflow-hidden bg-slate-100">
               <div className="w-full h-full overflow-y-auto bg-slate-50">
-                <SchoolAfterMagic 
-                  previewType={action.previewType} 
-                  showAfter={showAfter} 
-                  userLocationValue={userInput} 
+                <SchoolAfterMagic
+                  previewType={action.previewType}
+                  showAfter={showAfter}
+                  userLocationValue={userInput}
+                  pendingChanges={action.pendingChanges}
                 />
               </div>
             </div>

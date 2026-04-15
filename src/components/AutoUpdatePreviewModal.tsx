@@ -1,15 +1,24 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Zap } from 'lucide-react';
-import { FacultyDirectoryPage } from '../pages/FacultyDirectoryPage';
+import { X, Zap, Eye, CheckCircle, RotateCcw, ArrowRight } from 'lucide-react';
+import { SchoolAfterMagic } from '../pages/SchoolAfterMagic';
 
 interface Props {
   onClose: () => void;
 }
 
+const WHAT_WAS_DONE = [
+  'New faculty profile created for Mr. James Holloway',
+  'Added to Team page — 10th Grade History',
+  'Faculty Directory updated and re-indexed',
+];
+
 export function AutoUpdatePreviewModal({ onClose }: Props) {
+  const [showAfter, setShowAfter] = useState(true);
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -19,34 +28,154 @@ export function AutoUpdatePreviewModal({ onClose }: Props) {
           className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
         />
 
-        {/* Modal */}
+        {/* Modal — same wide split layout as AiReviewModal */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.96, y: 16 }}
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: 16 }}
-          className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="relative w-full h-full max-w-[1400px] bg-white border border-slate-200 shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row"
         >
-          {/* Header bar */}
-          <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 bg-slate-50/80 shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                <Zap className="w-3.5 h-3.5" />
-                Auto-applied · Just now
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-10 text-slate-500 hover:text-slate-800 bg-white/80 backdrop-blur hover:bg-slate-100 rounded-full p-2 shadow-sm transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* ── Left Panel ──────────────────────────────────────────────── */}
+          <div className="w-full md:w-[400px] lg:w-[450px] flex flex-col shrink-0 bg-white z-0 relative">
+            {/* Header */}
+            <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-2 text-emerald-600 text-xs font-bold tracking-wide uppercase mb-2">
+                <Zap className="w-4 h-4" />
+                Auto-Applied Update
               </div>
-              <span className="text-sm font-semibold text-slate-700">New Teacher Profile Published — Faculty Directory</span>
+              <h2 className="text-xl font-bold text-slate-900 leading-tight">New Teacher Profile Published</h2>
             </div>
-            <button
-              onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-1.5 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+
+            {/* Body */}
+            <div className="p-6 overflow-y-auto flex-1 space-y-8">
+
+              {/* Source */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Source</h3>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-sm overflow-hidden flex items-center justify-center shrink-0">
+                    <img
+                      src="https://www.google.com/s2/favicons?domain=powerschool.com&sz=64"
+                      alt="PowerSchool"
+                      className="w-5 h-5 object-contain"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-700">PowerSchool</p>
+                    <p className="text-xs text-slate-400">New staff record detected · Just now</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* What was done */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">What Was Done</h3>
+                <ul className="space-y-3 bg-white border border-slate-100 rounded-xl p-4 shadow-sm">
+                  {WHAT_WAS_DONE.map((item, idx) => (
+                    <li key={idx} className="flex gap-3 text-slate-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="text-sm font-medium">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Published profile card */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Published Profile</h3>
+                <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <img
+                    src="https://randomuser.me/api/portraits/men/75.jpg"
+                    alt="Mr. James Holloway"
+                    className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-sm shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-bold text-slate-900 text-sm">Mr. James Holloway</p>
+                    <p className="text-xs text-indigo-600 font-semibold mt-0.5">10th Grade History</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Social Studies Department</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 ml-auto shrink-0" />
+                </div>
+              </div>
+
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-6 border-t border-slate-100 bg-slate-50/80 space-y-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={onClose}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+                >
+                  Done
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex-[2] py-2.5 rounded-lg text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(16,185,129,0.35)] bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 transition-all flex items-center justify-center gap-2"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Looks Good
+                </button>
+              </div>
+              {/* Secondary — opt into manual review for this type */}
+              <button
+                onClick={onClose}
+                className="w-full py-2.5 rounded-lg text-sm font-semibold text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors flex items-center justify-center gap-2"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Always require my review for teacher updates
+              </button>
+            </div>
           </div>
 
-          {/* Faculty Directory page rendered inside */}
-          <div className="overflow-y-auto flex-1">
-            <FacultyDirectoryPage onNavigate={onClose} />
+          {/* ── Right Panel: Live Preview ────────────────────────────────── */}
+          <div className="hidden md:flex flex-1 flex-col bg-slate-100 relative">
+            {/* Preview Toolbar */}
+            <div className="h-14 bg-white border-b border-l border-slate-200 flex items-center justify-between px-6 shrink-0 z-10">
+              <div className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <Eye className="w-4 h-4 text-blue-500" /> Live Site Preview
+              </div>
+
+              {/* Before / After Toggle */}
+              <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                <button
+                  onClick={() => setShowAfter(false)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    !showAfter ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  Before
+                </button>
+                <button
+                  onClick={() => setShowAfter(true)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    showAfter ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  After
+                </button>
+              </div>
+            </div>
+
+            {/* Preview Canvas */}
+            <div className="flex-1 relative overflow-hidden">
+              <div className="w-full h-full overflow-y-auto bg-slate-50">
+                <SchoolAfterMagic
+                  previewType="new_teacher"
+                  showAfter={showAfter}
+                />
+              </div>
+            </div>
           </div>
+
         </motion.div>
       </div>
     </AnimatePresence>

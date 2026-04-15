@@ -1,7 +1,9 @@
+import type { PendingChanges } from './schoolData';
+
 export type AiAction = {
   id: string;
   source: string;
-  sourceType: 'newsletter' | 'sis' | 'district' | 'sports' | 'google-drive';
+  sourceType: 'newsletter' | 'sis' | 'district' | 'sports' | 'google-drive' | 'chat';
   isInternal: boolean;
   title: string;
   summary: string;
@@ -11,7 +13,8 @@ export type AiAction = {
   userPrompt?: string;
   status: 'pending' | 'approved' | 'rejected' | 'auto-applied';
   timestamp: string;
-  previewType?: 'calendar' | 'news' | 'banner' | 'blog' | 'document' | 'quick_links' | 'science_fair_blog' | string;
+  previewType?: 'calendar' | 'news' | 'banner' | 'blog' | 'document' | 'quick_links' | 'science_fair_blog' | 'new_teacher' | 'new_blog_post' | string;
+  pendingChanges?: PendingChanges;
 };
 
 // Actions split between internal/auto and external/manual

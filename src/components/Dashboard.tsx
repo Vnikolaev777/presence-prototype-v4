@@ -224,8 +224,8 @@ export function Dashboard({ hasHiredAgents }: any) {
         <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Control Center</h1>
         <p className="text-slate-500 text-sm">AI-driven updates to your school website — review proposals or see what was already handled.</p>
 
-        {/* Status bar */}
-        <div className="flex items-center gap-5 mt-3 pt-3 border-t border-slate-200 flex-wrap">
+        {/* Status bar — only once agents are hired and content is live */}
+        {hasHiredAgents && <div className="flex items-center gap-5 mt-3 pt-3 border-t border-slate-200 flex-wrap">
           <div className="flex items-center gap-1.5 text-sm text-slate-600">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -250,7 +250,7 @@ export function Dashboard({ hasHiredAgents }: any) {
               <span className="font-semibold text-indigo-600 text-xs">80%</span>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* Two-column grid */}
@@ -258,18 +258,20 @@ export function Dashboard({ hasHiredAgents }: any) {
 
         {/* ── LEFT: Manual Reviews ───────────────────────────────────────── */}
         <div className="flex flex-col">
-          {/* Column header */}
-          <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
-              <Clock className="w-4 h-4" />
+          {/* Column header — only shown once agents are active */}
+          {hasHiredAgents && (
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
+                <Clock className="w-4 h-4" />
+              </div>
+              <h2 className="text-sm font-bold text-slate-700">Needs Your Review</h2>
+              {pendingCount > 0 && (
+                <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {pendingCount}
+                </span>
+              )}
             </div>
-            <h2 className="text-sm font-bold text-slate-700">Needs Your Review</h2>
-            {pendingCount > 0 && (
-              <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                {pendingCount}
-              </span>
-            )}
-          </div>
+          )}
 
           {/* Column body */}
           {hasHiredAgents ? (

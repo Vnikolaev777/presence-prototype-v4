@@ -9,6 +9,7 @@ import {
 import { cn } from '../lib/utils';
 import { SchoolBefore } from '../pages/SchoolBefore';
 import { SchoolAfterMagic } from '../pages/SchoolAfterMagic';
+import { AuditChatCardV2, PostAuditChatCardV2, AuditCanvasV2, PostAuditCanvasV2 } from './AuditPreviews';
 
 type ScenarioStep = 'idle' | 'url_input' | 'audit' | 'orchestrator' | 'generation' | 'post_audit' | 'hiring';
 
@@ -302,38 +303,58 @@ function ConnectionTypeScreen({ onSelectSIS, onSkip }: { onSelectSIS: () => void
 function SISSelectScreen({ onContinue }: { onContinue: (sis: string) => void }) {
   const [selected, setSelected] = useState('PowerSchool');
   return (
-    <div className="flex-1 flex items-center justify-center bg-slate-100 p-8 animate-in fade-in duration-500">
-      <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 w-full max-w-sm space-y-6">
+    <div className="flex-1 flex flex-col bg-slate-50 animate-in fade-in duration-500 overflow-auto">
+      <div className="p-6 space-y-5 max-w-2xl w-full mx-auto">
 
-        <div className="flex flex-col items-center text-center gap-2">
-          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-            <Database className="w-7 h-7 text-white" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">Select your SIS</h2>
-            <p className="text-slate-500 text-sm mt-0.5">Choose your Student Information System provider</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">Select your SIS</h2>
+          <p className="text-slate-500 text-sm mt-0.5">Choose your Student Information System provider</p>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">SIS Provider</label>
-          <div className="relative">
-            <select
-              value={selected}
-              onChange={e => setSelected(e.target.value)}
-              className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
-            >
-              {SIS_PROVIDERS.map(p => (
-                <option key={p.name} value={p.name}>{p.name}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-          </div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          {SIS_PROVIDERS.map((p) => {
+            const isSelected = selected === p.name;
+            return (
+              <button
+                key={p.name}
+                onClick={() => setSelected(p.name)}
+                className={cn(
+                  'flex flex-col items-center justify-center p-4 rounded-xl border transition-all gap-3 text-center group',
+                  isSelected
+                    ? 'bg-blue-50 border-blue-400 ring-2 ring-blue-200 shadow-sm'
+                    : 'bg-white border-slate-200 hover:shadow-md hover:border-slate-300'
+                )}
+              >
+                <div className={cn(
+                  'w-12 h-12 rounded-xl flex items-center justify-center shadow-sm border border-black/5 overflow-hidden bg-white transition-transform duration-200',
+                  !isSelected && 'group-hover:scale-110'
+                )}>
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${p.domain}&sz=128`}
+                    alt={p.name}
+                    className="w-8 h-8 object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.parentElement) {
+                        e.currentTarget.parentElement.textContent = p.name.charAt(0);
+                        e.currentTarget.parentElement.className = 'w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg bg-blue-100 text-blue-700 border border-black/5';
+                      }
+                    }}
+                  />
+                </div>
+                <span className={cn(
+                  'text-xs font-semibold leading-tight',
+                  isSelected ? 'text-blue-700' : 'text-slate-700'
+                )}>{p.name}</span>
+                {isSelected && <CheckCircle className="w-3.5 h-3.5 text-blue-500 -mt-1" />}
+              </button>
+            );
+          })}
         </div>
 
         <button
           onClick={() => onContinue(selected)}
-          className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/25"
+          className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/25"
         >
           Continue with {selected}
         </button>
@@ -422,7 +443,7 @@ const PROGRESS_STEPS: { label: string; detail: string }[] = [
   { label: 'Build',    detail: 'Migrate & generate new site' },
   { label: 'Review',   detail: 'Review migrated website' },
   { label: 'Re-audit', detail: 'Analyzing new website' },
-  { label: 'Launch',   detail: 'Assign AI agents & go live' },
+  { label: 'Publish',  detail: 'Go live & set up automation' },
 ];
 
 function getProgressIndex(step: ScenarioStep, siteApproved: boolean): number {
@@ -510,6 +531,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
   const [siteApproved, setSiteApproved] = useState(false);
   const [connectionStep, setConnectionStep] = useState<'type_select' | 'sis_select' | 'powerschool_auth' | null>(null);
   const [centerTab, setCenterTab] = useState<'site' | 'audit'>('site');
+  const [auditTab, setAuditTab] = useState<'site' | 'audit'>('site');
 
   const TARGET_URL = 'https://lincolnhigh.edu';
 
@@ -568,6 +590,8 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
     setPostAuditReady(false);
     setSiteApproved(false);
     setConnectionStep(null);
+    setAuditTab('site');
+    setCenterTab('site');
     setChatMessages([{ role: 'user', content: 'Migrate our existing website' }]);
     setTimeout(() => {
       agentMessage("Sure! To get started, please share the URL of your current school website and I'll analyze its structure, content, and performance.");
@@ -584,7 +608,8 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       );
       setTimeout(() => {
         setScenarioStep('audit');
-        agentMessage(<AuditChatCard />);
+        setAuditTab('audit');
+        agentMessage(<AuditChatCardV2 />);
         setTimeout(() => {
           agentMessage("Visitors struggle to navigate it on mobile, the content is hard to read, and it's nearly invisible in search results.");
           setTimeout(() => {
@@ -639,7 +664,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           agentMessage(
             <span>
               Take a look — all your content has been migrated.{' '}
-              <a href="/presence-prototype/preview.html" target="_blank" rel="noopener noreferrer"
+              <a href="/presence-prototype-v2/preview.html" target="_blank" rel="noopener noreferrer"
                 className="text-blue-600 underline underline-offset-2 hover:text-blue-800 font-medium">
                 Open in new tab ↗
               </a>
@@ -655,7 +680,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
   const approveSite = () => {
     userMessage("Looks good — let's go!");
     setPostAuditReady(false);
-    agentMessage(<PostAuditChatCard />);
+    agentMessage(<PostAuditChatCardV2 />);
     setTimeout(() => {
       agentMessage(
         <span>🎉 <strong>Your new site is live</strong> at a temporary Presence URL. Ready to connect your own domain and make it official?</span>
@@ -673,7 +698,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       setTimeout(() => {
         agentMessage(
           <div className="space-y-2 text-slate-600">
-            <p className="font-semibold text-slate-800 text-sm">On your Dashboard you can find:</p>
+            <p className="font-semibold text-slate-800 text-sm">On your Control Center you can find:</p>
             <div className="flex items-start gap-2">
               <RefreshCw className="w-3.5 h-3.5 text-indigo-500 mt-0.5 shrink-0" />
               <span>Automatic updates from PowerSchool — directory, schedules, and documents, ready to publish.</span>
@@ -799,7 +824,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
               {scenarioStep === 'hiring' && (
                 <button onClick={finishAndGoToDashboard}
                   className="animate-in fade-in slide-in-from-bottom bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2">
-                  Go to Dashboard <CheckCircle className="w-4 h-4" />
+                  Go to Control Center <CheckCircle className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -810,8 +835,8 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       {/* ── CENTER: CANVAS ────────────────────────────────────────────────── */}
       <div ref={centerColRef} className="flex-1 min-w-0 relative hidden md:flex flex-col border-r border-slate-200 overflow-hidden bg-white">
 
-        {/* IDLE + URL INPUT: placeholder */}
-        {(isIdle || isUrlInput) && (
+        {/* IDLE + URL not yet submitted: placeholder */}
+        {(isIdle || (isUrlInput && !urlSubmitted)) && (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center bg-slate-100 animate-in fade-in duration-700">
             <div className="w-20 h-20 rounded-2xl bg-white border border-slate-200 shadow-md flex items-center justify-center">
               <Sparkles className="w-10 h-10 text-slate-300" />
@@ -824,20 +849,48 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           </div>
         )}
 
-        {/* AUDIT: legacy audit report */}
-        {isAudit && (
-          <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-700">
-            <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
-              <div className="flex gap-1.5 shrink-0">
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-200"/>
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-200"/>
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-200"/>
-              </div>
-              <div className="bg-red-50 px-3 py-1 rounded text-xs text-red-600 font-mono flex-1 text-center border border-red-200">
-                {TARGET_URL} (Audit Report)
-              </div>
+        {/* URL submitted OR audit: tab bar — Website (old) + Audit report */}
+        {((isUrlInput && urlSubmitted) || isAudit) && (
+          <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+            {/* Tab bar */}
+            <div className="shrink-0 flex bg-slate-50 border-b border-slate-200">
+              <button
+                onClick={() => setAuditTab('site')}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                  auditTab === 'site'
+                    ? 'border-blue-500 text-slate-900 bg-white'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Website
+              </button>
+              <button
+                onClick={() => isAudit && setAuditTab('audit')}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                  !isAudit
+                    ? 'border-transparent text-slate-300 cursor-default'
+                    : auditTab === 'audit'
+                      ? 'border-blue-500 text-slate-900 bg-white'
+                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                {isAudit
+                  ? <><AlertCircle className="w-3.5 h-3.5 text-red-400" />Audit</>
+                  : <><Loader2 className="w-3.5 h-3.5 animate-spin" />Audit</>
+                }
+              </button>
             </div>
-            <AuditCanvas />
+            {/* Content */}
+            {auditTab === 'audit' && isAudit ? (
+              <AuditCanvasV2 />
+            ) : (
+              <div className="flex-1 min-h-0 overflow-auto bg-white">
+                <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolBefore /></div>
+              </div>
+            )}
           </div>
         )}
 
@@ -852,14 +905,40 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           <ConnectPowerSchoolScreen onAuthorize={handleAuthorize} />
         )}
         {scenarioStep === 'orchestrator' && connectionStep === null && (
-          <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-700 opacity-60 saturate-50 contrast-75">
-            <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
-              <div className="flex gap-1.5 shrink-0"><div className="w-2.5 h-2.5 rounded-full bg-slate-200"/><div className="w-2.5 h-2.5 rounded-full bg-slate-200"/><div className="w-2.5 h-2.5 rounded-full bg-slate-200"/></div>
-              <div className="bg-slate-100 px-3 py-1 rounded text-xs text-slate-500 font-mono flex-1 text-center border border-slate-200">http://lincolnhigh.edu (Migrating...)</div>
+          <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-700">
+            <div className="shrink-0 flex bg-slate-50 border-b border-slate-200">
+              <button
+                onClick={() => setAuditTab('site')}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                  auditTab === 'site'
+                    ? 'border-blue-500 text-slate-900 bg-white'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Website
+              </button>
+              <button
+                onClick={() => setAuditTab('audit')}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                  auditTab === 'audit'
+                    ? 'border-blue-500 text-slate-900 bg-white'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                Audit
+              </button>
             </div>
-            <div className="flex-1 min-h-0 overflow-auto bg-white">
-              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolBefore /></div>
-            </div>
+            {auditTab === 'audit' ? (
+              <AuditCanvasV2 />
+            ) : (
+              <div className="flex-1 min-h-0 overflow-auto bg-white">
+                <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolBefore /></div>
+              </div>
+            )}
           </div>
         )}
 
@@ -899,10 +978,10 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </div>
             {/* Content */}
             {centerTab === 'audit' && siteApproved ? (
-              <PostAuditCanvas />
+              <PostAuditCanvasV2 />
             ) : (
               <div className="flex-1 min-h-0 overflow-auto bg-white">
-                <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic /></div>
+                <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic showAfter={true} /></div>
               </div>
             )}
           </div>
@@ -919,7 +998,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
               </div>
             </div>
             <div className="flex-1 min-h-0 overflow-auto bg-white">
-              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic /></div>
+              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic showAfter={true} /></div>
             </div>
           </div>
         )}
@@ -942,11 +1021,11 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </div>
           )}
 
-          {/* Data Hooks */}
+          {/* Integrations */}
           {!isIdle && !isUrlInput && !isAudit && (scenarioStep !== 'orchestrator' || orchestratorTick >= 0) && (
             <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl animate-in slide-in-from-right-10 fade-in duration-500">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-900">Data Hooks</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-900">Integrations</p>
                 <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full cursor-help">40+ Ready</span>
               </div>
 

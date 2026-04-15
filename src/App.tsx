@@ -6,9 +6,10 @@ import { TasksView } from './components/TasksView';
 import { HiredAgentsChatView } from './components/HiredAgentsChatView';
 import { UtilitiesHubView } from './components/UtilitiesHubView';
 import { KnowledgeBaseView } from './components/KnowledgeBaseView';
+import { AppsForSchoolsView } from './components/AppsForSchoolsView';
 import {
   LayoutDashboard, Sparkles, Users, Layers, BookOpen,
-  ListTodo, ChevronDown, ChevronRight, Menu, X,
+  ListTodo, ChevronDown, ChevronRight, Menu, X, LayoutGrid,
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import type { AiAction } from './data/mockData';
@@ -21,10 +22,11 @@ export type TabType =
   | 'tasks'
   | 'hired_agents'
   | 'utilities'
-  | 'knowledge_base';
+  | 'knowledge_base'
+  | 'apps_for_schools';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+  const [activeTab, setActiveTab] = useState<TabType>('workspace');
   const [teamExpanded, setTeamExpanded] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -82,6 +84,7 @@ function App() {
           </>}
           <NavItem active={activeTab === 'utilities'} onClick={() => { setActiveTab('utilities'); setMobileMenuOpen(false); }} icon={<Layers className="w-5 h-5" />} label="Integrations" />
           <NavItem active={activeTab === 'knowledge_base'} onClick={() => { setActiveTab('knowledge_base'); setMobileMenuOpen(false); }} icon={<BookOpen className="w-5 h-5" />} label="Presence Data" />
+          <NavItem active={activeTab === 'apps_for_schools'} onClick={() => { setActiveTab('apps_for_schools'); setMobileMenuOpen(false); }} icon={<LayoutGrid className="w-5 h-5" />} label="Apps for Schools" />
         </div>
       )}
 
@@ -159,6 +162,12 @@ function App() {
               icon={<BookOpen className="w-5 h-5" />}
               label="Presence Data"
             />
+            <NavItem
+              active={activeTab === 'apps_for_schools'}
+              onClick={() => setActiveTab('apps_for_schools')}
+              icon={<LayoutGrid className="w-5 h-5" />}
+              label="Apps for Schools"
+            />
           </nav>
         </aside>
 
@@ -199,6 +208,7 @@ function App() {
           {activeTab === 'tasks' && <TasksView />}
           {activeTab === 'utilities' && <UtilitiesHubView />}
           {activeTab === 'knowledge_base' && <KnowledgeBaseView />}
+          {activeTab === 'apps_for_schools' && <AppsForSchoolsView />}
         </main>
       </div>
 

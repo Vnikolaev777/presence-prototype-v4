@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { PenTool, Code2, Send, CheckCircle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { PenTool, Code2, Send, CheckCircle, Eye } from 'lucide-react';
 import { ContentView } from './ContentView';
 import { SourcesView } from './SourcesView';
 import { AgentsView } from './AgentsView';
+import { AiReviewModal } from './AiReviewModal';
 import { cn } from '../lib/utils';
 import type { AiAction } from '../data/mockData';
+import type { Teacher, BlogPost } from '../data/schoolData';
 
 interface HiredAgentsChatViewProps {
   actions: AiAction[];
@@ -17,53 +19,219 @@ interface HiredAgentsChatViewProps {
 
 type AgentType = 'content' | 'admin';
 
+type ChatMessage = {
+  id: number;
+  role: string;
+  content: string;
+  isTyping?: boolean;
+  actionId?: string; // links to a generated AiAction
+};
+
+// ── Intent parser ─────────────────────────────────────────────────────────────
+
+function parseIntent(text: string): 'add_teacher' | 'add_blog_post' | 'unknown' {
+  const t = text.toLowerCase();
+  if (/\b(add|new|hire|create|introduce)\b.*\b(teacher|professor|faculty|staff|instructor)\b/i.test(t)
+    || /\b(teacher|professor|faculty|staff|instructor)\b.*\b(add|new|hire|create)\b/i.test(t)) return 'add_teacher';
+  if (/\b(add|new|write|publish|create|post)\b.*\b(blog|post|article|news|announcement)\b/i.test(t)
+    || /\b(blog|post|article|news)\b.*\b(add|new|write|publish|create)\b/i.test(t)) return 'add_blog_post';
+  return 'unknown';
+}
+
+function extractName(text: string): string | null {
+  const m = text.match(/\b(Mr\.|Ms\.|Mrs\.|Dr\.)\s+([A-Z][a-z]+)/);
+  return m ? `${m[1]} ${m[2]}` : null;
+}
+
+function extractSubject(text: string): string | null {
+  const subjects: Record<string, string> = {
+    math: 'Mathematics', calculus: 'Advanced Calculus', algebra: 'Algebra',
+    science: 'Science', biology: 'AP Biology', chemistry: 'Chemistry', physics: 'Physics',
+    english: 'English & Literature', history: 'World History', geography: 'Geography',
+    'computer science': 'Computer Science', cs: 'Computer Science', coding: 'Computer Science',
+    art: 'Visual Arts', music: 'Music', pe: 'Physical Education', sports: 'Athletics',
+    economics: 'Economics', psychology: 'Psychology',
+  };
+  const t = text.toLowerCase();
+  for (const [key, val] of Object.entries(subjects)) {
+    if (t.includes(key)) return val;
+  }
+  return null;
+}
+
+function buildTeacherAction(text: string): AiAction {
+  const name = extractName(text) || 'Ms. Chen';
+  const subject = extractSubject(text) || 'General Studies';
+  const dept = subject.includes('Math') || subject.includes('Calculus') ? 'Mathematics'
+    : subject.includes('Science') || subject.includes('Biology') || subject.includes('Chemistry') ? 'Science'
+    : subject.includes('English') ? 'English'
+    : subject.includes('History') || subject.includes('Geography') ? 'Social Studies'
+    : subject.includes('Computer') ? 'STEM'
+    : subject.includes('Art') || subject.includes('Music') ? 'Arts'
+    : subject.includes('Athletic') || subject.includes('PE') ? 'Athletics'
+    : 'General';
+
+  const photoIndex = Math.floor(Math.random() * 40) + 20;
+  const isFemale = name.startsWith('Ms.') || name.startsWith('Mrs.');
+  const photo = `https://randomuser.me/api/portraits/${isFemale ? 'women' : 'men'}/${photoIndex}.jpg`;
+
+  const teacher: Teacher = {
+    name,
+    role: subject,
+    department: dept,
+    photo,
+    tag: 'New Faculty',
+    bio: `Joining Oakwood High this semester to teach ${subject}. Brings a passion for education and a commitment to student success.`,
+  };
+
+  return {
+    id: `chat_teacher_${Date.now()}`,
+    source: 'Chat — CC Wordsworth',
+    sourceType: 'chat',
+    isInternal: true,
+    title: `Add New Teacher: ${name}`,
+    summary: `Request to add ${name} to the faculty directory as a ${subject} teacher in the ${dept} department.`,
+    confidence: 0.95,
+    proposedChanges: [
+      `Add ${name} to the Team page faculty grid.`,
+      `Tag as "New Faculty" with ${dept} department label.`,
+      `Profile photo sourced automatically.`,
+    ],
+    status: 'pending',
+    timestamp: 'Just now',
+    previewType: 'new_teacher',
+    pendingChanges: { newTeacher: teacher },
+  };
+}
+
+function buildBlogAction(text: string): AiAction {
+  // Extract topic hint from message
+  const topicMatch = text.match(/about\s+(.+?)(?:\.|$)/i) || text.match(/(?:post|article|blog)\s+(?:on|about|for)\s+(.+?)(?:\.|$)/i);
+  const topicHint = topicMatch ? topicMatch[1].trim() : 'school highlights';
+
+  const title = `Oakwood Update: ${topicHint.charAt(0).toUpperCase() + topicHint.slice(1)}`;
+  const excerpt = `We're excited to share the latest news from Oakwood High regarding ${topicHint}. Our students and staff continue to demonstrate excellence and dedication across all areas of school life.`;
+
+  const post: BlogPost = {
+    id: `chat_post_${Date.now()}`,
+    title,
+    excerpt,
+    image: '',
+    category: 'News',
+  };
+
+  return {
+    id: `chat_blog_${Date.now()}`,
+    source: 'Chat — CC Wordsworth',
+    sourceType: 'chat',
+    isInternal: true,
+    title: `New Blog Post: ${title}`,
+    summary: `Draft blog post created based on your request. Topic: "${topicHint}". Ready for review and editing before publishing.`,
+    confidence: 0.92,
+    proposedChanges: [
+      `Add new blog post "${title}" to the homepage news feed.`,
+      `Category tagged as "News".`,
+      `You can edit the copy before approving.`,
+    ],
+    status: 'pending',
+    timestamp: 'Just now',
+    previewType: 'new_blog_post',
+    pendingChanges: { newBlogPost: post },
+  };
+}
+
+// ── Typing steps shown in chat ────────────────────────────────────────────────
+
+const TEACHER_STEPS = [
+  '🔍 Analyzing your request...',
+  '👤 Generating faculty profile...',
+  '📸 Sourcing profile photo...',
+  '✅ Draft ready — review before publishing.',
+];
+
+const BLOG_STEPS = [
+  '🔍 Analyzing your request...',
+  '✍️ Drafting blog post copy...',
+  '🏷️ Assigning category and metadata...',
+  '✅ Draft ready — review before publishing.',
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
 export function HiredAgentsChatView({
   actions, setActions, connectedSystems, setConnectedSystems, agents, setAgents
 }: HiredAgentsChatViewProps) {
-  
+
   const [activeAgent, setActiveAgent] = useState<AgentType>('content');
   const [inputText, setInputText] = useState('');
-  
-  const initialMessages = {
+  const [reviewAction, setReviewAction] = useState<AiAction | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const initialMessages: Record<AgentType, ChatMessage[]> = {
     content: [
-      { id: 1, role: 'agent', content: "Hi! I am CC Wordsworth, your newly hired Content Creator Agent. I am monitoring all internal channels and drafting updates automatically. To my right, you'll see my desk with the live Content & Blog feed of my drafts. Let me know what to prioritize!" }
+      { id: 1, role: 'agent', content: "Hi! I'm CC Wordsworth, your Content Creator Agent. I monitor all channels and draft updates automatically.\n\nTry asking me to **add a new teacher** or **write a blog post** — I'll build a draft and you can review it before it goes live." }
     ],
     admin: [
-      { id: 1, role: 'agent', content: "Hello! W.A. Turing here. I'm taking over widget optimization, site performance, and your database connectors. On the right, you'll see the Data Integrations panel showing what systems I am currently tapping into for data streams." }
+      { id: 1, role: 'agent', content: "Hello! W.A. Turing here. I'm handling widget optimization, site performance, and database connectors. On the right you can see the live systems panel." }
     ]
   };
 
-  const [messages, setMessages] = useState<Record<AgentType, {id: number, role: string, content: string}[]>>(initialMessages);
+  const [messages, setMessages] = useState<Record<AgentType, ChatMessage[]>>(initialMessages);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const addMessage = (agent: AgentType, msg: Omit<ChatMessage, 'id'>) => {
+    setMessages(prev => ({
+      ...prev,
+      [agent]: [...prev[agent], { id: Date.now() + Math.random(), ...msg }]
+    }));
+  };
 
   const sendMessage = () => {
     if (!inputText.trim()) return;
-    
-    const newMsg = { id: Date.now(), role: 'user', content: inputText };
-    
-    setMessages(prev => ({
-      ...prev,
-      [activeAgent]: [...prev[activeAgent], newMsg]
-    }));
-    
+    const text = inputText.trim();
+    const agent = activeAgent;
+    addMessage(agent, { role: 'user', content: text });
     setInputText('');
-    
-    // Fake agent reply
-    setTimeout(() => {
-      const replyMsg = { 
-        id: Date.now() + 1, 
-        role: 'agent', 
-        content: activeAgent === 'content' 
-          ? "I'm generating drafts based on that input. Watch the feed on the right!" 
-          : "Understood. Re-calibrating the integration parameters now."
-      };
-      setMessages(prev => ({
-        ...prev,
-        [activeAgent]: [...prev[activeAgent], replyMsg]
-      }));
-    }, 1000);
+
+    if (agent !== 'content') {
+      setTimeout(() => {
+        addMessage(agent, { role: 'agent', content: 'Understood. Re-calibrating the integration parameters now.' });
+      }, 900);
+      return;
+    }
+
+    const intent = parseIntent(text);
+
+    if (intent === 'unknown') {
+      setTimeout(() => {
+        addMessage(agent, { role: 'agent', content: "Got it! I can help with that. Try something like:\n• \"Add a new teacher Ms. Chen for Math\"\n• \"Write a blog post about the science fair\"" });
+      }, 800);
+      return;
+    }
+
+    const steps = intent === 'add_teacher' ? TEACHER_STEPS : BLOG_STEPS;
+
+    // Stream the step messages with delays
+    steps.forEach((step, i) => {
+      const isLast = i === steps.length - 1;
+      setTimeout(() => {
+        if (!isLast) {
+          addMessage(agent, { role: 'agent', content: step });
+        } else {
+          // Build the action
+          const action = intent === 'add_teacher' ? buildTeacherAction(text) : buildBlogAction(text);
+          setActions((prev: AiAction[]) => [action, ...prev]);
+          addMessage(agent, { role: 'agent', content: step, actionId: action.id });
+        }
+      }, 700 + i * 900);
+    });
   };
 
   return (
+    <>
     <div className="flex h-[calc(100vh-6rem)] w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-in fade-in duration-500">
       
       {/* LEFT SIDEBAR: AGENT SELECTION */}
@@ -132,15 +300,28 @@ export function HiredAgentsChatView({
             <div key={msg.id} className={cn("flex flex-col max-w-[85%]", msg.role === 'user' ? "ml-auto items-end" : "mr-auto items-start")}>
               <div className={cn(
                 "px-4 py-3 rounded-2xl text-sm shadow-sm leading-relaxed",
-                msg.role === 'user' 
-                  ? "bg-slate-800 text-white rounded-br-sm" 
+                msg.role === 'user'
+                  ? "bg-slate-800 text-white rounded-br-sm"
                   : (activeAgent === 'content' ? "bg-emerald-50 border border-emerald-100 text-slate-800 font-medium rounded-bl-sm" : "bg-blue-50 border border-blue-100 text-slate-800 font-medium rounded-bl-sm")
               )}>
                 {msg.content}
               </div>
+              {msg.actionId && (
+                <button
+                  onClick={() => {
+                    const action = actions.find(a => a.id === msg.actionId);
+                    if (action) setReviewAction(action);
+                  }}
+                  className="mt-2 flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  Review Proposed Change →
+                </button>
+              )}
               <span className="text-[10px] font-bold text-slate-400 mt-1">{msg.role === 'user' ? 'You' : (activeAgent === 'content' ? 'CC Wordsworth' : 'W.A. Turing')}</span>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
         
         {/* Input */}
@@ -200,5 +381,18 @@ export function HiredAgentsChatView({
       </div>
 
     </div>
+
+    {/* Review Modal */}
+    {reviewAction && (
+      <AiReviewModal
+        action={reviewAction}
+        onClose={() => setReviewAction(null)}
+        onComplete={(id, status) => {
+          setActions((prev: AiAction[]) => prev.map(a => a.id === id ? { ...a, status } : a));
+          setReviewAction(null);
+        }}
+      />
+    )}
+    </>
   );
 }

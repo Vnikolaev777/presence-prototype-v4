@@ -1,12 +1,16 @@
 import { motion } from 'framer-motion';
+import { type PendingChanges } from '../data/schoolData';
 
 interface Props {
   previewType: 'calendar' | 'news' | 'banner' | 'blog' | 'document' | 'quick_links' | 'science_fair_blog' | string;
   showAfter: boolean;
   userLocationValue?: string;
+  pendingChanges?: PendingChanges;
+  onApprove?: (type: 'teacher' | 'blogPost') => void;
+  onReject?: (type: 'teacher' | 'blogPost') => void;
 }
 
-export function SchoolWebsitePreview({ previewType, showAfter, userLocationValue }: Props) {
+export function SchoolWebsitePreview({ previewType, showAfter, userLocationValue, pendingChanges, onApprove, onReject }: Props) {
   return (
     <div className="w-full h-full bg-slate-50 overflow-hidden flex flex-col font-sans border-l border-slate-200">
       
