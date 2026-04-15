@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { AiAction } from '../data/mockData';
-import { Sparkles, X, Check, ArrowRight, AlertTriangle, Eye } from 'lucide-react';
+import { Sparkles, X, Check, ArrowRight, AlertTriangle, Eye, Zap, Pencil } from 'lucide-react';
 import { SchoolAfterMagic } from '../pages/SchoolAfterMagic';
 
 interface Props {
@@ -89,6 +89,10 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
                     </li>
                   ))}
                 </ul>
+                <button className="w-full py-2.5 rounded-lg text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                  <Pencil className="w-4 h-4" />
+                  Edit with Assistant
+                </button>
               </div>
 
               {action.requiresUserInput && (
@@ -115,30 +119,42 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
             </div>
 
             {/* Footer Actions */}
-            <div className="p-6 border-t border-slate-100 bg-slate-50/80 flex flex-col sm:flex-row gap-3">
-              <button 
-                onClick={handleReject}
-                disabled={isProcessing}
-                className="flex-1 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors disabled:opacity-50"
-              >
-                Reject Changes
-              </button>
+            <div className="p-6 border-t border-slate-100 bg-slate-50/80 space-y-2">
+              {/* Primary actions row */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleReject}
+                  disabled={isProcessing}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors disabled:opacity-50"
+                >
+                  Reject
+                </button>
+                <button
+                  onClick={handleApprove}
+                  disabled={isProcessing || (action.requiresUserInput && !userInput.trim())}
+                  className="flex-[2] py-2.5 rounded-lg text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isProcessing ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                      Applying...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Approve & Publish
+                    </>
+                  )}
+                </button>
+              </div>
+              {/* Secondary action — full width */}
               <button
                 onClick={handleApprove}
                 disabled={isProcessing || (action.requiresUserInput && !userInput.trim())}
-                className="flex-[2] py-2.5 rounded-lg text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all hover:shadow-[0_6px_20px_rgba(59,130,246,0.23)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg text-sm font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {isProcessing ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
-                    Applying...
-                  </>
-                ) : (
-                  <>
-                    <Check className="w-4 h-4" />
-                    Approve & Publish
-                  </>
-                )}
+                <Zap className="w-4 h-4" />
+                Always Auto-Apply this type of update
               </button>
             </div>
           </div>

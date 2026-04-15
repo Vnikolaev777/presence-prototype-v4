@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Bot, CheckCircle, Clock, Zap, Database, BarChart2, FileText, Link2, ShieldCheck, Users, Rss } from 'lucide-react';
+import { Bot, CheckCircle, Clock, Zap, Database, BarChart2, FileText, Link2, ShieldCheck, Users, Rss, ExternalLink } from 'lucide-react';
 import type { AiAction } from '../data/mockData';
 import { AiReviewModal } from './AiReviewModal';
+import { AutoUpdatePreviewModal } from './AutoUpdatePreviewModal';
 import { cn } from '../lib/utils';
 
 // ─── Auto-update feed data ──────────────────────────────────────────────────
@@ -19,6 +20,16 @@ type AutoUpdate = {
 };
 
 const AUTO_UPDATES: AutoUpdate[] = [
+  {
+    id: 'au_0',
+    source: 'PowerSchool',
+    sourceDomain: 'powerschool.com',
+    title: 'New Teacher Profile Published',
+    detail: 'Mr. James Holloway joined as 10th Grade History teacher. Profile page created and added to the Faculty Directory.',
+    time: 'Just now',
+    icon: <Users className="w-3.5 h-3.5" />,
+    iconBg: 'bg-blue-100 text-blue-600',
+  },
   {
     id: 'au_1',
     source: 'PowerSchool',
@@ -110,7 +121,7 @@ const AUTO_UPDATES: AutoUpdate[] = [
 ];
 
 // ─── Auto-update row component ──────────────────────────────────────────────
-function AutoUpdateRow({ item }: { item: AutoUpdate }) {
+function AutoUpdateRow({ item, onView }: { item: AutoUpdate; onView?: () => void }) {
   return (
     <div className="flex gap-3 items-start py-3 px-4 hover:bg-slate-50 transition-colors rounded-xl group">
       {/* Source favicon or fallback icon */}
@@ -143,7 +154,14 @@ function AutoUpdateRow({ item }: { item: AutoUpdate }) {
           <span className="text-[10px] text-slate-400 shrink-0 mt-0.5 whitespace-nowrap">{item.time}</span>
         </div>
         <p className="text-xs text-slate-500 mt-0.5 leading-relaxed line-clamp-2">{item.detail}</p>
-        <span className="text-[10px] text-slate-400 font-medium mt-1 inline-block">{item.source}</span>
+        <div className="flex items-center justify-between mt-1.5">
+          <span className="text-[10px] text-slate-400 font-medium">{item.source}</span>
+          {onView && (
+            <button onClick={onView} className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:text-blue-700 opacity-0 group-hover:opacity-100 transition-opacity">
+              View <ExternalLink className="w-3 h-3" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -153,6 +171,7 @@ function AutoUpdateRow({ item }: { item: AutoUpdate }) {
 export function Dashboard({ hasHiredAgents }: any) {
   const [selectedAction, setSelectedAction] = useState<AiAction | null>(null);
   const [removedActions, setRemovedActions] = useState<string[]>([]);
+  const [showTeacherPreview, setShowTeacherPreview] = useState(false);
 
   const CC_ACTION: AiAction = {
     id: 'cc_dash_1',
@@ -177,20 +196,20 @@ export function Dashboard({ hasHiredAgents }: any) {
     id: 'wa_dash_1',
     isInternal: false,
     timestamp: '1m ago',
-    title: 'Add Quick Links Widget',
-    summary: "I noticed a 300% spike in traffic directed towards the Parent Portal. I recommend adding a 'Quick Links' widget to the homepage to reduce friction.",
+    title: 'ADA Compliance Update Required',
+    summary: "The U.S. Department of Justice finalized new ADA Title II rules requiring public school websites to meet WCAG 2.1 AA standards by April 2026. I've identified 4 pages on your site that need updates to stay compliant.",
     proposedChanges: [
-      "Inject 'Quick Links' component below Hero Section.",
-      "Add direct link to Parent Portal.",
-      "Add direct link to Lunch Menus.",
-      "Add direct link to Athletics Calendar."
+      "Add alt text to 12 images missing descriptions on the Athletics and Events pages.",
+      "Increase color contrast ratio on the navigation menu to meet 4.5:1 minimum.",
+      "Add keyboard focus indicators to all interactive elements.",
+      "Update contact form with proper ARIA labels for screen reader support."
     ],
     requiresUserInput: false,
     previewType: 'quick_links',
     status: 'pending',
-    source: 'Google Analytics',
+    source: 'Web Admin Agent',
     sourceType: 'district',
-    confidence: 0.98
+    confidence: 0.97
   };
 
   const isCCPending = !removedActions.includes(CC_ACTION.id);
@@ -202,8 +221,36 @@ export function Dashboard({ hasHiredAgents }: any) {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Inbox</h1>
+        <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Control Center</h1>
         <p className="text-slate-500 text-sm">AI-driven updates to your school website — review proposals or see what was already handled.</p>
+
+        {/* Status bar */}
+        <div className="flex items-center gap-5 mt-3 pt-3 border-t border-slate-200 flex-wrap">
+          <div className="flex items-center gap-1.5 text-sm text-slate-600">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="font-semibold text-emerald-700">Live</span>
+            <span className="text-slate-400 text-xs">oakwood.edu</span>
+          </div>
+          <div className="w-px h-3.5 bg-slate-200" />
+          <div className="flex items-center gap-1.5 text-sm text-slate-500">
+            <Clock className="w-3.5 h-3.5 text-slate-400" />
+            <span>Last sync <span className="font-semibold text-slate-700">2 min ago</span></span>
+          </div>
+          <div className="w-px h-3.5 bg-slate-200" />
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <Zap className="w-3.5 h-3.5 text-indigo-500" />
+            <span>Automation</span>
+            <div className="flex items-center gap-1.5">
+              <div className="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full w-4/5 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full" />
+              </div>
+              <span className="font-semibold text-indigo-600 text-xs">80%</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Two-column grid */}
@@ -226,21 +273,9 @@ export function Dashboard({ hasHiredAgents }: any) {
 
           {/* Column body */}
           {hasHiredAgents ? (
-            <div className="bg-gradient-to-b from-blue-50/60 to-indigo-50/40 border border-blue-200/60 rounded-2xl shadow-sm overflow-hidden">
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-blue-200/50">
-                <div className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
-                  <Bot className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-800">Suggestions from your Hired Agents</p>
-                  <p className="text-xs text-slate-500">Your dedicated team has prepared updates based on recent activity.</p>
-                </div>
-              </div>
-
-              <div className="p-4 space-y-3">
+            <div className="space-y-3">
                 {isCCPending && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex gap-4 items-start animate-in fade-in">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0 text-sm">CC</div>
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
                     <div>
                       <h3 className="font-semibold text-slate-800 text-sm">New post: Celebrate our Science Fair winners</h3>
                       <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
@@ -255,16 +290,15 @@ export function Dashboard({ hasHiredAgents }: any) {
                 )}
 
                 {isWAPending && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex gap-4 items-start animate-in fade-in">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0 text-sm">WA</div>
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
                     <div>
-                      <h3 className="font-semibold text-slate-800 text-sm">Homepage friction detected — Quick Links widget ready</h3>
+                      <h3 className="font-semibold text-slate-800 text-sm">Your site needs updates to meet new ADA standards</h3>
                       <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
                       <button
                         onClick={() => setSelectedAction(WA_ACTION)}
                         className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
                       >
-                        Approve Widget Addition
+                        Review ADA Updates
                       </button>
                     </div>
                   </div>
@@ -277,7 +311,6 @@ export function Dashboard({ hasHiredAgents }: any) {
                     <p className="text-xs">No pending suggestions from your agents.</p>
                   </div>
                 )}
-              </div>
             </div>
           ) : (
             <div className="bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-12 text-center text-slate-400 space-y-3 h-full flex flex-col items-center justify-center">
@@ -325,7 +358,11 @@ export function Dashboard({ hasHiredAgents }: any) {
             {/* Feed */}
             <div className="divide-y divide-slate-100 max-h-[520px] overflow-y-auto">
               {AUTO_UPDATES.map((item) => (
-                <AutoUpdateRow key={item.id} item={item} />
+                <AutoUpdateRow
+                  key={item.id}
+                  item={item}
+                  onView={item.id === 'au_0' ? () => setShowTeacherPreview(true) : undefined}
+                />
               ))}
             </div>
 
@@ -338,6 +375,10 @@ export function Dashboard({ hasHiredAgents }: any) {
         </div>}
 
       </div>
+
+      {showTeacherPreview && (
+        <AutoUpdatePreviewModal onClose={() => setShowTeacherPreview(false)} />
+      )}
 
       {/* Review modal — unchanged */}
       {selectedAction && (

@@ -1,4 +1,5 @@
-import { CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle, MoreHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const DOMAIN_MAP: Record<string, string> = {
@@ -92,6 +93,38 @@ function ConnectorCard({ name, fallbackIndex, size = 'md' }: { name: string; fal
   );
 }
 
+// How many items fit in the first row at lg (6-col grid)
+const FIRST_ROW = 6;
+
+function CategorySection({ cat, ci }: { cat: typeof CATEGORIES[0]; ci: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? cat.connectors : cat.connectors.slice(0, FIRST_ROW);
+  const hasMore = cat.connectors.length > FIRST_ROW;
+
+  return (
+    <div key={cat.label}>
+      <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-200">{cat.label}</h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {visible.map((name, i) => (
+          <ConnectorCard key={name} name={name} fallbackIndex={ci * 10 + i} />
+        ))}
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(v => !v)}
+          className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          {expanded ? (
+            <><ChevronUp className="w-3.5 h-3.5" /> Show less</>
+          ) : (
+            <><ChevronDown className="w-3.5 h-3.5" /> Show {cat.connectors.length - FIRST_ROW} more</>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function UtilitiesHubView() {
   return (
     <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in duration-700">
@@ -113,7 +146,7 @@ export function UtilitiesHubView() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {CONNECTED.map((conn) => (
-            <div key={conn.name} className="flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
+            <div key={conn.name} className="flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl group">
               <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm border border-emerald-100 overflow-hidden shrink-0">
                 <img
                   src={`https://www.google.com/s2/favicons?domain=${conn.domain}&sz=128`}
@@ -126,9 +159,14 @@ export function UtilitiesHubView() {
                 <p className="text-sm font-bold text-emerald-900">{conn.name}</p>
                 <p className="text-xs text-emerald-700 opacity-70">{conn.desc}</p>
               </div>
-              <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-full shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)] animate-pulse" />
-                Live
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)] animate-pulse" />
+                  Live
+                </div>
+                <button className="w-7 h-7 flex items-center justify-center rounded-lg text-emerald-600 opacity-0 group-hover:opacity-100 hover:bg-emerald-100 transition-all">
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}
@@ -139,14 +177,7 @@ export function UtilitiesHubView() {
       <div className="space-y-10">
         <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400">Available Connectors</h2>
         {CATEGORIES.map((cat, ci) => (
-          <div key={cat.label}>
-            <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-200">{cat.label}</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {cat.connectors.map((name, i) => (
-                <ConnectorCard key={name} name={name} fallbackIndex={ci * 10 + i} />
-              ))}
-            </div>
-          </div>
+          <CategorySection key={cat.label} cat={cat} ci={ci} />
         ))}
       </div>
     </div>

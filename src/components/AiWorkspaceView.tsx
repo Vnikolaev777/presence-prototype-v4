@@ -19,7 +19,7 @@ interface AiWorkspaceViewProps {
 
 const QUICK_ACTIONS = [
   { icon: <LayoutTemplate className="w-4 h-4" />, label: 'Make a new website',        color: 'bg-blue-50 text-blue-600 border-blue-100',    scenario: false },
-  { icon: <Layers         className="w-4 h-4" />, label: 'Migrate an existing website', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', scenario: true  },
+  { icon: <Layers         className="w-4 h-4" />, label: 'Migrate your old website with improvements', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', scenario: true  },
   { icon: <ShieldAlert    className="w-4 h-4" />, label: 'Perform an AI audit',         color: 'bg-emerald-50 text-emerald-600 border-emerald-100', scenario: false },
   { icon: <Accessibility  className="w-4 h-4" />, label: 'Improve accessibility',       color: 'bg-rose-50 text-rose-600 border-rose-100',    scenario: false },
   { icon: <Users          className="w-4 h-4" />, label: "Create a parent's hub",       color: 'bg-amber-50 text-amber-600 border-amber-100',  scenario: false },
@@ -54,7 +54,7 @@ function CircularGauge({ score, maxScore, size = 120, strokeWidth = 12, color = 
   );
 }
 
-// ─── Legacy audit mini card (chat) ─────────────────────────────────────────
+// ─── Current site audit mini card (chat) ────────────────────────────────────
 function AuditChatCard() {
   return (
     <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-2 w-full">
@@ -67,12 +67,12 @@ function AuditChatCard() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 font-bold text-sm text-slate-800">
-            Legacy Audit <AlertCircle className="w-3.5 h-3.5 text-red-500" />
+            Site Audit <AlertCircle className="w-3.5 h-3.5 text-red-500" />
           </div>
           <div className="text-xs text-slate-600 space-y-0.5 mt-1">
-            <div>Performance: <span className="font-bold text-red-500">32%</span></div>
-            <div>Accessibility: <span className="font-bold text-amber-500">45%</span></div>
-            <div>SEO: <span className="font-bold text-red-500">20%</span></div>
+            <div>Usability: <span className="font-bold text-red-500">32%</span></div>
+            <div>Readability: <span className="font-bold text-amber-500">45%</span></div>
+            <div>Discoverability: <span className="font-bold text-red-500">20%</span></div>
           </div>
         </div>
       </div>
@@ -97,9 +97,9 @@ function PostAuditChatCard() {
             New Site Audit <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
           </div>
           <div className="text-xs text-slate-600 space-y-0.5 mt-1">
-            <div>Performance: <span className="font-bold text-emerald-600">98%</span></div>
-            <div>Accessibility: <span className="font-bold text-emerald-600">96%</span></div>
-            <div>SEO: <span className="font-bold text-emerald-600">94%</span></div>
+            <div>Usability: <span className="font-bold text-emerald-600">98%</span></div>
+            <div>Readability: <span className="font-bold text-emerald-600">96%</span></div>
+            <div>Discoverability: <span className="font-bold text-emerald-600">94%</span></div>
           </div>
         </div>
       </div>
@@ -108,18 +108,18 @@ function PostAuditChatCard() {
   );
 }
 
-// ─── Legacy audit full canvas ───────────────────────────────────────────────
+// ─── Current site audit full canvas ─────────────────────────────────────────
 function AuditCanvas() {
   const metrics = [
-    { label: 'Performance',   value: 32, color: 'text-red-500',   barColor: 'bg-red-500'   },
-    { label: 'Accessibility', value: 45, color: 'text-amber-500', barColor: 'bg-amber-500' },
-    { label: 'SEO',           value: 20, color: 'text-red-500',   barColor: 'bg-red-500'   },
+    { label: 'Usability',    hint: 'Navigation & mobile experience', value: 32, color: 'text-red-500',   barColor: 'bg-red-500'   },
+    { label: 'Readability',  hint: 'How clearly content is presented', value: 45, color: 'text-amber-500', barColor: 'bg-amber-500' },
+    { label: 'Discoverability',  hint: 'Visibility in search results',    value: 20, color: 'text-red-500',   barColor: 'bg-red-500'   },
   ];
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-10 p-12 bg-white animate-in fade-in duration-700">
       <div className="text-center">
-        <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Legacy Audit</h2>
-        <p className="text-slate-400 mt-1 text-sm font-medium">Web Performance Score</p>
+        <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Site Audit</h2>
+        <p className="text-slate-400 mt-1 text-sm font-medium">How visitors experience your site today</p>
       </div>
       <div className="relative">
         <CircularGauge score={4} maxScore={10} size={200} strokeWidth={20} color="#ef4444" />
@@ -129,11 +129,12 @@ function AuditCanvas() {
           <AlertCircle className="w-5 h-5 text-red-400 mt-1" />
         </div>
       </div>
-      <div className="flex gap-10 w-full max-w-sm">
+      <div className="flex gap-8 w-full max-w-md">
         {metrics.map(m => (
           <div key={m.label} className="flex-1 space-y-2">
             <div className={cn("text-2xl font-extrabold", m.color)}>{m.value}%</div>
-            <div className="text-xs text-slate-500 font-medium">{m.label}</div>
+            <div className="text-xs text-slate-700 font-bold">{m.label}</div>
+            <div className="text-[10px] text-slate-400 leading-tight">{m.hint}</div>
             <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div className={cn("h-full rounded-full", m.barColor)} style={{ width: `${m.value}%` }} />
             </div>
@@ -141,7 +142,7 @@ function AuditCanvas() {
         ))}
       </div>
       <div className="flex gap-3 flex-wrap justify-center">
-        {['Outdated Assets', 'Missing Alt-Text', 'Slow Server Response'].map(tag => (
+        {['Missing images & favicon', 'Invisible in Google SEO & Maps search', 'Outdated content & info'].map(tag => (
           <span key={tag} className="bg-red-50 border border-red-200 text-red-500 text-xs font-semibold px-4 py-2 rounded-full">{tag}</span>
         ))}
       </div>
@@ -152,9 +153,9 @@ function AuditCanvas() {
 // ─── New site audit full canvas ─────────────────────────────────────────────
 function PostAuditCanvas() {
   const metrics = [
-    { label: 'Performance',   value: 98, color: 'text-emerald-600', barColor: 'bg-emerald-500' },
-    { label: 'Accessibility', value: 96, color: 'text-emerald-600', barColor: 'bg-emerald-500' },
-    { label: 'SEO',           value: 94, color: 'text-emerald-600', barColor: 'bg-emerald-500' },
+    { label: 'Usability',   value: 98, color: 'text-emerald-600', barColor: 'bg-emerald-500' },
+    { label: 'Readability', value: 96, color: 'text-emerald-600', barColor: 'bg-emerald-500' },
+    { label: 'Discoverability', value: 94, color: 'text-emerald-600', barColor: 'bg-emerald-500' },
   ];
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-10 p-12 bg-white animate-in fade-in duration-700">
@@ -216,7 +217,7 @@ function AgentHireCard({ name, role, description, gradientClass, icon }: {
 }
 
 // ─── Connection type picker (center canvas) ─────────────────────────────────
-function ConnectionTypeScreen({ onSelectSIS }: { onSelectSIS: () => void }) {
+function ConnectionTypeScreen({ onSelectSIS, onSkip }: { onSelectSIS: () => void; onSkip: () => void }) {
   const types = [
     {
       id: 'sis',
@@ -281,9 +282,17 @@ function ConnectionTypeScreen({ onSelectSIS }: { onSelectSIS: () => void }) {
           ))}
         </div>
 
-        <p className="text-center text-xs text-slate-400">
-          40+ integrations available · More can be added at any time
-        </p>
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-center text-xs text-slate-400">
+            40+ integrations available · More can be added at any time
+          </p>
+          <button
+            onClick={onSkip}
+            className="text-xs text-slate-400 hover:text-slate-600 underline underline-offset-2 transition-colors"
+          >
+            Skip for now
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -407,59 +416,78 @@ function ConnectPowerSchoolScreen({ onAuthorize }: { onAuthorize: () => void }) 
 }
 
 // ─── Migration progress path ────────────────────────────────────────────────
-const PROGRESS_STEPS = ['Audit', 'Connect', 'Build', 'Review', 'Launch'] as const;
+const PROGRESS_STEPS: { label: string; detail: string }[] = [
+  { label: 'Audit',    detail: 'Analyze current website' },
+  { label: 'Connect',  detail: 'Connect data sources' },
+  { label: 'Build',    detail: 'Migrate & generate new site' },
+  { label: 'Review',   detail: 'Review migrated website' },
+  { label: 'Re-audit', detail: 'Analyzing new website' },
+  { label: 'Launch',   detail: 'Assign AI agents & go live' },
+];
 
-function getProgressIndex(step: ScenarioStep): number {
+function getProgressIndex(step: ScenarioStep, siteApproved: boolean): number {
   switch (step) {
     case 'url_input':
-    case 'audit':       return 0;
+    case 'audit':        return 0;
     case 'orchestrator': return 1;
-    case 'generation':  return 2;
-    case 'post_audit':  return 3;
-    case 'hiring':      return 4;
-    default:            return -1;
+    case 'generation':   return 2;
+    case 'post_audit':   return siteApproved ? 4 : 3;
+    case 'hiring':       return 5;
+    default:             return -1;
   }
 }
 
-function ScenarioProgressBar({ step }: { step: ScenarioStep }) {
-  const active = getProgressIndex(step);
+function ScenarioProgressBar({ step, siteApproved }: { step: ScenarioStep; siteApproved: boolean }) {
+  const active = getProgressIndex(step, siteApproved);
   return (
-    <div className="px-4 pt-3 pb-2 bg-white border-b border-slate-100 shrink-0 animate-in fade-in duration-300">
-      <div className="flex items-start">
-        {PROGRESS_STEPS.map((label, i) => {
+    <div className="bg-white rounded-2xl border border-slate-200 p-4 animate-in fade-in duration-300">
+      <p className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">Workflow</p>
+      <div>
+        {PROGRESS_STEPS.map(({ label, detail }, i) => {
           const isComplete = i < active;
           const isActive   = i === active;
+          const isLast     = i === PROGRESS_STEPS.length - 1;
           return (
-            <div key={label} className="flex items-center flex-1 last:flex-none">
-              {/* Node */}
-              <div className="flex flex-col items-center gap-1 shrink-0">
+            <div key={i} className="flex gap-3">
+              {/* Timeline spine */}
+              <div className="flex flex-col items-center shrink-0">
                 <div className={cn(
-                  'w-5 h-5 rounded-full flex items-center justify-center transition-all duration-500',
+                  'w-6 h-6 rounded-full flex items-center justify-center transition-all duration-500 shrink-0',
                   isComplete ? 'bg-blue-600' :
                   isActive   ? 'bg-blue-600 ring-2 ring-blue-200 ring-offset-1' :
-                               'bg-slate-200'
+                               'bg-slate-100 border-2 border-slate-200'
                 )}>
                   {isComplete
-                    ? <CheckCircle className="w-3 h-3 text-white" />
+                    ? <CheckCircle className="w-3.5 h-3.5 text-white" />
                     : isActive
-                      ? <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      : <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                      ? <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      : <span className="w-2 h-2 rounded-full bg-slate-300" />
                   }
                 </div>
-                <span className={cn(
-                  'text-[9px] font-bold tracking-wide transition-colors duration-300',
-                  isComplete || isActive ? 'text-blue-600' : 'text-slate-400'
+                {!isLast && (
+                  <div className={cn(
+                    'w-0.5 my-1 transition-colors duration-500',
+                    i < active ? 'bg-blue-400' : 'bg-slate-200'
+                  )} style={{ minHeight: '22px' }} />
+                )}
+              </div>
+              {/* Step text */}
+              <div className="pb-4 min-w-0">
+                <p className={cn(
+                  'text-sm font-bold leading-tight transition-colors duration-300',
+                  isComplete ? 'text-slate-400 line-through decoration-slate-300' :
+                  isActive   ? 'text-slate-900' :
+                               'text-slate-400'
                 )}>
                   {label}
-                </span>
+                </p>
+                <p className={cn(
+                  'text-[11px] mt-0.5 transition-colors duration-300',
+                  isActive ? 'text-blue-600 font-medium' : 'text-slate-400'
+                )}>
+                  {detail}
+                </p>
               </div>
-              {/* Connector line */}
-              {i < PROGRESS_STEPS.length - 1 && (
-                <div className={cn(
-                  'flex-1 h-0.5 mx-1 mb-4 transition-colors duration-500',
-                  i < active ? 'bg-blue-500' : 'bg-slate-200'
-                )} />
-              )}
             </div>
           );
         })}
@@ -479,7 +507,9 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
   const [urlPromptReady, setUrlPromptReady] = useState(false);
   const [auditReady, setAuditReady]       = useState(false);
   const [postAuditReady, setPostAuditReady] = useState(false);
+  const [siteApproved, setSiteApproved] = useState(false);
   const [connectionStep, setConnectionStep] = useState<'type_select' | 'sis_select' | 'powerschool_auth' | null>(null);
+  const [centerTab, setCenterTab] = useState<'site' | 'audit'>('site');
 
   const TARGET_URL = 'https://lincolnhigh.edu';
 
@@ -514,12 +544,12 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
   useEffect(() => {
     if (scenarioStep === 'orchestrator') {
       if (orchestratorTick === -3) {
-        agentMessage("I'm setting up your workspace — mapping your content structure, rebuilding the framework, and preparing your data connections.");
+        agentMessage("I need to connect your school's data so the site stays accurate automatically — no manual updates.");
       } else if (orchestratorTick === -1) {
-        agentMessage("To keep your directory, calendar, and parent data perfectly in sync, I need to connect Data Hooks to your school's core systems. Let's start by selecting the type of integration.");
+        agentMessage("To sync your directory, calendar, and announcements automatically, connect your SIS. You can also skip this and connect later.");
         setConnectionStep('type_select');
       } else if (orchestratorTick === 4) {
-        agentMessage("All systems connected and ready. Shall I go ahead and migrate your content into the new platform?");
+        agentMessage("Everything's in place — time to build your new site.");
       }
     }
   }, [orchestratorTick, scenarioStep]);
@@ -536,6 +566,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
     setUrlPromptReady(false);
     setAuditReady(false);
     setPostAuditReady(false);
+    setSiteApproved(false);
     setConnectionStep(null);
     setChatMessages([{ role: 'user', content: 'Migrate our existing website' }]);
     setTimeout(() => {
@@ -555,10 +586,10 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
         setScenarioStep('audit');
         agentMessage(<AuditChatCard />);
         setTimeout(() => {
-          agentMessage("Your site is slow, non-responsive, and lacks SEO metadata.");
+          agentMessage("Visitors struggle to navigate it on mobile, the content is hard to read, and it's nearly invisible in search results.");
           setTimeout(() => {
             agentMessage(
-              <span>The good news? Schools that migrate to Presence typically go from a score like this to a <span className="font-bold text-emerald-600">perfect 10/10</span> — faster load times, full accessibility, and top SEO rankings, all on day one.</span>
+              <span>We can fix all of this — want me to go ahead?</span>
             );
             setTimeout(() => setAuditReady(true), 400);
           }, 900);
@@ -579,7 +610,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
 
   const handleAuthorize = () => {
     setConnectionStep(null);
-    agentMessage("PowerSchool connected! Linking remaining systems — FACTS SIS, Google Calendar, and the district announcements feed...");
+    agentMessage("PowerSchool connected! You can add more systems — Google Calendar, LMS, shared folders — anytime from the Integrations tab.");
+  };
+
+  const handleSkipConnection = () => {
+    setConnectionStep(null);
+    userMessage("Skip for now.");
+    agentMessage("No problem — you can connect your data sources any time from Integrations.");
   };
 
   const advanceToOrchestrator = () => {
@@ -587,85 +624,70 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
     setTimeout(() => {
       setScenarioStep('orchestrator');
       setOrchestratorTick(-4);
-      agentMessage("On it! I will handle mapping your old structure to our modern React CMS framework.");
     }, 1000);
   };
 
   const advanceToGeneration = () => {
-    userMessage("Connections look good. Deploy the new framework.");
+    userMessage("Let's go — migrate the site.");
     setTimeout(() => {
       setScenarioStep('generation');
-      agentMessage("Data streams secured! Generating the new React-based design and migrating your content now...");
+      agentMessage("On it — building your new website now.");
       // Auto-advance to post_audit after the site "loads"
       setTimeout(() => {
         setScenarioStep('post_audit');
-        agentMessage(<PostAuditChatCard />);
         setTimeout(() => {
           agentMessage(
-            <div className="space-y-3">
-              <p className="font-semibold text-slate-800">This isn't just a new design — it's a living platform.</p>
-              <div className="space-y-2 text-slate-600">
-                <div className="flex items-start gap-2">
-                  <RefreshCw className="w-3.5 h-3.5 text-indigo-500 mt-0.5 shrink-0" />
-                  <span><strong>Auto-syncs</strong> with PowerSchool, FACTS SIS & Google Drive — your directory, schedules, and documents update themselves.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <PenTool className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                  <span>Blogs, newsletters, and parent emails are <strong>drafted automatically</strong> from your inbox and district feeds.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Zap className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-                  <span>Broken links are fixed, widgets optimized, and <strong>accessibility enforced</strong> continuously in the background.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <FileText className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
-                  <span>You <strong>review and approve</strong> — everything else is handled for you. Zero manual publishing.</span>
-                </div>
-              </div>
-            </div>
+            <span>
+              Take a look — all your content has been migrated.{' '}
+              <a href="/presence-prototype/preview.html" target="_blank" rel="noopener noreferrer"
+                className="text-blue-600 underline underline-offset-2 hover:text-blue-800 font-medium">
+                Open in new tab ↗
+              </a>
+              . Does everything look right?
+            </span>
           );
-          setTimeout(() => {
-            agentMessage(
-              <span>🎉 <strong>Your new site is live</strong> at a temporary Presence URL. Ready to connect your own domain and make it official?</span>
-            );
-            setTimeout(() => setPostAuditReady(true), 500);
-          }, 700);
-        }, 800);
+          setTimeout(() => setPostAuditReady(true), 400);
+        }, 700);
       }, 2800);
     }, 1000);
+  };
+
+  const approveSite = () => {
+    userMessage("Looks good — let's go!");
+    setPostAuditReady(false);
+    agentMessage(<PostAuditChatCard />);
+    setTimeout(() => {
+      agentMessage(
+        <span>🎉 <strong>Your new site is live</strong> at a temporary Presence URL. Ready to connect your own domain and make it official?</span>
+      );
+      setTimeout(() => setSiteApproved(true), 500);
+    }, 800);
   };
 
   const advanceToHiring = () => {
     userMessage("Amazing — let's set it all up.");
     setTimeout(() => {
       setScenarioStep('hiring');
-      agentMessage("The foundation is set! I'm now hiring two specialized agents to maintain your site in the background:");
+      agentMessage("Your website is live. I've also set up three automatic processes running in the background:");
+      onAgentsHired?.();
       setTimeout(() => {
         agentMessage(
-          <AgentHireCard
-            name="Web Admin Agent"
-            role="SysOps · Always On"
-            description="Manages widget layout, accessibility compliance, and integrations. Monitors for broken links, performance regressions, and unauthorized changes."
-            gradientClass="bg-gradient-to-r from-blue-600 to-indigo-600"
-            icon={<Code2 className="w-4 h-4 text-white" />}
-          />
+          <div className="space-y-2 text-slate-600">
+            <p className="font-semibold text-slate-800 text-sm">On your Dashboard you can find:</p>
+            <div className="flex items-start gap-2">
+              <RefreshCw className="w-3.5 h-3.5 text-indigo-500 mt-0.5 shrink-0" />
+              <span>Automatic updates from PowerSchool — directory, schedules, and documents, ready to publish.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <PenTool className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" />
+              <span>News drafts and newsletters generated from external events and district feeds, waiting for your approval.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <Zap className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+              <span>Accessibility reports flagging any issues against the latest standards.</span>
+            </div>
+          </div>
         );
-        setTimeout(() => {
-          agentMessage(
-            <AgentHireCard
-              name="Content Creator Agent"
-              role="Copywriting · Automated"
-              description="Drafts blogs, emails, and newsletters automatically from your inbox and district feeds. Surfaces updates for your review before publishing."
-              gradientClass="bg-gradient-to-r from-emerald-500 to-teal-600"
-              icon={<PenTool className="w-4 h-4 text-white" />}
-            />
-          );
-          // Unlock the nav tab as soon as both cards are visible
-          onAgentsHired?.();
-          setTimeout(() => {
-            agentMessage("I've set up a dedicated inbox on your Overview Dashboard — everything they produce will land there for your review.");
-          }, 600);
-        }, 700);
       }, 800);
     }, 1000);
   };
@@ -696,9 +718,6 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </p>
           </div>
         </div>
-
-        {/* MIGRATION PROGRESS PATH */}
-        {!isIdle && <ScenarioProgressBar step={scenarioStep} />}
 
         <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
 
@@ -765,7 +784,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
                   Migrate &amp; Improve &rarr;
                 </button>
               )}
-              {isPostAudit && postAuditReady && (
+              {isPostAudit && postAuditReady && !siteApproved && (
+                <button onClick={approveSite}
+                  className="animate-in fade-in slide-in-from-bottom border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors">
+                  Looks good — continue &rarr;
+                </button>
+              )}
+              {isPostAudit && siteApproved && (
                 <button onClick={advanceToHiring}
                   className="animate-in fade-in slide-in-from-bottom border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors">
                   Connect domain &amp; publish &rarr;
@@ -774,7 +799,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
               {scenarioStep === 'hiring' && (
                 <button onClick={finishAndGoToDashboard}
                   className="animate-in fade-in slide-in-from-bottom bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2">
-                  Return to Overview <CheckCircle className="w-4 h-4" />
+                  Go to Dashboard <CheckCircle className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -818,7 +843,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
 
         {/* ORCHESTRATOR: connection flow screens OR desaturated old site */}
         {scenarioStep === 'orchestrator' && connectionStep === 'type_select' && (
-          <ConnectionTypeScreen onSelectSIS={handleTypeSelectSIS} />
+          <ConnectionTypeScreen onSelectSIS={handleTypeSelectSIS} onSkip={handleSkipConnection} />
         )}
         {scenarioStep === 'orchestrator' && connectionStep === 'sis_select' && (
           <SISSelectScreen onContinue={handleSISContinue} />
@@ -839,38 +864,47 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
         )}
 
         {/* GENERATION: "after" site — brief reveal */}
-        {scenarioStep === 'generation' && (
+        {(scenarioStep === 'generation' || isPostAudit) && (
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
-            <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
-              <div className="flex gap-1.5 shrink-0"><div className="w-2.5 h-2.5 rounded-full bg-red-400"/><div className="w-2.5 h-2.5 rounded-full bg-amber-400"/><div className="w-2.5 h-2.5 rounded-full bg-emerald-400"/></div>
-              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">https://lincolnhigh.edu (Generating...)</div>
-              <div className="text-[10px] text-blue-600 bg-blue-50 border border-blue-200 px-2 py-1 rounded-full font-bold flex items-center gap-1 shrink-0">
-                <Loader2 className="w-3 h-3 animate-spin" /> Building
-              </div>
+            {/* Tab bar */}
+            <div className="shrink-0 flex bg-slate-50 border-b border-slate-200">
+              <button
+                onClick={() => setCenterTab('site')}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                  centerTab === 'site'
+                    ? 'border-blue-500 text-slate-900 bg-white'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Website
+              </button>
+              <button
+                onClick={() => siteApproved && setCenterTab('audit')}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                  !siteApproved
+                    ? 'border-transparent text-slate-300 cursor-default'
+                    : centerTab === 'audit'
+                      ? 'border-blue-500 text-slate-900 bg-white'
+                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                {siteApproved
+                  ? <><CheckCircle className="w-3.5 h-3.5 text-emerald-500" />10/10 Audit</>
+                  : <><Loader2 className="w-3.5 h-3.5 animate-spin" />Audit</>
+                }
+              </button>
             </div>
-            <div className="flex-1 min-h-0 overflow-auto bg-white">
-              <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic /></div>
-            </div>
-          </div>
-        )}
-
-        {/* POST AUDIT: new site audit report */}
-        {isPostAudit && (
-          <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-700">
-            <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
-              <div className="flex gap-1.5 shrink-0">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-400"/>
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-400"/>
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"/>
+            {/* Content */}
+            {centerTab === 'audit' && siteApproved ? (
+              <PostAuditCanvas />
+            ) : (
+              <div className="flex-1 min-h-0 overflow-auto bg-white">
+                <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolAfterMagic /></div>
               </div>
-              <div className="bg-emerald-50 px-3 py-1 rounded text-xs text-emerald-700 font-mono flex-1 text-center border border-emerald-200">
-                {TARGET_URL} (Audit Report — New Site)
-              </div>
-              <div className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full font-bold flex items-center gap-1 shrink-0">
-                <CheckCircle className="w-3 h-3" /> 10/10
-              </div>
-            </div>
-            <PostAuditCanvas />
+            )}
           </div>
         )}
 
@@ -895,6 +929,9 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       <div className="w-72 min-w-[260px] bg-slate-50 overflow-y-auto relative hidden lg:block shadow-inner">
         <div className="p-5 space-y-6">
 
+          {/* MIGRATION PROGRESS PATH */}
+          {!isIdle && <ScenarioProgressBar step={scenarioStep} siteApproved={siteApproved} />}
+
           {/* IDLE / URL INPUT / AUDIT: empty state */}
           {(isIdle || isUrlInput || isAudit) && (
             <div className="flex flex-col items-center justify-center gap-3 pt-16 text-center px-2 animate-in fade-in">
@@ -905,18 +942,11 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </div>
           )}
 
-          {/* ORCHESTRATOR+: workspace header */}
-          {!isIdle && !isUrlInput && !isAudit && (scenarioStep !== 'orchestrator' || orchestratorTick > -4) && (
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest flex items-center gap-2 animate-in fade-in">
-              <Server className="w-4 h-4 text-indigo-500" /> Active Workspace
-            </h3>
-          )}
-
           {/* Data Hooks */}
           {!isIdle && !isUrlInput && !isAudit && (scenarioStep !== 'orchestrator' || orchestratorTick >= 0) && (
             <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl animate-in slide-in-from-right-10 fade-in duration-500">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Data Hooks</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-900">Data Hooks</p>
                 <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full cursor-help">40+ Ready</span>
               </div>
 

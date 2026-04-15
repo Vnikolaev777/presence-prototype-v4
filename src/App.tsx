@@ -35,6 +35,7 @@ function App() {
 
   // Scenario state
   const [hasHiredAgents, setHasHiredAgents] = useState(false);
+  const showTeamNav = false; // hidden for now, re-enable when ready
 
   return (
     <div className="h-screen bg-slate-50 text-slate-900 relative selection:bg-blue-500/20 flex flex-col overflow-hidden">
@@ -74,13 +75,13 @@ function App() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 z-30 p-3 space-y-1 shrink-0">
           <NavItem active={activeTab === 'workspace'} onClick={() => { setActiveTab('workspace'); setMobileMenuOpen(false); }} icon={<Sparkles className="w-5 h-5" />} label="Presence Assistant" />
-          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<LayoutDashboard className="w-5 h-5" />} label="Inbox" />
-          {hasHiredAgents && <>
+          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<LayoutDashboard className="w-5 h-5" />} label="Control Center" />
+          {showTeamNav && hasHiredAgents && <>
             <NavItem active={activeTab === 'team'} onClick={() => { setActiveTab('team'); setMobileMenuOpen(false); }} icon={<Users className="w-5 h-5" />} label="Team" />
             <NavItem active={activeTab === 'tasks'} onClick={() => { setActiveTab('tasks'); setMobileMenuOpen(false); }} icon={<ListTodo className="w-5 h-5" />} label="Tasks" />
           </>}
           <NavItem active={activeTab === 'utilities'} onClick={() => { setActiveTab('utilities'); setMobileMenuOpen(false); }} icon={<Layers className="w-5 h-5" />} label="Integrations" />
-          <NavItem active={activeTab === 'knowledge_base'} onClick={() => { setActiveTab('knowledge_base'); setMobileMenuOpen(false); }} icon={<BookOpen className="w-5 h-5" />} label="Knowledge Model" />
+          <NavItem active={activeTab === 'knowledge_base'} onClick={() => { setActiveTab('knowledge_base'); setMobileMenuOpen(false); }} icon={<BookOpen className="w-5 h-5" />} label="Presence Data" />
         </div>
       )}
 
@@ -100,10 +101,10 @@ function App() {
               active={activeTab === 'dashboard'}
               onClick={() => setActiveTab('dashboard')}
               icon={<LayoutDashboard className="w-5 h-5" />}
-              label="Inbox"
+              label="Control Center"
             />
 
-            {hasHiredAgents && (
+            {showTeamNav && hasHiredAgents && (
               <div className="space-y-0.5">
                 {/* Expandable group header */}
                 <button
@@ -156,7 +157,7 @@ function App() {
               active={activeTab === 'knowledge_base'}
               onClick={() => setActiveTab('knowledge_base')}
               icon={<BookOpen className="w-5 h-5" />}
-              label="Knowledge Model"
+              label="Presence Data"
             />
           </nav>
         </aside>
