@@ -5,7 +5,7 @@ import { resolve } from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/presence-prototype-v2/',
+  base: '/presence-prototype-v3/',
   plugins: [
     tailwindcss(),
     react()
