@@ -664,7 +664,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           agentMessage(
             <span>
               Take a look — all your content has been migrated.{' '}
-              <a href="/presence-prototype-v2/preview.html" target="_blank" rel="noopener noreferrer"
+              <a href={window.location.hostname === 'localhost' ? `${import.meta.env.BASE_URL}school-after-magic` : 'https://vnikolaev777.github.io/presence-prototype-v3/preview.html'} target="_blank" rel="noopener noreferrer"
                 className="text-blue-600 underline underline-offset-2 hover:text-blue-800 font-medium">
                 Open in new tab ↗
               </a>
