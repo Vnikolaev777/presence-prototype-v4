@@ -10,7 +10,8 @@ import { StudentDashboard } from './pages/StudentDashboard.tsx';
 import { AcademicsPage } from './pages/AcademicsPage.tsx';
 import { AuditPreviewPage } from './components/AuditPreviews.tsx';
 
-const path = window.location.pathname.replace('/presence-prototype-v2', '');
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = window.location.pathname.replace(basePath, '');
 
 let ComponentToRender = App;
 if (path === '/school-before') {
