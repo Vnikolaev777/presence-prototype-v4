@@ -168,7 +168,7 @@ function AutoUpdateRow({ item, onView }: { item: AutoUpdate; onView?: () => void
 }
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────
-export function Dashboard({ hasHiredAgents }: any) {
+export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
   const [selectedAction, setSelectedAction] = useState<AiAction | null>(null);
   const [removedActions, setRemovedActions] = useState<string[]>([]);
   const [showTeacherPreview, setShowTeacherPreview] = useState(false);
@@ -178,7 +178,7 @@ export function Dashboard({ hasHiredAgents }: any) {
     isInternal: false,
     timestamp: 'Just now',
     title: 'Publish: State Science Fair Results',
-    summary: "I drafted a new blog post highlighting the achievements from our recent State Science Fair based on the emails provided.",
+    summary: "I found Oakwood students listed as participants in the State Science Fair via PowerSchool, then cross-referenced with a Springfield Tribune article confirming 3 gold medals. The official results on sciencefair.state.gov matched — I connected all three and drafted a blog post.",
     proposedChanges: [
       "Create new Blog Post: 'Oakwood Excels at State Science Fair'",
       "Publish to Homepage Feed",
@@ -187,9 +187,26 @@ export function Dashboard({ hasHiredAgents }: any) {
     requiresUserInput: false,
     previewType: 'science_fair_blog',
     status: 'pending',
-    source: 'Principal Inbox',
-    sourceType: 'newsletter',
-    confidence: 0.95
+    source: 'PowerSchool',
+    sourceType: 'sis',
+    confidence: 0.95,
+    sources: [
+      {
+        website: 'PowerSchool',
+        url: 'https://powerschool.com',
+        detail: 'Found 4 Oakwood students registered as Science Fair participants',
+      },
+      {
+        website: 'Springfield Tribune',
+        url: 'https://springfieldtribune.com',
+        detail: 'Article: "Local Students Sweep Regional Science Fair" — 3 gold medals confirmed',
+      },
+      {
+        website: 'State Science Fair',
+        url: 'https://sciencefair.state.gov',
+        detail: 'Official results page — Oakwood listed in top 3 schools statewide',
+      },
+    ],
   };
 
   const WA_ACTION: AiAction = {
@@ -209,6 +226,8 @@ export function Dashboard({ hasHiredAgents }: any) {
     status: 'pending',
     source: 'Web Admin Agent',
     sourceType: 'district',
+    sourceUrl: 'https://www.ada.gov/resources/web-guidance/',
+    sourceWebsite: 'ADA.gov',
     confidence: 0.97
   };
 
@@ -221,7 +240,7 @@ export function Dashboard({ hasHiredAgents }: any) {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Control Center</h1>
+        <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Automations</h1>
         <p className="text-slate-500 text-sm">AI-driven updates to your school website — review proposals or see what was already handled.</p>
 
         {/* Status bar — only once agents are hired and content is live */}
@@ -253,78 +272,77 @@ export function Dashboard({ hasHiredAgents }: any) {
         </div>}
       </div>
 
-      {/* Two-column grid */}
+      {/* Two-column grid — columns appear progressively as scenarios complete */}
+      {!hasHiredAgents ? (
+        <div className="bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-16 text-center text-slate-400 space-y-3 flex flex-col items-center justify-center">
+          <Bot className="w-10 h-10 opacity-30" />
+          <p className="font-medium text-sm">Nothing here yet.</p>
+          <p className="text-xs leading-relaxed max-w-xs">Complete the setup in Presence Assistant to start seeing automated updates here.</p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
-        {/* ── LEFT: Manual Reviews ───────────────────────────────────────── */}
+        {/* ── LEFT: Manual Reviews — appears after monitoring scenario ───── */}
+        {hasMonitoringSetup && (
         <div className="flex flex-col">
-          {/* Column header — only shown once agents are active */}
-          {hasHiredAgents && (
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
-                <Clock className="w-4 h-4" />
-              </div>
-              <h2 className="text-sm font-bold text-slate-700">Needs Your Review</h2>
-              {pendingCount > 0 && (
-                <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                  {pendingCount}
-                </span>
-              )}
+          {/* Column header */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
+              <Clock className="w-4 h-4" />
             </div>
-          )}
+            <h2 className="text-sm font-bold text-slate-700">Needs Your Review</h2>
+            {pendingCount > 0 && (
+              <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {pendingCount}
+              </span>
+            )}
+          </div>
 
           {/* Column body */}
-          {hasHiredAgents ? (
-            <div className="space-y-3">
-                {isCCPending && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
-                    <div>
-                      <h3 className="font-semibold text-slate-800 text-sm">New post: Celebrate our Science Fair winners</h3>
-                      <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
-                      <button
-                        onClick={() => setSelectedAction(CC_ACTION)}
-                        className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-                      >
-                        Review Draft
-                      </button>
-                    </div>
-                  </div>
-                )}
+          <div className="space-y-3">
+            {isCCPending && (
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
+                <div>
+                  <h3 className="font-semibold text-slate-800 text-sm">New post: Celebrate our Science Fair winners</h3>
+                  <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
+                  <button
+                    onClick={() => setSelectedAction(CC_ACTION)}
+                    className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                  >
+                    Review Draft
+                  </button>
+                </div>
+              </div>
+            )}
 
-                {isWAPending && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
-                    <div>
-                      <h3 className="font-semibold text-slate-800 text-sm">Your site needs updates to meet new ADA standards</h3>
-                      <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
-                      <button
-                        onClick={() => setSelectedAction(WA_ACTION)}
-                        className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-                      >
-                        Review ADA Updates
-                      </button>
-                    </div>
-                  </div>
-                )}
+            {isWAPending && (
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
+                <div>
+                  <h3 className="font-semibold text-slate-800 text-sm">Your site needs updates to meet new ADA standards</h3>
+                  <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
+                  <button
+                    onClick={() => setSelectedAction(WA_ACTION)}
+                    className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                  >
+                    Review ADA Updates
+                  </button>
+                </div>
+              </div>
+            )}
 
-                {(!isCCPending && !isWAPending) && (
-                  <div className="py-10 text-center text-slate-400 space-y-2">
-                    <CheckCircle className="w-8 h-8 mx-auto opacity-40" />
-                    <p className="text-sm font-medium">All caught up!</p>
-                    <p className="text-xs">No pending suggestions from your agents.</p>
-                  </div>
-                )}
-            </div>
-          ) : (
-            <div className="bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-12 text-center text-slate-400 space-y-3 h-full flex flex-col items-center justify-center">
-              <Bot className="w-10 h-10 opacity-30" />
-              <p className="font-medium text-sm">No agents hired yet.</p>
-              <p className="text-xs leading-relaxed max-w-xs">Complete the Presence Assistant onboarding to deploy agents that will send review requests here.</p>
-            </div>
-          )}
+            {(!isCCPending && !isWAPending) && (
+              <div className="py-10 text-center text-slate-400 space-y-2">
+                <CheckCircle className="w-8 h-8 mx-auto opacity-40" />
+                <p className="text-sm font-medium">All caught up!</p>
+                <p className="text-xs">No pending suggestions from your agents.</p>
+              </div>
+            )}
+          </div>
         </div>
+        )}
 
-        {/* ── RIGHT: Automatic Updates ───────────────────────────────────── */}
-        {hasHiredAgents && <div className="flex flex-col">
+        {/* ── RIGHT: Automatic Updates — appears after migrate scenario ──── */}
+        {hasHiredAgents && <div className={cn("flex flex-col", !hasMonitoringSetup && "lg:col-span-2")}>
           {/* Column header */}
           <div className="flex items-center gap-2 mb-3">
             <div className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">
@@ -377,6 +395,7 @@ export function Dashboard({ hasHiredAgents }: any) {
         </div>}
 
       </div>
+      )}
 
       {showTeacherPreview && (
         <AutoUpdatePreviewModal onClose={() => setShowTeacherPreview(false)} />

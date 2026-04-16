@@ -4,23 +4,27 @@ import {
   Database, Bot, CheckCircle, PenTool, Code2, ShieldAlert,
   Server, Link as LinkIcon, Users, Loader2, AlertCircle,
   RefreshCw, FileText, Zap, ShieldCheck, ExternalLink,
-  FolderOpen, BookOpen, ChevronDown, Plus
+  FolderOpen, BookOpen, ChevronDown, Plus,
+  Search, Star, Globe, Bell, TrendingUp, MessageSquare, Activity, MapPin, Eye
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { SchoolBefore } from '../pages/SchoolBefore';
 import { SchoolAfterMagic } from '../pages/SchoolAfterMagic';
 import { AuditChatCardV2, PostAuditChatCardV2, AuditCanvasV2, PostAuditCanvasV2 } from './AuditPreviews';
 
-type ScenarioStep = 'idle' | 'url_input' | 'audit' | 'orchestrator' | 'generation' | 'post_audit' | 'hiring';
+type ScenarioStep = 'idle' | 'url_input' | 'audit' | 'orchestrator' | 'generation' | 'post_audit' | 'hiring'
+  | 'mon_input' | 'mon_scanning' | 'mon_findings' | 'mon_configure' | 'mon_active';
 
 interface AiWorkspaceViewProps {
   onFinishScenario?: () => void;
   onAgentsHired?: () => void;
+  onMonitoringComplete?: () => void;  // called when monitoring scenario finishes
 }
 
 const QUICK_ACTIONS = [
+  { icon: <Layers         className="w-4 h-4" />, label: 'Migrate your website with improvements', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', scenario: true  },
+  { icon: <RefreshCw      className="w-4 h-4" />, label: 'Setup internet monitoring',  color: 'bg-violet-50 text-violet-600 border-violet-100', scenario: false, monitoringScenario: true },
   { icon: <LayoutTemplate className="w-4 h-4" />, label: 'Make a new website',        color: 'bg-blue-50 text-blue-600 border-blue-100',    scenario: false },
-  { icon: <Layers         className="w-4 h-4" />, label: 'Migrate your old website with improvements', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', scenario: true  },
   { icon: <ShieldAlert    className="w-4 h-4" />, label: 'Perform an AI audit',         color: 'bg-emerald-50 text-emerald-600 border-emerald-100', scenario: false },
   { icon: <Accessibility  className="w-4 h-4" />, label: 'Improve accessibility',       color: 'bg-rose-50 text-rose-600 border-rose-100',    scenario: false },
   { icon: <Users          className="w-4 h-4" />, label: "Create a parent's hub",       color: 'bg-amber-50 text-amber-600 border-amber-100',  scenario: false },
@@ -517,8 +521,379 @@ function ScenarioProgressBar({ step, siteApproved }: { step: ScenarioStep; siteA
   );
 }
 
+// ─── Monitoring: discovered items chat card ──────────────────────────────────
+function MonitoringFoundItemsChatCard() {
+  return (
+    <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 space-y-2 w-full">
+      <div className="flex items-center gap-2 font-bold text-sm text-slate-800 mb-1">
+        <Search className="w-4 h-4 text-blue-500" />
+        4 items discovered — drafts ready
+      </div>
+      <div className="text-xs text-slate-600 space-y-1.5">
+        <div className="flex items-start gap-2">
+          <Search   className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
+          <span>Science Olympiad wins Regional — <em className="text-slate-500">WTTW Chicago</em></span>
+        </div>
+        <div className="flex items-start gap-2">
+          <FileText className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
+          <span>New Absence Policy — <em className="text-slate-500">Chicago Public Schools</em></span>
+        </div>
+        <div className="flex items-start gap-2">
+          <Activity className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
+          <span>Boys Basketball Regional Champs — <em className="text-slate-500">IHSA</em></span>
+        </div>
+        <div className="flex items-start gap-2">
+          <Globe    className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
+          <span>WCAG 2.2 Checklist for K-12 — <em className="text-slate-500">WebAIM Research</em></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Monitoring: topic tiles + source config canvas ─────────────────────────
+const TOPIC_TILES = [
+  { id: 'sports',    label: 'Sport Events',           sub: 'IHSA results, league standings',       icon: <Activity    className="w-5 h-5" /> },
+  { id: 'science',   label: 'Science Events',          sub: 'STEM competitions, research fairs',    icon: <Search      className="w-5 h-5" /> },
+  { id: 'openhouse', label: 'Open House Events',       sub: 'Admissions, tours, open days',         icon: <Users       className="w-5 h-5" /> },
+  { id: 'district',  label: 'District Announcements',  sub: 'Chicago Public Schools feed',          icon: <FileText    className="w-5 h-5" /> },
+  { id: 'legal',     label: 'Legal News',              sub: 'Education law, regulatory changes',    icon: <ShieldCheck className="w-5 h-5" /> },
+  { id: 'health',    label: 'Health Standards',        sub: 'Accessibility, WCAG, web compliance',  icon: <Globe       className="w-5 h-5" /> },
+];
+
+const TOPIC_LABELS: Record<string, string> = Object.fromEntries(TOPIC_TILES.map(t => [t.id, t.label]));
+
+function MonitoringSourcesCanvas({
+  selectedTopics,
+  onToggle,
+  showSelected,
+}: {
+  selectedTopics: string[];
+  onToggle: (id: string) => void;
+  showSelected: boolean;
+}) {
+  // Both phases use the same 6 tiles — after activation they show "Connected"
+  return (
+    <div className="flex-1 overflow-auto bg-white animate-in fade-in duration-700 p-8 space-y-6">
+      <div>
+        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Choose Topics to Monitor</h2>
+        <p className="text-slate-400 text-sm mt-1">
+          {showSelected
+            ? `${selectedTopics.length} topics connected`
+            : 'Select the topics you\'d like AI to watch — tap to toggle'}
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {TOPIC_TILES.map(t => {
+          const selected = selectedTopics.includes(t.id);
+          return (
+            <button
+              key={t.id}
+              onClick={() => !showSelected && onToggle(t.id)}
+              disabled={showSelected}
+              className={cn(
+                "rounded-2xl border-2 p-5 text-left space-y-3 transition-all duration-200",
+                !showSelected && "hover:scale-[1.02] active:scale-[0.98]",
+                selected && !showSelected ? "bg-blue-50 border-blue-300 shadow-md" :
+                selected &&  showSelected ? "bg-blue-50 border-blue-300 shadow-md" :
+                                            "bg-white border-slate-200 opacity-40"
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center",
+                  selected ? "bg-blue-100 text-blue-600" : "bg-slate-100 text-slate-400"
+                )}>
+                  {t.icon}
+                </div>
+                {showSelected && selected ? (
+                  <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">Connected</span>
+                ) : (
+                  <div className={cn(
+                    "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200",
+                    selected ? "border-blue-500 bg-blue-500" : "border-slate-300"
+                  )}>
+                    {selected && <CheckCircle className="w-3.5 h-3.5 text-white" />}
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className={cn("text-sm font-bold", selected ? "text-slate-900" : "text-slate-400")}>{t.label}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{t.sub}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      {!showSelected && (
+        <p className="text-xs text-slate-400 text-center">{selectedTopics.length} of {TOPIC_TILES.length} topics selected</p>
+      )}
+    </div>
+  );
+}
+
+// ─── Monitoring: setup animation canvas ─────────────────────────────────────
+function MonitoringSetupCanvas({ topics, extraSite }: { topics: string[]; extraSite?: string | null }) {
+  const [ticked, setTicked] = useState(0);
+  const baseTiles = topics.map(id => TOPIC_TILES.find(t => t.id === id)).filter(Boolean) as typeof TOPIC_TILES;
+  const items = [
+    ...baseTiles,
+    ...(extraSite ? [{ id: 'extra', label: extraSite, sub: 'External website', icon: <Globe className="w-5 h-5" /> }] : []),
+  ];
+
+  useEffect(() => {
+    if (ticked >= items.length) return;
+    const timer = setTimeout(() => setTicked(t => t + 1), 520);
+    return () => clearTimeout(timer);
+  }, [ticked, items.length]);
+
+  const allDone = ticked >= items.length;
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-8 p-12 bg-white animate-in fade-in duration-700">
+      <div className="text-center">
+        <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          {allDone ? 'Monitoring is Live' : 'Setting Up Monitoring'}
+        </h2>
+        <p className="text-slate-400 mt-1 text-sm font-medium">
+          {allDone ? 'All feeds are connected and active' : 'Connecting topic feeds for Lincoln High School'}
+        </p>
+      </div>
+      <div className="w-full max-w-md space-y-3">
+        {items.map((s, i) => {
+          const isDone   = ticked > i;
+          const isActive = ticked === i;
+          return (
+            <div key={s.id} className={cn(
+              "flex items-center gap-4 p-3 rounded-xl border transition-all duration-500",
+              isDone   ? "bg-blue-50 border-blue-200"  :
+              isActive ? "bg-slate-50 border-blue-300" :
+                         "bg-slate-50 border-slate-200 opacity-40"
+            )}>
+              <div className={cn(
+                "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 [&>svg]:w-4 [&>svg]:h-4",
+                isDone   ? "bg-blue-100 text-blue-600"  :
+                isActive ? "bg-blue-50 text-blue-500"   :
+                           "bg-slate-100 text-slate-400"
+              )}>
+                {s.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={cn("text-sm font-bold",
+                  isDone || isActive ? "text-slate-900" : "text-slate-400"
+                )}>{s.label}</p>
+                <p className="text-xs text-slate-400">
+                  {isDone ? 'Feed connected' : isActive ? 'Connecting...' : 'Waiting'}
+                </p>
+              </div>
+              <div className="shrink-0">
+                {isDone   ? <CheckCircle className="w-5 h-5 text-blue-500" />           :
+                 isActive ? <Loader2     className="w-5 h-5 text-blue-400 animate-spin" /> :
+                            <div className="w-5 h-5 rounded-full border-2 border-slate-200" />}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {allDone && (
+        <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-5 py-2.5 animate-in fade-in duration-500">
+          <CheckCircle className="w-4 h-4 text-blue-500 shrink-0" />
+          <span className="text-sm font-bold text-blue-700">All {items.length} feeds active</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Monitoring: discovery feed canvas ──────────────────────────────────────
+function MonitoringDiscoveryCanvas() {
+  const items = [
+    {
+      source: 'WTTW Chicago',
+      sourceType: 'Science & Academic',
+      time: '2 hours ago',
+      headline: 'Lincoln High School Science Olympiad Team Takes Regional Title',
+      draft: 'Blog post + Homepage announcement',
+    },
+    {
+      source: 'Chicago Public Schools',
+      sourceType: 'District',
+      time: 'Yesterday',
+      headline: 'Updated Student Absence Policy — Effective April 1, 2026',
+      draft: 'Policy page update + Parent alert banner',
+    },
+    {
+      source: 'IHSA',
+      sourceType: 'Sports',
+      time: '3 days ago',
+      headline: 'Lincoln HS Boys Basketball — Regional Champions 2026',
+      draft: 'Athletics news post + Homepage banner',
+    },
+    {
+      source: 'WebAIM Research',
+      sourceType: 'Web Health',
+      time: '4 days ago',
+      headline: 'New WCAG 2.2 Compliance Checklist for K-12 School Websites Released',
+      draft: 'Compliance checklist page update',
+    },
+  ];
+  return (
+    <div className="flex-1 overflow-auto bg-white animate-in fade-in duration-700 p-8 space-y-6">
+      <div>
+        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">4 Items Discovered</h2>
+        <p className="text-slate-400 text-sm mt-1">Relevant content found across monitored sources — AI drafts generated for each</p>
+      </div>
+      <div className="space-y-4">
+        {items.map((item, i) => (
+          <div key={i} className="rounded-2xl border border-blue-200 bg-blue-50 p-5 space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-blue-100 text-slate-900 border border-blue-200">
+                  {item.sourceType}
+                </span>
+                <span className="text-[10px] text-slate-500">{item.source}</span>
+              </div>
+              <span className="text-[10px] text-slate-400 shrink-0">{item.time}</span>
+            </div>
+            <p className="text-sm font-bold text-slate-900 leading-snug">{item.headline}</p>
+            <div className="flex items-center gap-2">
+              <PenTool className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="text-xs text-slate-600">Draft ready: <span className="font-semibold text-slate-900">{item.draft}</span></span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Monitoring: draft review queue canvas ───────────────────────────────────
+function MonitoringDraftsCanvas() {
+  const drafts = [
+    { title: 'Science Olympiad Team Takes Regional Title',          type: 'Blog Post',       source: 'WTTW Chicago'           },
+    { title: 'Updated Student Absence Policy — Effective April 1', type: 'Policy Update',   source: 'Chicago Public Schools' },
+    { title: 'Boys Basketball — Regional Champions 2026',          type: 'Athletics Post',  source: 'IHSA'                   },
+    { title: 'WCAG 2.2 Compliance Checklist for K-12 Websites',    type: 'Compliance Page', source: 'WebAIM Research'         },
+  ];
+  return (
+    <div className="flex-1 overflow-auto bg-white animate-in fade-in duration-700 p-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Content Review Queue</h2>
+          <p className="text-slate-400 text-sm mt-1">4 AI-generated drafts awaiting your approval</p>
+        </div>
+        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 px-4 py-2 rounded-full">
+          <div className="w-2 h-2 rounded-full bg-amber-400" />
+          <span className="text-amber-700 font-bold text-sm">4 Pending</span>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {drafts.map((d, i) => (
+          <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 hover:shadow-sm transition-shadow">
+            <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+              <PenTool className="w-4 h-4 text-slate-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-slate-900 leading-snug">{d.title}</p>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-slate-900">{d.type}</span>
+                <span className="text-[10px] text-slate-400">via {d.source}</span>
+              </div>
+            </div>
+            <div className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-1 rounded-full shrink-0 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pending Review
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
+        <RefreshCw className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-bold text-blue-800">Monitoring continues in the background</p>
+          <p className="text-xs text-blue-600 mt-1">New items from your 6 configured sources will be scanned daily and queued as drafts automatically.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Monitoring workflow progress bar ────────────────────────────────────────
+const MONITORING_STEPS: { label: string; detail: string }[] = [
+  { label: 'Topics',  detail: 'Select topics to monitor'  },
+  { label: 'Setup',   detail: 'Connect source feeds'      },
+  { label: 'Active',  detail: 'Monitoring is live'        },
+];
+
+function getMonitoringProgressIndex(step: ScenarioStep): number {
+  switch (step) {
+    case 'mon_input':    return 0;
+    case 'mon_scanning': return 1;
+    case 'mon_active':   return 2;
+    default:             return -1;
+  }
+}
+
+function MonitoringProgressBar({ step }: { step: ScenarioStep }) {
+  const active = getMonitoringProgressIndex(step);
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 p-4 animate-in fade-in duration-300">
+      <p className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">Workflow</p>
+      <div>
+        {MONITORING_STEPS.map(({ label, detail }, i) => {
+          const isComplete = i < active;
+          const isActive   = i === active;
+          const isLast     = i === MONITORING_STEPS.length - 1;
+          return (
+            <div key={i} className="flex gap-3">
+              <div className="flex flex-col items-center shrink-0">
+                <div className={cn(
+                  'w-6 h-6 rounded-full flex items-center justify-center transition-all duration-500 shrink-0',
+                  isComplete ? 'bg-blue-600' :
+                  isActive   ? 'bg-blue-600 ring-2 ring-blue-200 ring-offset-1' :
+                               'bg-slate-100 border-2 border-slate-200'
+                )}>
+                  {isComplete
+                    ? <CheckCircle className="w-3.5 h-3.5 text-white" />
+                    : isActive
+                      ? <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      : <span className="w-2 h-2 rounded-full bg-slate-300" />
+                  }
+                </div>
+                {!isLast && (
+                  <div className={cn(
+                    'w-0.5 my-1 transition-colors duration-500',
+                    i < active ? 'bg-blue-400' : 'bg-slate-200'
+                  )} style={{ minHeight: '22px' }} />
+                )}
+              </div>
+              <div className="pb-4 min-w-0">
+                <p className={cn(
+                  'text-sm font-bold leading-tight transition-colors duration-300',
+                  isComplete ? 'text-slate-400 line-through decoration-slate-300' :
+                  isActive   ? 'text-slate-900' :
+                               'text-slate-400'
+                )}>
+                  {label}
+                </p>
+                <p className={cn(
+                  'text-[11px] mt-0.5 transition-colors duration-300',
+                  isActive ? 'text-blue-600 font-medium' : 'text-slate-400'
+                )}>
+                  {detail}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main component ─────────────────────────────────────────────────────────
-export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspaceViewProps) {
+export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringComplete }: AiWorkspaceViewProps) {
   const [scenarioStep, setScenarioStep] = useState<ScenarioStep>('idle');
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'agent', content: React.ReactNode}[]>([]);
   const [orchestratorTick, setOrchestratorTick] = useState<number>(-4);
@@ -532,6 +907,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
   const [connectionStep, setConnectionStep] = useState<'type_select' | 'sis_select' | 'powerschool_auth' | null>(null);
   const [centerTab, setCenterTab] = useState<'site' | 'audit'>('site');
   const [auditTab, setAuditTab] = useState<'site' | 'audit'>('site');
+
+  // Monitoring scenario state
+  const [monTopicsSubmitted, setMonTopicsSubmitted]   = useState(false);
+  const [monSelectedTopics, setMonSelectedTopics]     = useState<string[]>(['sports', 'science', 'openhouse', 'district', 'legal', 'health']);
+  const [monWebsiteReady, setMonWebsiteReady]         = useState(false);
+  const [monWebsiteSubmitted, setMonWebsiteSubmitted] = useState(false);
+  const [monExtraSite, setMonExtraSite]               = useState<string | null>(null);
 
   const TARGET_URL = 'https://lincolnhigh.edu';
 
@@ -698,7 +1080,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
       setTimeout(() => {
         agentMessage(
           <div className="space-y-2 text-slate-600">
-            <p className="font-semibold text-slate-800 text-sm">On your Control Center you can find:</p>
+            <p className="font-semibold text-slate-800 text-sm">On your Automations you can find:</p>
             <div className="flex items-start gap-2">
               <RefreshCw className="w-3.5 h-3.5 text-indigo-500 mt-0.5 shrink-0" />
               <span>Automatic updates from PowerSchool — directory, schedules, and documents, ready to publish.</span>
@@ -721,11 +1103,84 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
     if (onFinishScenario) onFinishScenario();
   };
 
+  const finishMonitoringAndGoToDashboard = () => {
+    onMonitoringComplete?.();
+    onFinishScenario?.();
+  };
+
+  // ── Monitoring scenario handlers ─────────────────────────────────────────
+
+  const startMonitoringScenario = () => {
+    setScenarioStep('mon_input');
+    setMonTopicsSubmitted(false);
+    setMonSelectedTopics(['sports', 'science', 'openhouse', 'district', 'legal', 'health']);
+    setMonWebsiteReady(false);
+    setMonWebsiteSubmitted(false);
+    setMonExtraSite(null);
+    setChatMessages([{ role: 'user', content: 'Setup internet monitoring' }]);
+    setTimeout(() => {
+      agentMessage("I've pre-selected 6 relevant topic categories for Lincoln High. Tap to adjust, then activate when you're ready.");
+    }, 800);
+  };
+
+  const toggleMonTopic = (id: string) => {
+    setMonSelectedTopics(prev =>
+      prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
+    );
+  };
+
+  const activateSources = () => {
+    const topicNames = monSelectedTopics.map(id => TOPIC_LABELS[id]).join(', ');
+    userMessage(`Activate: ${topicNames}`);
+    setMonTopicsSubmitted(true);
+    setTimeout(() => {
+      agentMessage("Topics confirmed! Would you also like me to monitor any specific websites?");
+      setTimeout(() => setMonWebsiteReady(true), 400);
+    }, 800);
+  };
+
+  const startSetup = (extraSite: string | null) => {
+    const totalSources = monSelectedTopics.length + (extraSite ? 1 : 0);
+    setScenarioStep('mon_scanning');
+    setTimeout(() => {
+      agentMessage(`Setting up ${totalSources} monitoring source${totalSources !== 1 ? 's' : ''} for Lincoln High — connecting feeds now...`);
+      const setupDuration = totalSources * 520 + 1200;
+      setTimeout(() => {
+        setScenarioStep('mon_active');
+        agentMessage(
+          <span>
+            <strong>All feeds are live.</strong> I'll scan your {totalSources} source{totalSources !== 1 ? 's' : ''} daily and surface anything relevant — head to the Automations to see what I find.
+          </span>
+        );
+      }, setupDuration);
+    }, 800);
+  };
+
+  const submitWebsite = () => {
+    const site = 'State Ministry of Education website';
+    userMessage(`Yes — add the ${site}.`);
+    setMonWebsiteSubmitted(true);
+    setMonExtraSite(site);
+    startSetup(site);
+  };
+
+  const skipWebsite = () => {
+    userMessage("No, that's all.");
+    setMonWebsiteSubmitted(true);
+    startSetup(null);
+  };
+
   // ── Derived booleans ──────────────────────────────────────────────────────
   const isIdle      = scenarioStep === 'idle';
   const isUrlInput  = scenarioStep === 'url_input';
   const isAudit     = scenarioStep === 'audit';
   const isPostAudit = scenarioStep === 'post_audit';
+
+  // Monitoring derived booleans
+  const isMonInput    = scenarioStep === 'mon_input';
+  const isMonScanning = scenarioStep === 'mon_scanning';
+  const isMonActive   = scenarioStep === 'mon_active';
+  const isMonitoring  = isMonInput || isMonScanning || isMonActive;
 
   return (
     <div className="flex h-full w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-in fade-in duration-500">
@@ -739,7 +1194,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
           <div>
             <h2 className="font-bold text-slate-800 text-sm">Presence Assistant</h2>
             <p className="text-xs text-slate-500">
-              {isIdle ? 'Ready to help' : isAudit ? 'Audit complete' : isPostAudit ? 'Site live — 10/10' : 'Migrating website'}
+              {isIdle          ? 'Ready to help'             :
+               isAudit         ? 'Audit complete'            :
+               isPostAudit     ? 'Site live — 10/10'         :
+               isMonInput      ? 'Configuring sources'       :
+               isMonScanning   ? 'Setting up feeds...'       :
+               isMonActive     ? 'Monitoring is live'        :
+                                 'Migrating website'}
             </p>
           </div>
         </div>
@@ -759,7 +1220,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
               <div className="space-y-2">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Quick Actions</p>
                 {QUICK_ACTIONS.map((action, i) => (
-                  <button key={i} onClick={action.scenario ? startScenario : undefined}
+                  <button key={i} onClick={action.scenario ? startScenario : (action as any).monitoringScenario ? startMonitoringScenario : undefined}
                     className="w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all group text-sm font-semibold bg-white hover:shadow-md hover:border-slate-300 cursor-pointer border-slate-200 text-slate-700">
                     <span className={cn("p-1.5 rounded-lg border shrink-0", action.color)}>{action.icon}</span>
                     <span className="flex-1">{action.label}</span>
@@ -784,7 +1245,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </div>
           ))}
 
-          {/* URL INPUT: confirm button */}
+          {/* URL INPUT (migration): confirm button */}
           {isUrlInput && !urlSubmitted && urlPromptReady && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
               <button onClick={confirmUrl}
@@ -794,8 +1255,29 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
             </div>
           )}
 
+          {/* MONITORING: activate topics button */}
+          {isMonInput && !monTopicsSubmitted && monSelectedTopics.length > 0 && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
+              <button onClick={activateSources}
+                className="border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2">
+                Activate {monSelectedTopics.length} topic{monSelectedTopics.length !== 1 ? 's' : ''} &rarr;
+              </button>
+            </div>
+          )}
+
+          {/* MONITORING: website quick-reply button */}
+          {isMonInput && monWebsiteReady && !monWebsiteSubmitted && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
+              <button onClick={submitWebsite}
+                className="border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2">
+                <Globe className="w-3.5 h-3.5 shrink-0" />
+                Add website
+              </button>
+            </div>
+          )}
+
           {/* SCENARIO ACTION BUTTONS */}
-          {!isIdle && !isUrlInput && (
+          {!isIdle && !isUrlInput && !isMonInput && !isMonScanning && (
             <div className="pt-4 flex justify-start">
               {isAudit && auditReady && (
                 <button onClick={advanceToOrchestrator}
@@ -824,7 +1306,14 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
               {scenarioStep === 'hiring' && (
                 <button onClick={finishAndGoToDashboard}
                   className="animate-in fade-in slide-in-from-bottom bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2">
-                  Go to Control Center <CheckCircle className="w-4 h-4" />
+                  Go to Automations <CheckCircle className="w-4 h-4" />
+                </button>
+              )}
+              {/* Monitoring: go to Automations — also sets hasMonitoringSetup */}
+              {isMonActive && (
+                <button onClick={finishMonitoringAndGoToDashboard}
+                  className="animate-in fade-in slide-in-from-bottom bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2">
+                  Go to Automations <CheckCircle className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -847,6 +1336,20 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
                 : 'Your site preview will load once the URL is confirmed.'}
             </p>
           </div>
+        )}
+
+        {/* MONITORING: source config / website question phase */}
+        {isMonInput && (
+          <MonitoringSourcesCanvas
+            selectedTopics={monSelectedTopics}
+            onToggle={monTopicsSubmitted ? () => {} : toggleMonTopic}
+            showSelected={monTopicsSubmitted}
+          />
+        )}
+
+        {/* MONITORING: setup animation */}
+        {(isMonScanning || isMonActive) && (
+          <MonitoringSetupCanvas topics={monSelectedTopics} extraSite={monExtraSite} />
         )}
 
         {/* URL submitted OR audit: tab bar — Website (old) + Audit report */}
@@ -1009,20 +1512,56 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired }: AiWorkspace
         <div className="p-5 space-y-6">
 
           {/* MIGRATION PROGRESS PATH */}
-          {!isIdle && <ScenarioProgressBar step={scenarioStep} siteApproved={siteApproved} />}
+          {!isIdle && !isMonitoring && <ScenarioProgressBar step={scenarioStep} siteApproved={siteApproved} />}
 
-          {/* IDLE / URL INPUT / AUDIT: empty state */}
-          {(isIdle || isUrlInput || isAudit) && (
+          {/* MONITORING PROGRESS PATH */}
+          {isMonitoring && <MonitoringProgressBar step={scenarioStep} />}
+
+          {/* IDLE / URL INPUT / AUDIT / MONITORING: empty state */}
+          {(isIdle || isUrlInput || isAudit || isMonInput || isMonScanning) && (
             <div className="flex flex-col items-center justify-center gap-3 pt-16 text-center px-2 animate-in fade-in">
               <Server className="w-8 h-8 text-slate-200" />
               <p className="text-xs text-slate-400 leading-relaxed">
-                Agents and data hooks will appear here once migration starts.
+                {isMonInput || isMonScanning
+                  ? 'Active feeds will appear here once setup is complete.'
+                  : 'Agents and data hooks will appear here once migration starts.'}
               </p>
             </div>
           )}
 
-          {/* Integrations */}
-          {!isIdle && !isUrlInput && !isAudit && (scenarioStep !== 'orchestrator' || orchestratorTick >= 0) && (
+          {/* MONITORING: active feeds info card */}
+          {isMonActive && (
+            <div className="p-4 bg-white border border-blue-200 rounded-2xl space-y-3 animate-in slide-in-from-right-10 fade-in duration-500">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-900">Sources</p>
+              </div>
+              <div className="space-y-2">
+                {monSelectedTopics.map(id => {
+                  const tile = TOPIC_TILES.find(t => t.id === id);
+                  if (!tile) return null;
+                  return (
+                    <div key={id} className="flex items-center gap-2">
+                      <div className="text-blue-500 [&>svg]:w-3.5 [&>svg]:h-3.5">{tile.icon}</div>
+                      <span className="text-xs text-slate-600 font-medium">{tile.label}</span>
+                      <CheckCircle className="w-3 h-3 text-blue-400 ml-auto shrink-0" />
+                    </div>
+                  );
+                })}
+                {monExtraSite && (
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                    <span className="text-xs text-slate-600 font-medium">{monExtraSite}</span>
+                    <CheckCircle className="w-3 h-3 text-blue-400 ml-auto shrink-0" />
+                  </div>
+                )}
+              </div>
+              <p className="text-[10px] text-slate-400 leading-relaxed pt-1 border-t border-slate-100">Scans daily · drafts queued for review</p>
+            </div>
+          )}
+
+          {/* Integrations (migration only) */}
+          {!isIdle && !isUrlInput && !isAudit && !isMonitoring && (scenarioStep !== 'orchestrator' || orchestratorTick >= 0) && (
             <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl animate-in slide-in-from-right-10 fade-in duration-500">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-900">Integrations</p>

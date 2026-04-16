@@ -4,6 +4,13 @@ export type AiAction = {
   id: string;
   source: string;
   sourceType: 'newsletter' | 'sis' | 'district' | 'sports' | 'google-drive' | 'chat';
+  sourceUrl?: string;      // clickable link shown in the review modal (single source)
+  sourceWebsite?: string;  // human-friendly website name for the citation (e.g. "Gmail", "ADA.gov")
+  sources?: Array<{        // multiple sources — used when AI connected several references
+    website: string;
+    url: string;
+    detail: string;        // short description of what was found here
+  }>;
   isInternal: boolean;
   title: string;
   summary: string;
@@ -23,6 +30,8 @@ export const MOCK_AI_ACTIONS: AiAction[] = [
     id: 'act_1',
     source: 'PowerSchool SIS Sync',
     sourceType: 'sis',
+    sourceUrl: 'https://powerschool.com',
+    sourceWebsite: 'PowerSchool',
     isInternal: true,
     title: 'New Math Teacher Schedule',
     summary: 'SIS detected Mr. Davis was assigned to Advanced Calculus. The class schedule has been automatically updated on the portal.',
@@ -39,6 +48,8 @@ export const MOCK_AI_ACTIONS: AiAction[] = [
     id: 'act_2',
     source: 'Google Workspace (Shared Drive)',
     sourceType: 'google-drive',
+    sourceUrl: 'https://drive.google.com',
+    sourceWebsite: 'Google Drive',
     isInternal: true,
     title: 'Updated Parent Handbook 2026',
     summary: 'Detected a new version of the Parent Handbook PDF in the Principal\'s shared drive. Replaced the old link on the website.',
@@ -54,6 +65,8 @@ export const MOCK_AI_ACTIONS: AiAction[] = [
     id: 'act_3',
     source: 'Ministry of Education Feed',
     sourceType: 'district',
+    sourceUrl: 'https://ed.gov',
+    sourceWebsite: 'U.S. Dept. of Education',
     isInternal: false,
     title: 'Statewide Math Competition Announced',
     summary: 'The Ministry announced the dates for the Annual Math Olympiad. We recommend posting this on the school blog to encourage signups.',
@@ -70,6 +83,8 @@ export const MOCK_AI_ACTIONS: AiAction[] = [
     id: 'act_4',
     source: 'Local Sports Weekly',
     sourceType: 'sports',
+    sourceUrl: 'https://localsportsweekly.com',
+    sourceWebsite: 'Local Sports Weekly',
     isInternal: false,
     title: 'Varsity Soccer Championship Date',
     summary: 'The local sports news announced dates for the Varsity Soccer State Championship. Location is missing from the article.',

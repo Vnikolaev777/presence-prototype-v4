@@ -36,7 +36,8 @@ function App() {
   const [agents, setAgents] = useState<any[]>(MOCK_AGENTS);
 
   // Scenario state
-  const [hasHiredAgents, setHasHiredAgents] = useState(false);
+  const [hasHiredAgents, setHasHiredAgents] = useState(false);       // true after migrate scenario
+  const [hasMonitoringSetup, setHasMonitoringSetup] = useState(false); // true after monitoring scenario
   const showTeamNav = false; // hidden for now, re-enable when ready
 
   return (
@@ -77,7 +78,7 @@ function App() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 z-30 p-3 space-y-1 shrink-0">
           <NavItem active={activeTab === 'workspace'} onClick={() => { setActiveTab('workspace'); setMobileMenuOpen(false); }} icon={<Sparkles className="w-5 h-5" />} label="Presence Assistant" />
-          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<LayoutDashboard className="w-5 h-5" />} label="Control Center" />
+          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<LayoutDashboard className="w-5 h-5" />} label="Automations" />
           {showTeamNav && hasHiredAgents && <>
             <NavItem active={activeTab === 'team'} onClick={() => { setActiveTab('team'); setMobileMenuOpen(false); }} icon={<Users className="w-5 h-5" />} label="Team" />
             <NavItem active={activeTab === 'tasks'} onClick={() => { setActiveTab('tasks'); setMobileMenuOpen(false); }} icon={<ListTodo className="w-5 h-5" />} label="Tasks" />
@@ -104,7 +105,7 @@ function App() {
               active={activeTab === 'dashboard'}
               onClick={() => setActiveTab('dashboard')}
               icon={<LayoutDashboard className="w-5 h-5" />}
-              label="Control Center"
+              label="Automations"
             />
 
             {showTeamNav && hasHiredAgents && (
@@ -180,6 +181,7 @@ function App() {
               agents={agents}
               onNavigate={setActiveTab}
               hasHiredAgents={hasHiredAgents}
+              hasMonitoringSetup={hasMonitoringSetup}
             />
           )}
           {activeTab === 'hired_agents' && (
@@ -196,6 +198,7 @@ function App() {
             <AiWorkspaceView
               onAgentsHired={() => setHasHiredAgents(true)}
               onFinishScenario={() => setActiveTab('dashboard')}
+              onMonitoringComplete={() => setHasMonitoringSetup(true)}
             />
           )}
           {activeTab === 'team' && (
