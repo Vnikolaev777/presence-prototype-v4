@@ -233,6 +233,7 @@ export function AuditChatCardV2() {
     { label: 'A11y', score: 45 },
     { label: 'SEO',  score: 31 },
     { label: 'Best', score: 52 },
+    { label: 'Content', score: 40 },
   ];
   return (
     <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-2.5 w-full">
@@ -247,7 +248,7 @@ export function AuditChatCardV2() {
           <div className="flex items-center gap-1.5 font-bold text-sm text-slate-800">
             Site Audit <AlertCircle className="w-3.5 h-3.5 text-red-500" />
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">oakwoodhigh.edu · 14 issues found</div>
+          <div className="text-[10px] text-slate-500 mt-0.5">oakwoodhigh.org · 14 issues found</div>
         </div>
       </div>
       <div className="flex gap-1.5 flex-wrap">
@@ -272,6 +273,7 @@ export function PostAuditChatCardV2() {
     { label: 'A11y', score: 96 },
     { label: 'SEO',  score: 100 },
     { label: 'Best', score: 95 },
+    { label: 'Content', score: 97 },
   ];
   return (
     <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2.5 w-full">
@@ -286,7 +288,7 @@ export function PostAuditChatCardV2() {
           <div className="flex items-center gap-1.5 font-bold text-sm text-slate-800">
             New Site Audit <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">oakwoodhigh.edu · All checks passed</div>
+          <div className="text-[10px] text-slate-500 mt-0.5">oakwoodhigh.org · All checks passed</div>
         </div>
       </div>
       <div className="flex gap-1.5 flex-wrap">
@@ -326,7 +328,7 @@ export function AuditCanvasV2() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">Site Audit Report</h2>
-          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.edu · April 2026</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.org · April 2026</p>
         </div>
         <span className="bg-red-50 border border-red-200 text-red-500 text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
           Needs Improvement
@@ -393,7 +395,7 @@ export function PostAuditCanvasV2() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">New Site Audit Report</h2>
-          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.edu · April 2026</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.org · April 2026</p>
         </div>
         <span className="bg-emerald-50 border border-emerald-200 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
           Excellent

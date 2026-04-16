@@ -22,7 +22,7 @@ export function SchoolWebsitePreview({ previewType, showAfter, userLocationValue
           <div className="w-3 h-3 rounded-full bg-slate-300" />
         </div>
         <div className="ml-4 bg-white border border-slate-200 rounded-md h-6 flex-1 max-w-sm flex items-center px-3">
-          <span className="text-xs text-slate-400">https://www.highschool.edu/</span>
+          <span className="text-xs text-slate-400">https://www.oakwoodhigh.org/</span>
         </div>
       </div>
 

@@ -148,7 +148,7 @@ function WebsiteProfileTab() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-slate-900">Live Website Preview</p>
-            <p className="text-xs text-slate-400 mt-0.5 truncate">oakwoodhigh.edu · Current version</p>
+            <p className="text-xs text-slate-400 mt-0.5 truncate">oakwoodhigh.org · Current version</p>
           </div>
           <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-blue-500 shrink-0 transition-colors" />
         </a>

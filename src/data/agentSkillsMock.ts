@@ -34,7 +34,7 @@ export const MOCK_AGENT_SKILLS: AgentSkill[] = [
       { id: 'conn-gweb', name: 'Google Web Search', status: 'connected', icon: 'Search' }
     ],
     settings: {
-      topics: ['Lincoln High', 'Lincoln High School Sports', 'District 9 Education'],
+      topics: ['Oakwood High', 'Oakwood High School Sports', 'District 9 Education'],
       websites: ['localnews.com', 'educationboard.gov'],
       frequency: 'Daily'
     },
@@ -42,7 +42,7 @@ export const MOCK_AGENT_SKILLS: AgentSkill[] = [
       {
         id: 'msg-1',
         role: 'agent',
-        content: 'I have set up internet monitoring using the Google Web Search connector. I am currently tracking mentions of "Lincoln High". Would you like me to broaden the search to include specific academic programs or sports?',
+        content: 'I have set up internet monitoring using the Google Web Search connector. I am currently tracking mentions of "Oakwood High". Would you like me to broaden the search to include specific academic programs or sports?',
         timestamp: '10:00 AM'
       },
       {

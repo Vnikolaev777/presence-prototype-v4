@@ -656,7 +656,7 @@ function MonitoringSetupCanvas({ topics, extraSite }: { topics: string[]; extraS
           {allDone ? 'Monitoring is Live' : 'Setting Up Monitoring'}
         </h2>
         <p className="text-slate-400 mt-1 text-sm font-medium">
-          {allDone ? 'All feeds are connected and active' : 'Connecting topic feeds for Lincoln High School'}
+          {allDone ? 'All feeds are connected and active' : 'Connecting topic feeds for Oakwood High School'}
         </p>
       </div>
       <div className="w-full max-w-md space-y-3">
@@ -712,7 +712,7 @@ function MonitoringDiscoveryCanvas() {
       source: 'WTTW Chicago',
       sourceType: 'Science & Academic',
       time: '2 hours ago',
-      headline: 'Lincoln High School Science Olympiad Team Takes Regional Title',
+      headline: 'Oakwood High School Science Olympiad Team Takes Regional Title',
       draft: 'Blog post + Homepage announcement',
     },
     {
@@ -726,7 +726,7 @@ function MonitoringDiscoveryCanvas() {
       source: 'IHSA',
       sourceType: 'Sports',
       time: '3 days ago',
-      headline: 'Lincoln HS Boys Basketball — Regional Champions 2026',
+      headline: 'Oakwood HS Boys Basketball — Regional Champions 2026',
       draft: 'Athletics news post + Homepage banner',
     },
     {
@@ -915,7 +915,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
   const [monWebsiteSubmitted, setMonWebsiteSubmitted] = useState(false);
   const [monExtraSite, setMonExtraSite]               = useState<string | null>(null);
 
-  const TARGET_URL = 'https://lincolnhigh.edu';
+  const TARGET_URL = 'https://oakwoodhigh.org';
 
   // Scale site previews to fit the center column
   const centerColRef = useRef<HTMLDivElement>(null);
@@ -1119,7 +1119,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
     setMonExtraSite(null);
     setChatMessages([{ role: 'user', content: 'Setup internet monitoring' }]);
     setTimeout(() => {
-      agentMessage("I've pre-selected 6 relevant topic categories for Lincoln High. Tap to adjust, then activate when you're ready.");
+      agentMessage("I've pre-selected 6 relevant topic categories for Oakwood High. Tap to adjust, then activate when you're ready.");
     }, 800);
   };
 
@@ -1143,7 +1143,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
     const totalSources = monSelectedTopics.length + (extraSite ? 1 : 0);
     setScenarioStep('mon_scanning');
     setTimeout(() => {
-      agentMessage(`Setting up ${totalSources} monitoring source${totalSources !== 1 ? 's' : ''} for Lincoln High — connecting feeds now...`);
+      agentMessage(`Setting up ${totalSources} monitoring source${totalSources !== 1 ? 's' : ''} for Oakwood High — connecting feeds now...`);
       const setupDuration = totalSources * 520 + 1200;
       setTimeout(() => {
         setScenarioStep('mon_active');
@@ -1495,7 +1495,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
             <div className="shrink-0 bg-white px-3 py-2 border-b border-slate-200 flex items-center gap-2">
               <div className="flex gap-1.5 shrink-0"><div className="w-2.5 h-2.5 rounded-full bg-red-400"/><div className="w-2.5 h-2.5 rounded-full bg-amber-400"/><div className="w-2.5 h-2.5 rounded-full bg-emerald-400"/></div>
-              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">https://lincolnhigh.edu (AI Managed)</div>
+              <div className="bg-blue-50 px-3 py-1 rounded text-xs text-blue-700 font-bold font-mono flex-1 text-center border border-blue-200">https://oakwoodhigh.org (AI Managed)</div>
               <div className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full font-bold flex items-center gap-1 shrink-0">
                 <CheckCircle className="w-3 h-3" /> Live
               </div>

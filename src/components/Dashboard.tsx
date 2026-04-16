@@ -251,7 +251,7 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span className="font-semibold text-emerald-700">Live</span>
-            <span className="text-slate-400 text-xs">oakwood.edu</span>
+            <span className="text-slate-400 text-xs">oakwoodhigh.org</span>
           </div>
           <div className="w-px h-3.5 bg-slate-200" />
           <div className="flex items-center gap-1.5 text-sm text-slate-500">
