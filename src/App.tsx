@@ -210,7 +210,14 @@ function App() {
           )}
           {activeTab === 'tasks' && <TasksView />}
           {activeTab === 'utilities' && <UtilitiesHubView />}
-          {activeTab === 'knowledge_base' && <KnowledgeBaseView />}
+          {activeTab === 'knowledge_base' && (
+            <KnowledgeBaseView
+              connectedSystems={connectedSystems}
+              setConnectedSystems={setConnectedSystems}
+              actions={actions}
+              setActions={setActions}
+            />
+          )}
           {activeTab === 'apps_for_schools' && <AppsForSchoolsView />}
         </main>
       </div>

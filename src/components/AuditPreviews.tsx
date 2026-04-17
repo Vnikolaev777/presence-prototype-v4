@@ -38,7 +38,30 @@ function CategoryRow({ icon, label, score, detail }: {
       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden ml-5">
         <div className={cn('h-full rounded-full', c.bar)} style={{ width: `${score}%` }} />
       </div>
-      <p className="text-[10px] text-slate-400 ml-5 leading-tight">{detail}</p>
+      {detail && <p className="text-[10px] text-slate-400 ml-5 leading-tight">{detail}</p>}
+    </div>
+  );
+}
+
+// ─── Compliance row (used in V2 canvas) ──────────────────────────────────────
+type ComplianceStatus = 'compliant' | 'partial' | 'at-risk' | 'non-compliant';
+function ComplianceRow({ law, sub, status }: { law: string; sub: string; status: ComplianceStatus }) {
+  const s: Record<ComplianceStatus, { bg: string; border: string; text: string; label: string }> = {
+    'compliant':     { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', label: 'compliant' },
+    'partial':       { bg: 'bg-orange-50',  border: 'border-orange-200',  text: 'text-orange-600',  label: 'partial' },
+    'at-risk':       { bg: 'bg-red-50',     border: 'border-red-200',     text: 'text-red-500',     label: 'at risk' },
+    'non-compliant': { bg: 'bg-red-50',     border: 'border-red-200',     text: 'text-red-500',     label: 'non-compliant' },
+  };
+  const st = s[status];
+  return (
+    <div className="flex items-center justify-between gap-2 py-1.5 border-t border-slate-100 first:border-t-0">
+      <div className="min-w-0">
+        <p className="text-[11px] text-slate-700 font-semibold truncate">{law}</p>
+        <p className="text-[10px] text-slate-400 truncate">{sub}</p>
+      </div>
+      <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0', st.bg, st.border, st.text)}>
+        {st.label}
+      </span>
     </div>
   );
 }
@@ -229,11 +252,11 @@ export function PostAuditCanvas() {
 // ─── V2: Current site audit — chat bubble ────────────────────────────────────
 export function AuditChatCardV2() {
   const cats = [
-    { label: 'Perf', score: 38 },
-    { label: 'A11y', score: 45 },
-    { label: 'SEO',  score: 31 },
-    { label: 'Best', score: 52 },
+    { label: 'Perf',    score: 38 },
+    { label: 'A11y',    score: 31 },
+    { label: 'Privacy', score: 45 },
     { label: 'Content', score: 40 },
+    { label: 'SEO',     score: 52 },
   ];
   return (
     <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-2.5 w-full">
@@ -269,11 +292,11 @@ export function AuditChatCardV2() {
 // ─── V2: New site audit — chat bubble ────────────────────────────────────────
 export function PostAuditChatCardV2() {
   const cats = [
-    { label: 'Perf', score: 98 },
-    { label: 'A11y', score: 96 },
-    { label: 'SEO',  score: 100 },
-    { label: 'Best', score: 95 },
+    { label: 'Perf',    score: 98 },
+    { label: 'A11y',    score: 96 },
+    { label: 'Privacy', score: 95 },
     { label: 'Content', score: 97 },
+    { label: 'SEO',     score: 100 },
   ];
   return (
     <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2.5 w-full">
@@ -311,59 +334,81 @@ export function AuditCanvasV2() {
   const SCORE = 42;
   const c = scoreColor(SCORE);
   const categories = [
-    { icon: <Zap className="w-3.5 h-3.5" />,       label: 'Performance',    score: 38, detail: 'LCP 8.4s · 4 render-blocking resources · Images unoptimized' },
-    { icon: <Eye className="w-3.5 h-3.5" />,        label: 'Accessibility',  score: 45, detail: '23 images missing alt text · Low contrast ratio on 12 elements' },
-    { icon: <Search className="w-3.5 h-3.5" />,     label: 'SEO',            score: 31, detail: 'No meta descriptions · Missing sitemap · Not indexed in Maps' },
-    { icon: <ShieldCheck className="w-3.5 h-3.5" />,label: 'Best Practices', score: 52, detail: 'No HTTPS redirect · Outdated jQuery 1.x · 3 broken links' },
-    { icon: <FileText className="w-3.5 h-3.5" />,   label: 'Content',        score: 40, detail: 'Events last updated 2023 · 6 staff photos missing · 4 dead pages' },
+    { icon: <Zap className="w-3.5 h-3.5" />,        label: 'Performance',     score: 38, detail: 'LCP 8.4s · 4 render-blocking resources · Images unoptimized' },
+    { icon: <Eye className="w-3.5 h-3.5" />,         label: 'Accessibility',   score: 31, detail: '19 untagged PDFs · Missing alt text · No WCAG statement' },
+    { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: 'Student Privacy', score: 45, detail: 'Trackers on student pages · No FERPA notice · COPPA gaps' },
+    { icon: <FileText className="w-3.5 h-3.5" />,    label: 'Content',         score: 40, detail: '18 pages outdated · Events from 2023 · 6 dead links' },
+    { icon: <Search className="w-3.5 h-3.5" />,      label: 'Findability',     score: 52, detail: 'No meta descriptions · Not in Google Maps · Missing sitemap' },
   ];
   const issues = [
-    { sev: 'critical', text: 'Largest Contentful Paint: 8.4s (threshold: 2.5s)' },
-    { sev: 'critical', text: '23 images missing alt text — accessibility failure' },
-    { sev: 'critical', text: 'No meta descriptions on any page — invisible to search' },
-    { sev: 'warning',  text: 'Content not updated since Oct 2023' },
+    { tag: 'blocker', text: 'PDF policies not screen-reader accessible — ADA Title II deadline Apr 24' },
+    { tag: 'blocker', text: 'No accessibility statement published — required under ADA Title II' },
+    { tag: 'privacy', text: 'Tracking pixels on student pages — COPPA risk for under-13 users' },
+    { tag: 'high',    text: 'LCP 8.4s on enrollment page · hero image 4.2 MB unoptimized' },
+  ];
+  const tagStyle: Record<string, string> = {
+    blocker: 'bg-red-50 border-red-200 text-red-600',
+    privacy: 'bg-red-50 border-red-200 text-red-600',
+    high:    'bg-orange-50 border-orange-200 text-orange-600',
+  };
+  const compliance = [
+    { law: 'ADA Title II · WCAG 2.1 AA', sub: 'Digital accessibility for public entities', status: 'non-compliant' as ComplianceStatus },
+    { law: 'FERPA',                       sub: 'Directory info, annual notice, consent',     status: 'partial' as ComplianceStatus },
+    { law: 'COPPA',                       sub: 'Third-party services for under-13 users',    status: 'at-risk' as ComplianceStatus },
+    { law: 'CIPA',                        sub: 'Internet safety policy disclosure',          status: 'compliant' as ComplianceStatus },
   ];
   return (
-    <div className="flex-1 flex flex-col gap-5 p-7 bg-white animate-in fade-in duration-700">
+    <div className="flex-1 flex flex-col gap-4 p-6 bg-white animate-in fade-in duration-700">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">Site Audit Report</h2>
-          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.org · April 2026</p>
+          <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Site Audit Report</h2>
+          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.edu · April 2026</p>
         </div>
         <span className="bg-red-50 border border-red-200 text-red-500 text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
           Needs Improvement
         </span>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-4">
         <div className="relative shrink-0">
-          <AuditGauge score={SCORE} maxScore={100} size={88} strokeWidth={9} color={c.hex} />
+          <AuditGauge score={SCORE} maxScore={100} size={80} strokeWidth={8} color={c.hex} />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className={cn('text-2xl font-extrabold leading-none', c.text)}>{SCORE}</span>
             <span className="text-slate-400 text-[10px]">/100</span>
           </div>
         </div>
-        <div className="space-y-1.5">
-          <div className="text-sm font-bold text-slate-700">Overall Score</div>
+        <div className="space-y-1">
+          <div className="text-sm font-bold text-slate-700">Health Score</div>
           <div className="flex gap-3 text-[11px]">
             <span className="text-red-500 font-bold">● 8 critical</span>
             <span className="text-orange-500 font-bold">● 6 warnings</span>
           </div>
-          <div className="text-[10px] text-slate-400">Powered by Lighthouse · Apr 2026</div>
+          <div className="text-[10px] text-slate-400">Lighthouse + school compliance · Apr 2026</div>
         </div>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Category Scores</div>
-        {categories.map(cat => <CategoryRow key={cat.label} {...cat} />)}
+        <div className="space-y-2">
+          {categories.map(cat => <CategoryRow key={cat.label} {...cat} />)}
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Top Issues</div>
+      <div className="space-y-1.5">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Compliance</div>
+        <div className="border border-slate-100 rounded-lg px-3 py-0.5">
+          {compliance.map(r => <ComplianceRow key={r.law} {...r} />)}
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Critical Issues</div>
         <div className="space-y-1.5">
           {issues.map((issue, i) => (
             <div key={i} className="flex items-start gap-2">
-              <AlertCircle className={cn('w-3.5 h-3.5 mt-0.5 shrink-0', issue.sev === 'critical' ? 'text-red-500' : 'text-orange-400')} />
+              <span className={cn('text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 mt-0.5', tagStyle[issue.tag])}>
+                {issue.tag}
+              </span>
               <span className="text-[11px] text-slate-600 leading-tight">{issue.text}</span>
             </div>
           ))}
@@ -378,51 +423,66 @@ export function PostAuditCanvasV2() {
   const SCORE = 97;
   const c = scoreColor(SCORE);
   const categories = [
-    { icon: <Zap className="w-3.5 h-3.5" />,       label: 'Performance',    score: 98, detail: 'LCP 1.2s · No blocking resources · WebP images · CDN enabled' },
-    { icon: <Eye className="w-3.5 h-3.5" />,        label: 'Accessibility',  score: 96, detail: 'All images have alt text · WCAG AA compliant · Keyboard nav' },
-    { icon: <Search className="w-3.5 h-3.5" />,     label: 'SEO',            score: 100, detail: 'Meta descriptions on all pages · Sitemap submitted · Maps verified' },
-    { icon: <ShieldCheck className="w-3.5 h-3.5" />,label: 'Best Practices', score: 95, detail: 'HTTPS enforced · Modern dependencies · 0 broken links' },
-    { icon: <FileText className="w-3.5 h-3.5" />,   label: 'Content',        score: 97, detail: 'Events current · Full staff directory · All pages active' },
+    { icon: <Zap className="w-3.5 h-3.5" />,        label: 'Performance',     score: 98,  detail: 'LCP 1.2s · No blocking resources · WebP images · CDN enabled' },
+    { icon: <Eye className="w-3.5 h-3.5" />,         label: 'Accessibility',   score: 96,  detail: 'All images have alt text · WCAG 2.1 AA · All PDFs tagged' },
+    { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: 'Student Privacy', score: 95,  detail: 'No trackers on student pages · FERPA notice published · COPPA compliant' },
+    { icon: <FileText className="w-3.5 h-3.5" />,    label: 'Content',         score: 97,  detail: 'All pages current · Events up to date · 0 dead links' },
+    { icon: <Search className="w-3.5 h-3.5" />,      label: 'Findability',     score: 100, detail: 'Meta descriptions on all pages · Google Maps verified · Sitemap live' },
   ];
   const passed = [
-    'Largest Contentful Paint: 1.2s (was 8.4s)',
-    'All 23 images now have descriptive alt text',
-    'Meta descriptions added to all 24 pages',
-    'Content fully current as of April 2026',
+    'LCP 1.2s — down from 8.4s · all images WebP-optimized',
+    '19 PDFs fully tagged and screen-reader accessible',
+    'Accessibility statement with complaint contact published',
+    'All tracking pixels removed from student-facing pages',
+  ];
+  const compliance = [
+    { law: 'ADA Title II · WCAG 2.1 AA', sub: 'Digital accessibility for public entities', status: 'compliant' as ComplianceStatus },
+    { law: 'FERPA',                       sub: 'Directory info, annual notice, consent',     status: 'compliant' as ComplianceStatus },
+    { law: 'COPPA',                       sub: 'Third-party services for under-13 users',    status: 'compliant' as ComplianceStatus },
+    { law: 'CIPA',                        sub: 'Internet safety policy disclosure',          status: 'compliant' as ComplianceStatus },
   ];
   return (
-    <div className="flex-1 flex flex-col gap-5 p-7 bg-white animate-in fade-in duration-700">
+    <div className="flex-1 flex flex-col gap-4 p-6 bg-white animate-in fade-in duration-700">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">New Site Audit Report</h2>
-          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.org · April 2026</p>
+          <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">New Site Audit Report</h2>
+          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.edu · April 2026</p>
         </div>
         <span className="bg-emerald-50 border border-emerald-200 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
           Excellent
         </span>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-4">
         <div className="relative shrink-0">
-          <AuditGauge score={SCORE} maxScore={100} size={88} strokeWidth={9} color={c.hex} />
+          <AuditGauge score={SCORE} maxScore={100} size={80} strokeWidth={8} color={c.hex} />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className={cn('text-2xl font-extrabold leading-none', c.text)}>{SCORE}</span>
             <span className="text-slate-400 text-[10px]">/100</span>
           </div>
         </div>
-        <div className="space-y-1.5">
-          <div className="text-sm font-bold text-slate-700">Overall Score</div>
+        <div className="space-y-1">
+          <div className="text-sm font-bold text-slate-700">Health Score</div>
           <div className="text-[11px] text-emerald-600 font-bold">● All checks passed</div>
-          <div className="text-[10px] text-slate-400">Powered by Lighthouse · Apr 2026</div>
+          <div className="text-[10px] text-slate-400">Lighthouse + school compliance · Apr 2026</div>
         </div>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Category Scores</div>
-        {categories.map(cat => <CategoryRow key={cat.label} {...cat} />)}
+        <div className="space-y-2">
+          {categories.map(cat => <CategoryRow key={cat.label} {...cat} />)}
+        </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Compliance</div>
+        <div className="border border-slate-100 rounded-lg px-3 py-0.5">
+          {compliance.map(r => <ComplianceRow key={r.law} {...r} />)}
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
         <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Key Improvements</div>
         <div className="space-y-1.5">
           {passed.map((item, i) => (

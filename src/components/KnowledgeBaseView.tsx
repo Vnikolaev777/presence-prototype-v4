@@ -2,13 +2,14 @@ import { useState, useRef } from 'react';
 import {
   Globe, School, Upload, ExternalLink, Palette,
   File, Image, FileSpreadsheet, Trash2, Info,
-  MessageSquare, ThumbsUp, ThumbsDown, Pencil
+  MessageSquare, ThumbsUp, ThumbsDown, Pencil,
+  Database, MonitorSmartphone, Mail, CheckCircle2, Bot, Link2
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type MainTab = 'website' | 'school' | 'files';
+type MainTab = 'website' | 'school' | 'files' | 'integrations';
 
 interface UploadedFile {
   id: string;
@@ -36,7 +37,14 @@ function formatFileSize(bytes: number): string {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function KnowledgeBaseView() {
+interface KnowledgeBaseViewProps {
+  connectedSystems: any[];
+  setConnectedSystems: (s: any[]) => void;
+  actions: any[];
+  setActions: (a: any[]) => void;
+}
+
+export function KnowledgeBaseView({ connectedSystems, setConnectedSystems, actions, setActions }: KnowledgeBaseViewProps) {
   const [activeTab, setActiveTab] = useState<MainTab>('website');
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([
     { id: '1', name: 'Parent_Handbook_2026.pdf', size: 2_450_000, uploadedAt: 'Apr 10, 2026' },
@@ -71,9 +79,10 @@ export function KnowledgeBaseView() {
     setUploadedFiles(prev => prev.filter(f => f.id !== id));
 
   const TABS: { id: MainTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'website', label: 'Website Profile', icon: <Globe className="w-4 h-4" /> },
-    { id: 'school',  label: 'School Profile',  icon: <School className="w-4 h-4" /> },
-    { id: 'files',   label: 'School Files',    icon: <Upload className="w-4 h-4" /> },
+    { id: 'website',      label: 'Website Profile', icon: <Globe className="w-4 h-4" /> },
+    { id: 'school',       label: 'School Profile',  icon: <School className="w-4 h-4" /> },
+    { id: 'files',        label: 'School Files',    icon: <Upload className="w-4 h-4" /> },
+    { id: 'integrations', label: 'Integrations',    icon: <Link2 className="w-4 h-4" /> },
   ];
 
   return (
@@ -108,6 +117,14 @@ export function KnowledgeBaseView() {
       <div className="flex-1 overflow-y-auto">
         {activeTab === 'website' && <WebsiteProfileTab />}
         {activeTab === 'school'  && <SchoolProfileTab />}
+        {activeTab === 'integrations' && (
+          <IntegrationsTab
+            connectedSystems={connectedSystems}
+            setConnectedSystems={setConnectedSystems}
+            actions={actions}
+            setActions={setActions}
+          />
+        )}
         {activeTab === 'files'   && (
           <SchoolFilesTab
             files={uploadedFiles}
@@ -403,6 +420,104 @@ function SchoolProfileTab() {
           className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-slate-200 text-sm text-slate-400 hover:text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition-all"
         >
           <span className="text-lg leading-none">+</span> Add fact
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Integrations Tab ────────────────────────────────────────────────────────
+
+const ALL_INTEGRATIONS = [
+  {
+    name: 'PowerSchool',
+    type: 'Student Information System',
+    description: 'Sync class schedules, teacher directories, and student records directly to your website. Changes reflect automatically.',
+    icon: <Database className="w-6 h-6 text-blue-500" />,
+    defaultLive: true,
+  },
+  {
+    name: 'Google Analytics',
+    type: 'Website Analytics',
+    description: 'Track visitor behaviour, page performance, and traffic sources. AI agents use this data to suggest content improvements.',
+    icon: <Bot className="w-6 h-6 text-orange-500" />,
+    defaultLive: true,
+  },
+  {
+    name: 'ClassDojo',
+    type: 'Parent & Student Engagement',
+    description: 'Connect ClassDojo to surface school announcements and parent communications directly on the website.',
+    icon: <Mail className="w-6 h-6 text-emerald-500" />,
+    defaultLive: false,
+  },
+];
+
+function IntegrationsTab({ connectedSystems, setConnectedSystems, actions, setActions }: {
+  connectedSystems: any[];
+  setConnectedSystems: (s: any[]) => void;
+  actions: any[];
+  setActions: (a: any[]) => void;
+}) {
+  const [connecting, setConnecting] = useState<string | null>(null);
+
+  const handleConnect = (name: string, type: string) => {
+    setConnecting(name);
+    setTimeout(() => {
+      setConnectedSystems([...connectedSystems, { name, type, status: 'connected', lastSync: 'Just now' }]);
+      setConnecting(null);
+    }, 1500);
+  };
+
+  const isConnected = (name: string) =>
+    ALL_INTEGRATIONS.find(i => i.name === name)?.defaultLive ||
+    connectedSystems.some((s: any) => s.name === name);
+
+  return (
+    <div className="max-w-3xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {ALL_INTEGRATIONS.map(intg => (
+        <IntegrationCard
+          key={intg.name}
+          {...intg}
+          isConnected={isConnected(intg.name)}
+          isConnecting={connecting === intg.name}
+          onConnect={() => handleConnect(intg.name, intg.type)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function IntegrationCard({ name, description, icon, isConnected, isConnecting, onConnect }: {
+  name: string; description: string; icon: React.ReactNode;
+  isConnected: boolean; isConnecting: boolean; onConnect: () => void;
+}) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between mb-4">
+        <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+          {icon}
+        </div>
+        {isConnected && (
+          <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Connected
+          </span>
+        )}
+      </div>
+      <h3 className="text-sm font-bold text-slate-900 mb-1.5">{name}</h3>
+      <p className="text-xs text-slate-500 leading-relaxed flex-1 mb-4">{description}</p>
+      {!isConnected ? (
+        <button
+          onClick={onConnect}
+          disabled={isConnecting}
+          className="w-full py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {isConnecting ? (
+            <><div className="w-3.5 h-3.5 border-2 border-slate-400 border-t-slate-600 rounded-full animate-spin" /> Authenticating...</>
+          ) : 'Connect'}
+        </button>
+      ) : (
+        <button className="w-full py-2 rounded-lg text-xs font-bold text-slate-400 border border-slate-200 cursor-not-allowed">
+          Manage Settings
         </button>
       )}
     </div>
