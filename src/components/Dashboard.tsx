@@ -236,7 +236,7 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
   const pendingCount = [isCCPending, isWAPending].filter(Boolean).length;
 
   return (
-    <div className="animate-in fade-in duration-700 max-w-6xl mx-auto space-y-6">
+    <div className="animate-in fade-in duration-700 max-w-6xl space-y-6">
 
       {/* Header */}
       <div>

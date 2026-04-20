@@ -127,7 +127,7 @@ function CategorySection({ cat, ci }: { cat: typeof CATEGORIES[0]; ci: number })
 
 export function UtilitiesHubView() {
   return (
-    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in duration-700">
+    <div className="max-w-6xl space-y-10 animate-in fade-in duration-700">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

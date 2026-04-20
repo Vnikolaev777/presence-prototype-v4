@@ -53,7 +53,7 @@ export function OurTeamView({ agents, connectedSystems, autoUpdatesCount }: Prop
   const [subTab, setSubTab] = useState<SubTab>('team');
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-700">
+    <div className="max-w-5xl space-y-6 animate-in fade-in duration-700">
 
       {/* Page header */}
       <div>
