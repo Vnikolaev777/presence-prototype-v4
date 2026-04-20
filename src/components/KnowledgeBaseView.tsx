@@ -443,13 +443,6 @@ const ALL_INTEGRATIONS = [
     icon: <Bot className="w-6 h-6 text-orange-500" />,
     defaultLive: true,
   },
-  {
-    name: 'ClassDojo',
-    type: 'Parent & Student Engagement',
-    description: 'Connect ClassDojo to surface school announcements and parent communications directly on the website.',
-    icon: <Mail className="w-6 h-6 text-emerald-500" />,
-    defaultLive: false,
-  },
 ];
 
 function IntegrationsTab({ connectedSystems, setConnectedSystems, actions, setActions }: {
