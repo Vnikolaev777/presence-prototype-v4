@@ -90,7 +90,7 @@ export function KnowledgeBaseView({ connectedSystems, setConnectedSystems, actio
 
       {/* ── Page header + tabs ── */}
       <div className="mb-6">
-        <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Presence Data</h1>
+        <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Institution Context</h1>
         <p className="text-slate-500 text-sm mb-5">Your school's knowledge source — website structure, institution profile, and uploaded documents.</p>
 
         {/* Top tab bar */}

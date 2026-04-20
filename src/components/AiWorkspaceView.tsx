@@ -22,13 +22,13 @@ interface AiWorkspaceViewProps {
 }
 
 const QUICK_ACTIONS = [
-  { icon: <Layers         className="w-4 h-4" />, label: 'Migrate your website with improvements', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', scenario: true  },
-  { icon: <RefreshCw      className="w-4 h-4" />, label: 'Setup internet monitoring',  color: 'bg-violet-50 text-violet-600 border-violet-100', scenario: false, monitoringScenario: true },
-  { icon: <LayoutTemplate className="w-4 h-4" />, label: 'Make a new website',        color: 'bg-blue-50 text-blue-600 border-blue-100',    scenario: false },
-  { icon: <ShieldAlert    className="w-4 h-4" />, label: 'Perform an AI audit',         color: 'bg-emerald-50 text-emerald-600 border-emerald-100', scenario: false },
-  { icon: <Accessibility  className="w-4 h-4" />, label: 'Improve accessibility',       color: 'bg-rose-50 text-rose-600 border-rose-100',    scenario: false },
-  { icon: <Users          className="w-4 h-4" />, label: "Create a parent's hub",       color: 'bg-amber-50 text-amber-600 border-amber-100',  scenario: false },
-  { icon: <Database       className="w-4 h-4" />, label: 'Create mini websites',        color: 'bg-cyan-50 text-cyan-600 border-cyan-100',     scenario: false },
+  { icon: <Layers         className="w-4 h-4" />, label: 'Improve and migrate your website to Presence', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', scenario: true  },
+  { icon: <RefreshCw      className="w-4 h-4" />, label: 'Setup Internet Monitoring',   color: 'bg-violet-50 text-violet-600 border-violet-100', scenario: false, monitoringScenario: true },
+  { icon: <LayoutTemplate className="w-4 h-4" />, label: 'Create a website',            color: 'bg-blue-50 text-blue-600 border-blue-100',    scenario: false },
+  { icon: <ShieldAlert    className="w-4 h-4" />, label: 'Make a website audit',         color: 'bg-emerald-50 text-emerald-600 border-emerald-100', scenario: false },
+  { icon: <Accessibility  className="w-4 h-4" />, label: 'Improve accessibility',        color: 'bg-rose-50 text-rose-600 border-rose-100',    scenario: false },
+  { icon: <Users          className="w-4 h-4" />, label: 'Create a Family Hub',          color: 'bg-amber-50 text-amber-600 border-amber-100',  scenario: false },
+  { icon: <Database       className="w-4 h-4" />, label: 'Create event pages',           color: 'bg-cyan-50 text-cyan-600 border-cyan-100',     scenario: false },
 ];
 
 const SIS_PROVIDERS = [
@@ -464,6 +464,19 @@ function getProgressIndex(step: ScenarioStep, siteApproved: boolean): number {
 
 function ScenarioProgressBar({ step, siteApproved }: { step: ScenarioStep; siteApproved: boolean }) {
   const active = getProgressIndex(step, siteApproved);
+  const [revealed, setRevealed] = useState(0);
+
+  useEffect(() => {
+    setRevealed(0);
+    let i = 0;
+    const interval = setInterval(() => {
+      i += 1;
+      setRevealed(i);
+      if (i >= PROGRESS_STEPS.length) clearInterval(interval);
+    }, 120);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-4 animate-in fade-in duration-300">
       <p className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">Workflow</p>
@@ -472,8 +485,9 @@ function ScenarioProgressBar({ step, siteApproved }: { step: ScenarioStep; siteA
           const isComplete = i < active;
           const isActive   = i === active;
           const isLast     = i === PROGRESS_STEPS.length - 1;
+          if (i >= revealed) return null;
           return (
-            <div key={i} className="flex gap-3">
+            <div key={i} className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {/* Timeline spine */}
               <div className="flex flex-col items-center shrink-0">
                 <div className={cn(
@@ -991,7 +1005,8 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
       setTimeout(() => {
         setScenarioStep('audit');
         setAuditTab('audit');
-        agentMessage(<AuditChatCardV2 />);
+        agentMessage("Audit done — check the Audit tab for the full report.");
+        // agentMessage(<AuditChatCardV2 />); // hidden for now
         setTimeout(() => {
           agentMessage("Visitors struggle to navigate it on mobile, the content is hard to read, and it's nearly invisible in search results.");
           setTimeout(() => {
@@ -1062,7 +1077,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
   const approveSite = () => {
     userMessage("Looks good — let's go!");
     setPostAuditReady(false);
-    agentMessage(<PostAuditChatCardV2 />);
+    // agentMessage(<PostAuditChatCardV2 />); // hidden for now
     setTimeout(() => {
       agentMessage(
         <span>🎉 <strong>Your new site is live</strong> at a temporary Presence URL. Ready to connect your own domain and make it official?</span>
@@ -1212,13 +1227,13 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="flex flex-col mr-auto items-start max-w-[95%]">
                 <div className="px-3 py-2 rounded-2xl rounded-bl-sm text-sm shadow-sm bg-white border border-slate-200 text-slate-700">
-                  <p className="font-medium mb-1">👋 Hello! I'm your Presence Assistant.</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">I can build websites, manage integrations, and deploy AI agents. What would you like to do?</p>
+                  <p className="font-medium mb-1">Hi! I'm your Presence Assistant —</p>
+                  <p className="text-slate-500 text-xs leading-relaxed">here to build and maintain your website, handle integrations, and run AI agents that keep your online presence in sync with the outside world. What should we start with?</p>
                 </div>
-                <span className="text-[10px] text-slate-400 mt-1">Presence Assistant</span>
+                <span className="text-[10px] text-slate-500 mt-1">Presence Assistant</span>
               </div>
               <div className="space-y-2">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Quick Actions</p>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Quick Actions</p>
                 {QUICK_ACTIONS.map((action, i) => (
                   <button key={i} onClick={action.scenario ? startScenario : (action as any).monitoringScenario ? startMonitoringScenario : undefined}
                     className="w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all group text-sm font-semibold bg-white hover:shadow-md hover:border-slate-300 cursor-pointer border-slate-200 text-slate-700">
@@ -1241,7 +1256,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
               )}>
                 {msg.content}
               </div>
-              <span className="text-[10px] text-slate-400 mt-1">{msg.role === 'user' ? 'You' : 'Presence Assistant'}</span>
+              <span className="text-[10px] text-slate-500 mt-1">{msg.role === 'user' ? 'You' : 'Presence Assistant'}</span>
             </div>
           ))}
 
@@ -1330,7 +1345,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
             <div className="w-20 h-20 rounded-2xl bg-white border border-slate-200 shadow-md flex items-center justify-center">
               <Sparkles className="w-10 h-10 text-slate-300" />
             </div>
-            <p className="text-slate-400 font-semibold text-sm max-w-xs">
+            <p className="text-slate-500 font-semibold text-sm max-w-xs">
               {isIdle
                 ? <>Select a quick action on the left to get started.<br />Your website preview will appear here.</>
                 : 'Your site preview will load once the URL is confirmed.'}
@@ -1352,8 +1367,8 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
           <MonitoringSetupCanvas topics={monSelectedTopics} extraSite={monExtraSite} />
         )}
 
-        {/* URL submitted OR audit: tab bar — Website (old) + Audit report */}
-        {((isUrlInput && urlSubmitted) || isAudit) && (
+        {/* URL submitted OR audit OR generation: tab bar — Website (old) + Audit report */}
+        {((isUrlInput && urlSubmitted) || isAudit || scenarioStep === 'generation') && (
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
             {/* Tab bar */}
             <div className="shrink-0 flex bg-slate-50 border-b border-slate-200">
@@ -1370,24 +1385,24 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
                 Website
               </button>
               <button
-                onClick={() => isAudit && setAuditTab('audit')}
+                onClick={() => (isAudit || scenarioStep === 'generation') && setAuditTab('audit')}
                 className={cn(
                   'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
-                  !isAudit
+                  !(isAudit || scenarioStep === 'generation')
                     ? 'border-transparent text-slate-300 cursor-default'
                     : auditTab === 'audit'
                       ? 'border-blue-500 text-slate-900 bg-white'
                       : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                 )}
               >
-                {isAudit
+                {(isAudit || scenarioStep === 'generation')
                   ? <><AlertCircle className="w-3.5 h-3.5 text-red-400" />Audit</>
                   : <><Loader2 className="w-3.5 h-3.5 animate-spin" />Audit</>
                 }
               </button>
             </div>
             {/* Content */}
-            {auditTab === 'audit' && isAudit ? (
+            {auditTab === 'audit' && (isAudit || scenarioStep === 'generation') ? (
               <AuditCanvasV2 />
             ) : (
               <div className="flex-1 min-h-0 overflow-auto bg-white">
@@ -1445,8 +1460,8 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
           </div>
         )}
 
-        {/* GENERATION: "after" site — brief reveal */}
-        {(scenarioStep === 'generation' || isPostAudit) && (
+        {/* POST-AUDIT: "after" site revealed */}
+        {isPostAudit && (
           <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-700">
             {/* Tab bar */}
             <div className="shrink-0 flex bg-slate-50 border-b border-slate-200">
@@ -1518,13 +1533,11 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
           {isMonitoring && <MonitoringProgressBar step={scenarioStep} />}
 
           {/* IDLE / URL INPUT / AUDIT / MONITORING: empty state */}
-          {(isIdle || isUrlInput || isAudit || isMonInput || isMonScanning) && (
+          {(isMonInput || isMonScanning) && (
             <div className="flex flex-col items-center justify-center gap-3 pt-16 text-center px-2 animate-in fade-in">
               <Server className="w-8 h-8 text-slate-200" />
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {isMonInput || isMonScanning
-                  ? 'Active feeds will appear here once setup is complete.'
-                  : 'Agents and data hooks will appear here once migration starts.'}
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Active feeds will appear here once setup is complete.
               </p>
             </div>
           )}
@@ -1565,7 +1578,7 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
             <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl animate-in slide-in-from-right-10 fade-in duration-500">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-900">Integrations</p>
-                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full cursor-help">40+ Ready</span>
+                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full cursor-help">View All</span>
               </div>
 
               {/* SIS section */}

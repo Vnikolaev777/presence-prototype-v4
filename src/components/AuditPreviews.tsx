@@ -13,12 +13,12 @@
  *   AuditPreviewPage — dev showcase for both versions
  */
 
-import { AlertCircle, CheckCircle, Zap, Eye, Search, ShieldCheck, FileText } from 'lucide-react';
+import { AlertCircle, CheckCircle, Zap, Eye, Search, ShieldCheck, FileText, Lock, Monitor, Save, Share2, ExternalLink } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 // ─── Score color helpers ─────────────────────────────────────────────────────
 function scoreColor(n: number) {
-  if (n >= 90) return { text: 'text-emerald-600', bar: 'bg-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-200', hex: '#10b981' };
+  if (n >= 70) return { text: 'text-emerald-600', bar: 'bg-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-200', hex: '#10b981' };
   if (n >= 50) return { text: 'text-orange-500', bar: 'bg-orange-400', bg: 'bg-orange-50', border: 'border-orange-200', hex: '#f97316' };
   return { text: 'text-red-500', bar: 'bg-red-500', bg: 'bg-red-50', border: 'border-red-200', hex: '#ef4444' };
 }
@@ -252,19 +252,21 @@ export function PostAuditCanvas() {
 // ─── V2: Current site audit — chat bubble ────────────────────────────────────
 export function AuditChatCardV2() {
   const cats = [
-    { label: 'Perf',    score: 38 },
-    { label: 'A11y',    score: 31 },
-    { label: 'Privacy', score: 45 },
-    { label: 'Content', score: 40 },
-    { label: 'SEO',     score: 52 },
+    { label: 'Perf',      score: 38 },
+    { label: 'A11y',      score: 31 },
+    { label: 'Privacy',   score: 45 },
+    { label: 'Security',  score: 72 },
+    { label: 'Usability', score: 42 },
+    { label: 'Content',   score: 40 },
+    { label: 'Discov',    score: 52 },
   ];
   return (
-    <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-2.5 w-full">
+    <div className="bg-white border border-slate-200 rounded-xl p-3 space-y-2.5 w-full">
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
-          <AuditGauge score={42} maxScore={100} size={52} strokeWidth={6} color="#ef4444" />
+          <AuditGauge score={46} maxScore={100} size={52} strokeWidth={6} color="#ef4444" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-red-500 font-extrabold text-[13px] leading-none">42</span>
+            <span className="text-red-500 font-extrabold text-[13px] leading-none">46</span>
           </div>
         </div>
         <div className="flex-1 min-w-0">
@@ -292,11 +294,13 @@ export function AuditChatCardV2() {
 // ─── V2: New site audit — chat bubble ────────────────────────────────────────
 export function PostAuditChatCardV2() {
   const cats = [
-    { label: 'Perf',    score: 98 },
-    { label: 'A11y',    score: 96 },
-    { label: 'Privacy', score: 95 },
-    { label: 'Content', score: 97 },
-    { label: 'SEO',     score: 100 },
+    { label: 'Perf',      score: 98 },
+    { label: 'A11y',      score: 96 },
+    { label: 'Privacy',   score: 95 },
+    { label: 'Security',  score: 99 },
+    { label: 'Usability', score: 94 },
+    { label: 'Content',   score: 97 },
+    { label: 'Discov',    score: 100 },
   ];
   return (
     <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2.5 w-full">
@@ -331,21 +335,64 @@ export function PostAuditChatCardV2() {
 
 // ─── V2: Current site audit — full canvas ────────────────────────────────────
 export function AuditCanvasV2() {
-  const SCORE = 42;
-  const c = scoreColor(SCORE);
-  const categories = [
-    { icon: <Zap className="w-3.5 h-3.5" />,        label: 'Performance',     score: 38, detail: 'LCP 8.4s · 4 render-blocking resources · Images unoptimized' },
-    { icon: <Eye className="w-3.5 h-3.5" />,         label: 'Accessibility',   score: 31, detail: '19 untagged PDFs · Missing alt text · No WCAG statement' },
-    { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: 'Student Privacy', score: 45, detail: 'Trackers on student pages · No FERPA notice · COPPA gaps' },
-    { icon: <FileText className="w-3.5 h-3.5" />,    label: 'Content',         score: 40, detail: '18 pages outdated · Events from 2023 · 6 dead links' },
-    { icon: <Search className="w-3.5 h-3.5" />,      label: 'Findability',     score: 52, detail: 'No meta descriptions · Not in Google Maps · Missing sitemap' },
-  ];
+  // Issues are the single source of truth — category scores and counts derive from here
+  const PENALTIES: Record<string, number> = { blocker: 20, privacy: 15, high: 10 };
+
   const issues = [
-    { tag: 'blocker', text: 'PDF policies not screen-reader accessible — ADA Title II deadline Apr 24' },
-    { tag: 'blocker', text: 'No accessibility statement published — required under ADA Title II' },
-    { tag: 'privacy', text: 'Tracking pixels on student pages — COPPA risk for under-13 users' },
-    { tag: 'high',    text: 'LCP 8.4s on enrollment page · hero image 4.2 MB unoptimized' },
+    { tag: 'blocker', category: 'Accessibility',   text: 'PDF policies not screen-reader accessible — ADA Title II deadline Apr 24' },
+    { tag: 'blocker', category: 'Accessibility',   text: 'No accessibility statement published — required under ADA Title II' },
+    { tag: 'privacy', category: 'Student Privacy', text: 'Tracking pixels on student pages — COPPA risk for under-13 users' },
+    { tag: 'high',    category: 'Performance',     text: 'LCP 8.4s on enrollment page · hero image 4.2 MB unoptimized' },
+    // Additional issues — categories outside BASE_SCORES so scores are unaffected
+    { tag: 'blocker', category: 'Forms',           text: 'Enrollment form has no ARIA labels — keyboard navigation impossible' },
+    { tag: 'blocker', category: 'Navigation',      text: 'Skip-to-content link missing — screen readers cannot bypass nav' },
+    { tag: 'blocker', category: 'Authentication',  text: 'Password reset flow broken on Safari — students locked out' },
+    { tag: 'privacy', category: 'Analytics',       text: 'Google Analytics collecting PII from student profile pages — FERPA risk' },
+    { tag: 'privacy', category: 'Analytics',       text: 'Third-party chatbot retaining student conversation data — COPPA risk' },
+    { tag: 'high',    category: 'Mobile',          text: 'Hamburger menu unresponsive on iOS 17 — 3-tap workaround required' },
+    { tag: 'high',    category: 'Links',           text: '6 broken internal links on About and Staff pages' },
+    { tag: 'high',    category: 'Mobile',          text: 'Touch targets on events calendar below 44×44px minimum' },
   ];
+
+  // Base scores = what the category would score with no issues
+  const BASE_SCORES: Record<string, number> = {
+    Performance:       48,
+    Accessibility:     71,
+    'Student Privacy': 60,
+    Security:          72,
+    Usability:         42,
+    Content:           40,
+    Discoverability:   52,
+  };
+
+  // Deduct penalties from base scores based on issues in each category
+  const catScores: Record<string, number> = Object.fromEntries(
+    Object.entries(BASE_SCORES).map(([cat, base]) => {
+      const penalty = issues
+        .filter(i => i.category === cat)
+        .reduce((s, i) => s + PENALTIES[i.tag], 0);
+      return [cat, Math.max(0, base - penalty)];
+    })
+  );
+
+  // Overall = average of all category scores
+  const SCORE = Math.round(
+    Object.values(catScores).reduce((s, v) => s + v, 0) / Object.keys(catScores).length
+  );
+  const c = scoreColor(SCORE);
+
+  const categories = [
+    { icon: <Zap className="w-3.5 h-3.5" />,        label: 'Performance',     score: catScores['Performance'],     detail: 'LCP 8.4s · Images unoptimized' },
+    { icon: <Eye className="w-3.5 h-3.5" />,         label: 'Accessibility',   score: catScores['Accessibility'],   detail: '19 untagged PDFs · Missing alt text · No WCAG statement' },
+    { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: 'Student Privacy', score: catScores['Student Privacy'], detail: 'No FERPA notice · COPPA gaps' },
+    { icon: <Lock className="w-3.5 h-3.5" />,        label: 'Security',        score: catScores['Security'],        detail: 'HTTPS present · Mixed content on 3 pages · 2 warnings' },
+    { icon: <Monitor className="w-3.5 h-3.5" />,     label: 'Usability',       score: catScores['Usability'],       detail: 'Not mobile-friendly · nav confusing · avg 4.2 clicks to CTA' },
+    { icon: <FileText className="w-3.5 h-3.5" />,    label: 'Content',         score: catScores['Content'],         detail: '18 pages outdated · 6 dead links' },
+    { icon: <Search className="w-3.5 h-3.5" />,      label: 'Discoverability', score: catScores['Discoverability'], detail: 'No meta descriptions · Not in Google Maps · Missing sitemap' },
+  ];
+
+  const criticalCount = issues.filter(i => i.tag === 'blocker' || i.tag === 'privacy').length;
+  const warningCount  = issues.filter(i => i.tag === 'high').length;
   const tagStyle: Record<string, string> = {
     blocker: 'bg-red-50 border-red-200 text-red-600',
     privacy: 'bg-red-50 border-red-200 text-red-600',
@@ -358,11 +405,11 @@ export function AuditCanvasV2() {
     { law: 'CIPA',                        sub: 'Internet safety policy disclosure',          status: 'compliant' as ComplianceStatus },
   ];
   return (
-    <div className="flex-1 flex flex-col gap-4 p-6 bg-white animate-in fade-in duration-700">
+    <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4 p-6 bg-white animate-in fade-in duration-700">
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Site Audit Report</h2>
-          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.edu · April 2026</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.org · April 2026</p>
         </div>
         <span className="bg-red-50 border border-red-200 text-red-500 text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
           Needs Improvement
@@ -380,10 +427,9 @@ export function AuditCanvasV2() {
         <div className="space-y-1">
           <div className="text-sm font-bold text-slate-700">Health Score</div>
           <div className="flex gap-3 text-[11px]">
-            <span className="text-red-500 font-bold">● 8 critical</span>
-            <span className="text-orange-500 font-bold">● 6 warnings</span>
+            <span className="text-red-500 font-bold">● {criticalCount} critical</span>
+            <span className="text-orange-500 font-bold">● {warningCount} warning{warningCount !== 1 ? 's' : ''}</span>
           </div>
-          <div className="text-[10px] text-slate-400">Lighthouse + school compliance · Apr 2026</div>
         </div>
       </div>
 
@@ -401,18 +447,16 @@ export function AuditCanvasV2() {
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Critical Issues</div>
-        <div className="space-y-1.5">
-          {issues.map((issue, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <span className={cn('text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 mt-0.5', tagStyle[issue.tag])}>
-                {issue.tag}
-              </span>
-              <span className="text-[11px] text-slate-600 leading-tight">{issue.text}</span>
-            </div>
-          ))}
-        </div>
+      <div className="flex gap-2 pt-1">
+        <button className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg transition-colors">
+          <Save className="w-3.5 h-3.5" /> Save
+        </button>
+        <button className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg transition-colors">
+          <Share2 className="w-3.5 h-3.5" /> Share
+        </button>
+        <button className="flex items-center gap-1.5 text-[11px] font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-lg transition-colors ml-auto">
+          <ExternalLink className="w-3.5 h-3.5" /> View Full Report
+        </button>
       </div>
     </div>
   );
@@ -426,8 +470,10 @@ export function PostAuditCanvasV2() {
     { icon: <Zap className="w-3.5 h-3.5" />,        label: 'Performance',     score: 98,  detail: 'LCP 1.2s · No blocking resources · WebP images · CDN enabled' },
     { icon: <Eye className="w-3.5 h-3.5" />,         label: 'Accessibility',   score: 96,  detail: 'All images have alt text · WCAG 2.1 AA · All PDFs tagged' },
     { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: 'Student Privacy', score: 95,  detail: 'No trackers on student pages · FERPA notice published · COPPA compliant' },
-    { icon: <FileText className="w-3.5 h-3.5" />,    label: 'Content',         score: 97,  detail: 'All pages current · Events up to date · 0 dead links' },
-    { icon: <Search className="w-3.5 h-3.5" />,      label: 'Findability',     score: 100, detail: 'Meta descriptions on all pages · Google Maps verified · Sitemap live' },
+    { icon: <Lock className="w-3.5 h-3.5" />,        label: 'Security',        score: 99,  detail: 'HTTPS enforced · No mixed content · No vulnerabilities' },
+    { icon: <Monitor className="w-3.5 h-3.5" />,     label: 'Usability',       score: 94,  detail: 'Mobile-friendly · nav OK · avg 1.4 clicks to CTA' },
+    { icon: <FileText className="w-3.5 h-3.5" />,    label: 'Content',         score: 97,  detail: 'All pages current · 0 dead links' },
+    { icon: <Search className="w-3.5 h-3.5" />,      label: 'Discoverability',     score: 100, detail: 'Meta descriptions on all pages · Google Maps verified · Sitemap live' },
   ];
   const passed = [
     'LCP 1.2s — down from 8.4s · all images WebP-optimized',
@@ -442,11 +488,11 @@ export function PostAuditCanvasV2() {
     { law: 'CIPA',                        sub: 'Internet safety policy disclosure',          status: 'compliant' as ComplianceStatus },
   ];
   return (
-    <div className="flex-1 flex flex-col gap-4 p-6 bg-white animate-in fade-in duration-700">
+    <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4 p-6 bg-white animate-in fade-in duration-700">
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">New Site Audit Report</h2>
-          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.edu · April 2026</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">oakwoodhigh.org · April 2026</p>
         </div>
         <span className="bg-emerald-50 border border-emerald-200 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
           Excellent
@@ -464,7 +510,6 @@ export function PostAuditCanvasV2() {
         <div className="space-y-1">
           <div className="text-sm font-bold text-slate-700">Health Score</div>
           <div className="text-[11px] text-emerald-600 font-bold">● All checks passed</div>
-          <div className="text-[10px] text-slate-400">Lighthouse + school compliance · Apr 2026</div>
         </div>
       </div>
 
@@ -493,6 +538,18 @@ export function PostAuditCanvasV2() {
           ))}
         </div>
       </div>
+
+      <div className="flex gap-2 pt-1">
+        <button className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg transition-colors">
+          <Save className="w-3.5 h-3.5" /> Save
+        </button>
+        <button className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg transition-colors">
+          <Share2 className="w-3.5 h-3.5" /> Share
+        </button>
+        <button className="flex items-center gap-1.5 text-[11px] font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-lg transition-colors ml-auto">
+          <ExternalLink className="w-3.5 h-3.5" /> View Full Report
+        </button>
+      </div>
     </div>
   );
 }
@@ -517,7 +574,7 @@ export function AuditPreviewPage() {
           <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Chat bubble cards</p>
           <div className="flex gap-6 flex-wrap">
             <div className="w-72">
-              <p className="text-[10px] text-slate-400 mb-1.5">42/100 — before migration</p>
+              <p className="text-[10px] text-slate-400 mb-1.5">46/100 — before migration</p>
               <AuditChatCardV2 />
             </div>
             <div className="w-72">
@@ -531,7 +588,7 @@ export function AuditPreviewPage() {
           <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Full canvas panels</p>
           <div className="flex gap-6 flex-wrap items-start">
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col" style={{ width: 480, minHeight: 540 }}>
-              <div className="bg-slate-800 text-slate-400 text-[10px] font-mono px-4 py-2 shrink-0">AuditCanvasV2 — 42/100</div>
+              <div className="bg-slate-800 text-slate-400 text-[10px] font-mono px-4 py-2 shrink-0">AuditCanvasV2 — 46/100</div>
               <AuditCanvasV2 />
             </div>
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col" style={{ width: 480, minHeight: 540 }}>
