@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Zap, Eye, CheckCircle, RotateCcw, ArrowRight } from 'lucide-react';
+import { X, Zap, Eye, CheckCircle, ArrowRight } from 'lucide-react';
 import { SchoolAfterMagic } from '../pages/SchoolAfterMagic';
 
 interface Props {
@@ -15,6 +15,7 @@ const WHAT_WAS_DONE = [
 
 export function AutoUpdatePreviewModal({ onClose }: Props) {
   const [showAfter, setShowAfter] = useState(true);
+  const [alwaysManual, setAlwaysManual] = useState(false);
 
   return (
     <AnimatePresence>
@@ -109,30 +110,45 @@ export function AutoUpdatePreviewModal({ onClose }: Props) {
             </div>
 
             {/* Footer Actions */}
-            <div className="p-6 border-t border-slate-100 bg-slate-50/80 space-y-2">
+            <div className="p-5 border-t border-slate-100 bg-white space-y-3">
+              {/* Primary row */}
               <div className="flex gap-2">
                 <button
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+                  className="px-4 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
                 >
-                  Done
+                  Revert
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-[2] py-2.5 rounded-lg text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(16,185,129,0.35)] bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white bg-slate-900 hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Looks Good
                 </button>
               </div>
-              {/* Secondary — opt into manual review for this type */}
-              <button
-                onClick={onClose}
-                className="w-full py-2.5 rounded-lg text-sm font-semibold text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors flex items-center justify-center gap-2"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Always require my review for teacher updates
-              </button>
+
+              {/* Toggle row — opt into manual review */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-xs text-slate-500 font-medium leading-snug pr-4">
+                  Always require my review for teacher updates
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={alwaysManual}
+                  onClick={() => setAlwaysManual(v => !v)}
+                  className={`relative shrink-0 w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${
+                    alwaysManual ? 'bg-indigo-500' : 'bg-slate-200'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
+                      alwaysManual ? 'translate-x-4' : 'translate-x-0.5'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
           </div>
 

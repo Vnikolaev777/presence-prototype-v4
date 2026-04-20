@@ -1406,6 +1406,9 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
               <AuditCanvasV2 />
             ) : (
               <div className="flex-1 min-h-0 overflow-auto bg-white">
+                <div className="sticky top-0 z-10 bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center text-xs text-amber-700 font-medium">
+                  Example — for illustration purposes only
+                </div>
                 <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolBefore /></div>
               </div>
             )}
@@ -1454,6 +1457,9 @@ export function AiWorkspaceView({ onFinishScenario, onAgentsHired, onMonitoringC
               <AuditCanvasV2 />
             ) : (
               <div className="flex-1 min-h-0 overflow-auto bg-white">
+                <div className="sticky top-0 z-10 bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center text-xs text-amber-700 font-medium">
+                  Example — for illustration purposes only
+                </div>
                 <div style={{ zoom: siteScale, width: '1100px' }} className="pointer-events-none"><SchoolBefore /></div>
               </div>
             )}
