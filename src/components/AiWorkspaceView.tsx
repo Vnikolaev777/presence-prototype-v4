@@ -546,11 +546,11 @@ function MonitoringFoundItemsChatCard() {
       <div className="text-xs text-slate-600 space-y-1.5">
         <div className="flex items-start gap-2">
           <Search   className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
-          <span>Science Olympiad wins Regional — <em className="text-slate-500">WTTW Chicago</em></span>
+          <span>Science Olympiad wins Regional — <em className="text-slate-500">WTTW Oakwood</em></span>
         </div>
         <div className="flex items-start gap-2">
           <FileText className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
-          <span>New Absence Policy — <em className="text-slate-500">Chicago Public Schools</em></span>
+          <span>New Absence Policy — <em className="text-slate-500">Oakwood Public Schools</em></span>
         </div>
         <div className="flex items-start gap-2">
           <Activity className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
@@ -569,8 +569,8 @@ function MonitoringFoundItemsChatCard() {
 const TOPIC_TILES = [
   { id: 'sports',    label: 'Sport Events',           sub: 'IHSA results, league standings',       icon: <Activity    className="w-5 h-5" /> },
   { id: 'science',   label: 'Science Events',          sub: 'STEM competitions, research fairs',    icon: <Search      className="w-5 h-5" /> },
-  { id: 'openhouse', label: 'Open House Events',       sub: 'Admissions, tours, open days',         icon: <Users       className="w-5 h-5" /> },
-  { id: 'district',  label: 'District Announcements',  sub: 'Chicago Public Schools feed',          icon: <FileText    className="w-5 h-5" /> },
+  { id: 'openhouse', label: 'Open Day Events',       sub: 'Admissions, tours, open days',         icon: <Users       className="w-5 h-5" /> },
+  { id: 'district',  label: 'District Announcements',  sub: 'Oakwood Public Schools feed',          icon: <FileText    className="w-5 h-5" /> },
   { id: 'legal',     label: 'Legal News',              sub: 'Education law, regulatory changes',    icon: <ShieldCheck className="w-5 h-5" /> },
   { id: 'health',    label: 'Health Standards',        sub: 'Accessibility, WCAG, web compliance',  icon: <Globe       className="w-5 h-5" /> },
 ];
@@ -723,14 +723,14 @@ function MonitoringSetupCanvas({ topics, extraSite }: { topics: string[]; extraS
 function MonitoringDiscoveryCanvas() {
   const items = [
     {
-      source: 'WTTW Chicago',
+      source: 'WTTW Oakwood',
       sourceType: 'Science & Academic',
       time: '2 hours ago',
       headline: 'Oakwood High School Science Olympiad Team Takes Regional Title',
       draft: 'Blog post + Homepage announcement',
     },
     {
-      source: 'Chicago Public Schools',
+      source: 'Oakwood Public Schools',
       sourceType: 'District',
       time: 'Yesterday',
       headline: 'Updated Student Absence Policy — Effective April 1, 2026',
@@ -784,8 +784,8 @@ function MonitoringDiscoveryCanvas() {
 // ─── Monitoring: draft review queue canvas ───────────────────────────────────
 function MonitoringDraftsCanvas() {
   const drafts = [
-    { title: 'Science Olympiad Team Takes Regional Title',          type: 'Blog Post',       source: 'WTTW Chicago'           },
-    { title: 'Updated Student Absence Policy — Effective April 1', type: 'Policy Update',   source: 'Chicago Public Schools' },
+    { title: 'Science Olympiad Team Takes Regional Title',          type: 'Blog Post',       source: 'WTTW Oakwood'           },
+    { title: 'Updated Student Absence Policy — Effective April 1', type: 'Policy Update',   source: 'Oakwood Public Schools' },
     { title: 'Boys Basketball — Regional Champions 2026',          type: 'Athletics Post',  source: 'IHSA'                   },
     { title: 'WCAG 2.2 Compliance Checklist for K-12 Websites',    type: 'Compliance Page', source: 'WebAIM Research'         },
   ];

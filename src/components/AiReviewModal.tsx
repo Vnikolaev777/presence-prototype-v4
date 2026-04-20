@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { AiAction } from '../data/mockData';
 import { Sparkles, X, Check, ArrowRight, AlertTriangle, Eye, Zap, Pencil, ExternalLink } from 'lucide-react';
@@ -14,6 +14,7 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
   const [userInput, setUserInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showAfter, setShowAfter] = useState(true);
+  const [autoApply, setAutoApply] = useState(false);
 
   const handleApprove = () => {
     if (action.requiresUserInput && !userInput.trim()) return;
@@ -139,10 +140,6 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
                     </li>
                   ))}
                 </ul>
-                <button className="w-full py-2.5 rounded-lg text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                  <Pencil className="w-4 h-4" />
-                  Edit with Assistant
-                </button>
               </div>
 
               {action.requiresUserInput && (
@@ -169,24 +166,29 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
             </div>
 
             {/* Footer Actions */}
-            <div className="p-6 border-t border-slate-100 bg-slate-50/80 space-y-2">
-              {/* Primary actions row */}
+            <div className="p-5 border-t border-slate-100 bg-white space-y-3">
+
+              {/* Primary row */}
               <div className="flex gap-2">
                 <button
                   onClick={handleReject}
                   disabled={isProcessing}
-                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors disabled:opacity-50"
+                  className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors disabled:opacity-40"
                 >
                   Reject
+                </button>
+                <button className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors flex items-center gap-1.5">
+                  <Pencil className="w-3.5 h-3.5" />
+                  Edit
                 </button>
                 <button
                   onClick={handleApprove}
                   disabled={isProcessing || (action.requiresUserInput && !userInput.trim())}
-                  className="flex-[2] py-2.5 rounded-lg text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-slate-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
                 >
                   {isProcessing ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                       Applying...
                     </>
                   ) : (
@@ -197,15 +199,22 @@ export function AiReviewModal({ action, onClose, onComplete }: Props) {
                   )}
                 </button>
               </div>
-              {/* Secondary action — full width */}
+
+              {/* Auto-apply toggle row */}
               <button
-                onClick={handleApprove}
-                disabled={isProcessing || (action.requiresUserInput && !userInput.trim())}
-                className="w-full py-2.5 rounded-lg text-sm font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                onClick={() => setAutoApply(v => !v)}
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
               >
-                <Zap className="w-4 h-4" />
-                Always apply this type automatically
+                <div className="flex items-center gap-2">
+                  <Zap className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-600">Always apply this type automatically</span>
+                </div>
+                {/* Knob */}
+                <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${autoApply ? 'bg-emerald-500' : 'bg-slate-200'}`}>
+                  <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${autoApply ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                </div>
               </button>
+
             </div>
           </div>
 

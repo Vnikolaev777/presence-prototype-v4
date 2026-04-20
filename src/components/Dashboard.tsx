@@ -222,7 +222,7 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
       "Update contact form with proper ARIA labels for screen reader support."
     ],
     requiresUserInput: false,
-    previewType: 'quick_links',
+    previewType: 'ada_compliance',
     status: 'pending',
     source: 'Web Admin Agent',
     sourceType: 'district',
@@ -244,32 +244,68 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
         <p className="text-slate-500 text-sm">AI-driven updates to your school website — review proposals or see what was already handled.</p>
 
         {/* Status bar — only once agents are hired and content is live */}
-        {hasHiredAgents && <div className="flex items-center gap-5 mt-3 pt-3 border-t border-slate-200 flex-wrap">
-          <div className="flex items-center gap-1.5 text-sm text-slate-600">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span className="font-semibold text-emerald-700">Live</span>
-            <span className="text-slate-400 text-xs">oakwoodhigh.org</span>
-          </div>
-          <div className="w-px h-3.5 bg-slate-200" />
-          <div className="flex items-center gap-1.5 text-sm text-slate-500">
-            <Clock className="w-3.5 h-3.5 text-slate-400" />
-            <span>Last sync <span className="font-semibold text-slate-700">2 min ago</span></span>
-          </div>
-          <div className="w-px h-3.5 bg-slate-200" />
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <Zap className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Automation</span>
-            <div className="flex items-center gap-1.5">
-              <div className="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <div className="h-full w-4/5 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full" />
-              </div>
-              <span className="font-semibold text-indigo-600 text-xs">80%</span>
+        {hasHiredAgents && (
+          <div className="flex items-center gap-5 mt-3 pt-3 border-t border-slate-200 flex-wrap">
+
+            {/* Live */}
+            <div className="flex items-center gap-1.5 text-sm text-slate-600">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="font-semibold text-emerald-700">Live</span>
+              <span className="text-slate-400 text-xs">oakwoodhigh.org</span>
             </div>
+
+            <div className="w-px h-3.5 bg-slate-200" />
+
+            {/* Last sync */}
+            <div className="flex items-center gap-1.5 text-sm text-slate-500">
+              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <span>Last sync <span className="font-semibold text-slate-700">2 min ago</span></span>
+            </div>
+
+            <div className="w-px h-3.5 bg-slate-200" />
+
+            {/* Time saved — with hover tooltip */}
+            <div className="relative group flex items-center gap-1.5 text-sm text-slate-500 cursor-default">
+              <Zap className="w-3.5 h-3.5 text-indigo-500" />
+              <span>
+                <span className="font-semibold text-slate-700 underline underline-offset-2 decoration-dashed decoration-slate-300">6.5 hrs</span> saved this week
+              </span>
+
+              {/* Tooltip — appears below */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-slate-900 text-white text-xs rounded-xl shadow-xl p-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50">
+                {/* Arrow */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-900" />
+                <p className="font-bold text-white mb-2.5">How we calculate this</p>
+                <div className="space-y-1.5 text-slate-300">
+                  <div className="flex justify-between">
+                    <span>Updates auto-handled</span>
+                    <span className="font-semibold text-white">10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Avg. time per update</span>
+                    <span className="font-semibold text-white">~39 min</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Total time saved</span>
+                    <span className="font-semibold text-indigo-300">6.5 hrs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-px h-3.5 bg-slate-200" />
+
+            {/* Auto-handled */}
+            <div className="flex items-center gap-1.5 text-sm text-slate-500">
+              <BarChart2 className="w-3.5 h-3.5 text-slate-400" />
+              <span><span className="font-semibold text-slate-700">10 updates</span> auto-handled</span>
+            </div>
+
           </div>
-        </div>}
+        )}
       </div>
 
       {/* Two-column grid — columns appear progressively as scenarios complete */}
@@ -282,8 +318,7 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
       ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
-        {/* ── LEFT: Manual Reviews — appears after monitoring scenario ───── */}
-        {hasMonitoringSetup && (
+        {/* ── LEFT: Manual Reviews — always visible, cards appear after monitoring scenario ── */}
         <div className="flex flex-col">
           {/* Column header */}
           <div className="flex items-center gap-2 mb-3">
@@ -291,7 +326,7 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
               <Clock className="w-4 h-4" />
             </div>
             <h2 className="text-sm font-bold text-slate-700">Needs Your Review</h2>
-            {pendingCount > 0 && (
+            {hasMonitoringSetup && pendingCount > 0 && (
               <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                 {pendingCount}
               </span>
@@ -299,50 +334,57 @@ export function Dashboard({ hasHiredAgents, hasMonitoringSetup }: any) {
           </div>
 
           {/* Column body */}
-          <div className="space-y-3">
-            {isCCPending && (
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
-                <div>
-                  <h3 className="font-semibold text-slate-800 text-sm">New post: Celebrate our Science Fair winners</h3>
-                  <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
-                  <button
-                    onClick={() => setSelectedAction(CC_ACTION)}
-                    className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-                  >
-                    Review Draft
-                  </button>
+          {hasMonitoringSetup ? (
+            <div className="space-y-3">
+              {isCCPending && (
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
+                  <div>
+                    <h3 className="font-semibold text-slate-800 text-sm">New post: Celebrate our Science Fair winners</h3>
+                    <p className="text-sm text-slate-600 mt-1">"{CC_ACTION.summary}"</p>
+                    <button
+                      onClick={() => setSelectedAction(CC_ACTION)}
+                      className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                    >
+                      Review Draft
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {isWAPending && (
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
-                <div>
-                  <h3 className="font-semibold text-slate-800 text-sm">Your site needs updates to meet new ADA standards</h3>
-                  <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
-                  <button
-                    onClick={() => setSelectedAction(WA_ACTION)}
-                    className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-                  >
-                    Review ADA Updates
-                  </button>
+              {isWAPending && (
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 animate-in fade-in">
+                  <div>
+                    <h3 className="font-semibold text-slate-800 text-sm">Your site needs updates to meet new ADA standards</h3>
+                    <p className="text-sm text-slate-600 mt-1">"{WA_ACTION.summary}"</p>
+                    <button
+                      onClick={() => setSelectedAction(WA_ACTION)}
+                      className="mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                    >
+                      Review ADA Updates
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {(!isCCPending && !isWAPending) && (
-              <div className="py-10 text-center text-slate-400 space-y-2">
-                <CheckCircle className="w-8 h-8 mx-auto opacity-40" />
-                <p className="text-sm font-medium">All caught up!</p>
-                <p className="text-xs">No pending suggestions from your agents.</p>
-              </div>
-            )}
-          </div>
+              {(!isCCPending && !isWAPending) && (
+                <div className="py-10 text-center text-slate-400 space-y-2">
+                  <CheckCircle className="w-8 h-8 mx-auto opacity-40" />
+                  <p className="text-sm font-medium">All caught up!</p>
+                  <p className="text-xs">No pending suggestions from your agents.</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-slate-50 border border-slate-200 border-dashed rounded-2xl p-10 text-center text-slate-400 space-y-2 flex flex-col items-center justify-center min-h-[180px]">
+              <Clock className="w-8 h-8 opacity-25" />
+              <p className="text-sm font-medium">No review requests yet.</p>
+              <p className="text-xs leading-relaxed max-w-xs">Set up internet monitoring in Presence Assistant to receive proposals that need your approval.</p>
+            </div>
+          )}
         </div>
-        )}
 
         {/* ── RIGHT: Automatic Updates — appears after migrate scenario ──── */}
-        {hasHiredAgents && <div className={cn("flex flex-col", !hasMonitoringSetup && "lg:col-span-2")}>
+        {hasHiredAgents && <div className="flex flex-col">
           {/* Column header */}
           <div className="flex items-center gap-2 mb-3">
             <div className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">

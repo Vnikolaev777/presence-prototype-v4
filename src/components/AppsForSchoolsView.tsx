@@ -1,18 +1,85 @@
-import { LayoutGrid } from 'lucide-react';
+interface App {
+  id: string;
+  name: string;
+  abbrev: string;
+  description: string;
+  iconBg: string;
+  iconText?: string;
+}
+
+const APPS: App[] = [
+  {
+    id: 'calcularis',
+    name: 'Calcularis',
+    abbrev: 'Ca',
+    description: 'Adaptive math training for K–8, built on neuroscience research.',
+    iconBg: 'bg-red-500',
+  },
+  {
+    id: 'grafari',
+    name: 'Grafari',
+    abbrev: 'Gr',
+    description: 'Literacy and reading comprehension for early learners.',
+    iconBg: 'bg-sky-400',
+  },
+  {
+    id: 'orthograph',
+    name: 'Orthograph',
+    abbrev: 'Or',
+    description: 'Spelling and grammar practice with adaptive difficulty.',
+    iconBg: 'bg-slate-900',
+  },
+  {
+    id: 'writing-lab',
+    name: 'Writing Lab',
+    abbrev: 'WL',
+    description: 'Structured composition practice with feedback loops.',
+    iconBg: 'bg-blue-800',
+  },
+  {
+    id: 'science-labs',
+    name: 'Science Labs',
+    abbrev: 'SL',
+    description: 'Virtual experiments covering biology, chemistry, and physics.',
+    iconBg: 'bg-emerald-500',
+  },
+  {
+    id: 'software-it',
+    name: 'Software & IT',
+    abbrev: 'IT',
+    description: 'Sandbox environments for technical skill-building.',
+    iconBg: 'bg-amber-400',
+  },
+  {
+    id: 'coding',
+    name: 'Coding',
+    abbrev: '</>',
+    description: 'Programming environments with real-time feedback.',
+    iconBg: 'bg-slate-900',
+  },
+];
 
 export function AppsForSchoolsView() {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       <div className="mb-8">
         <h1 className="text-3xl font-light tracking-tight text-slate-900 mb-1">Apps for Schools</h1>
         <p className="text-slate-500 text-sm">Browse and manage applications available for your school.</p>
       </div>
 
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-          <LayoutGrid className="w-7 h-7 text-slate-400" />
-        </div>
-        <p className="text-slate-500 text-sm">Coming soon</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {APPS.map(app => (
+          <div
+            key={app.id}
+            className="bg-white border border-slate-200 rounded-2xl p-6 text-center hover:shadow-md hover:border-slate-300 transition-all cursor-pointer"
+          >
+            <div className={`w-12 h-12 rounded-xl ${app.iconBg} flex items-center justify-center mx-auto mb-5 shadow-sm`}>
+              <span className="text-white font-bold text-sm tracking-tight">{app.abbrev}</span>
+            </div>
+            <h3 className="font-bold text-lg text-slate-900 mb-2">{app.name}</h3>
+            <p className="text-slate-500 text-sm leading-relaxed">{app.description}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

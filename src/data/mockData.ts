@@ -20,7 +20,7 @@ export type AiAction = {
   userPrompt?: string;
   status: 'pending' | 'approved' | 'rejected' | 'auto-applied';
   timestamp: string;
-  previewType?: 'calendar' | 'news' | 'banner' | 'blog' | 'document' | 'quick_links' | 'science_fair_blog' | 'new_teacher' | 'new_blog_post' | string;
+  previewType?: 'calendar' | 'news' | 'banner' | 'blog' | 'document' | 'quick_links' | 'science_fair_blog' | 'new_teacher' | 'new_blog_post' | 'ada_compliance' | string;
   pendingChanges?: PendingChanges;
 };
 

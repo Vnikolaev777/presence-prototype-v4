@@ -8,7 +8,7 @@ import { UtilitiesHubView } from './components/UtilitiesHubView';
 import { KnowledgeBaseView } from './components/KnowledgeBaseView';
 import { AppsForSchoolsView } from './components/AppsForSchoolsView';
 import {
-  LayoutDashboard, Sparkles, Users, Layers, BookOpen,
+  Sparkles, Users, Layers, BookOpen, Zap,
   ListTodo, ChevronDown, ChevronRight, Menu, X, LayoutGrid,
 } from 'lucide-react';
 import { cn } from './lib/utils';
@@ -78,7 +78,7 @@ function App() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 z-30 p-3 space-y-1 shrink-0">
           <NavItem active={activeTab === 'workspace'} onClick={() => { setActiveTab('workspace'); setMobileMenuOpen(false); }} icon={<Sparkles className="w-5 h-5" />} label="Presence Assistant" />
-          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<LayoutDashboard className="w-5 h-5" />} label="Automations" />
+          <NavItem active={activeTab === 'dashboard'} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }} icon={<Zap className="w-5 h-5" />} label="Automations" />
           {showTeamNav && hasHiredAgents && <>
             <NavItem active={activeTab === 'team'} onClick={() => { setActiveTab('team'); setMobileMenuOpen(false); }} icon={<Users className="w-5 h-5" />} label="Team" />
             <NavItem active={activeTab === 'tasks'} onClick={() => { setActiveTab('tasks'); setMobileMenuOpen(false); }} icon={<ListTodo className="w-5 h-5" />} label="Tasks" />
@@ -104,7 +104,7 @@ function App() {
             <NavItem
               active={activeTab === 'dashboard'}
               onClick={() => setActiveTab('dashboard')}
-              icon={<LayoutDashboard className="w-5 h-5" />}
+              icon={<Zap className="w-5 h-5" />}
               label="Automations"
             />
 

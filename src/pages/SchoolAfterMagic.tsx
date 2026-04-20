@@ -1,6 +1,6 @@
 import { Trophy, FileText, ArrowRight, GraduationCap, Check, X } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { AcademicsPage } from './AcademicsPage';
 import { AthleticsPage } from './AthleticsPage';
@@ -23,6 +23,16 @@ export function SchoolAfterMagic({ previewType, showAfter, userLocationValue, on
     previewType === 'new_teacher' ? 'team' : 'home'
   );
 
+  // Scroll blog section into view when previewing blog-related changes
+  const blogRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (previewType === 'science_fair_blog' && blogRef.current) {
+      setTimeout(() => {
+        blogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [previewType, showAfter]);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden relative pb-32">
       
@@ -30,36 +40,52 @@ export function SchoolAfterMagic({ previewType, showAfter, userLocationValue, on
       <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_50%_0%,_#ffffff_0%,_#f1f5f9_100%)]" />
 
       {/* Navigation */}
+      {/* ADA: low-contrast nav items shown in before state */}
+      {previewType === 'ada_compliance' && !showAfter && (
+        <div className="relative z-[60] max-w-7xl mx-auto px-8 mt-2">
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-2 flex items-center gap-2 text-xs text-red-700 font-semibold">
+            <span className="text-red-500">⚠</span>
+            WCAG Fail: Navigation contrast ratio 2.1:1 — minimum required 4.5:1
+          </div>
+        </div>
+      )}
+
       <nav className="relative z-50 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto backdrop-blur-md bg-white/30 rounded-full mt-4 border border-slate-200 shadow-sm">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
           <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/20">O</div>
           Oakwood High
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-600">
-          <span
-            className={cn('cursor-pointer transition-colors', currentPage === 'home' ? 'text-slate-900' : 'hover:text-indigo-600')}
-            onClick={() => setCurrentPage('home')}
-          >Home</span>
-          <span
-            className={cn('cursor-pointer transition-colors', currentPage === 'academics' ? 'text-slate-900' : 'hover:text-indigo-600')}
-            onClick={() => setCurrentPage('academics')}
-          >Academics</span>
-          <span
-            className={cn('cursor-pointer transition-colors', currentPage === 'athletics' ? 'text-slate-900' : 'hover:text-indigo-600')}
-            onClick={() => setCurrentPage('athletics')}
-          >Athletics</span>
-          <span
-            className={cn('cursor-pointer transition-colors', currentPage === 'team' ? 'text-slate-900' : 'hover:text-indigo-600')}
-            onClick={() => setCurrentPage('team')}
-          >Team</span>
+        {/* ADA before: nav links are very low contrast */}
+        <div className={cn(
+          'hidden md:flex items-center gap-8 text-sm font-bold transition-colors duration-500',
+          previewType === 'ada_compliance' && !showAfter ? 'text-slate-300' : 'text-slate-600'
+        )}>
+          <span className={cn('cursor-pointer transition-colors', currentPage === 'home' ? 'text-slate-900' : (previewType === 'ada_compliance' && !showAfter ? 'text-slate-300' : 'hover:text-indigo-600'))} onClick={() => setCurrentPage('home')}>Home</span>
+          <span className={cn('cursor-pointer transition-colors', currentPage === 'academics' ? 'text-slate-900' : (previewType === 'ada_compliance' && !showAfter ? 'text-slate-300' : 'hover:text-indigo-600'))} onClick={() => setCurrentPage('academics')}>Academics</span>
+          <span className={cn('cursor-pointer transition-colors', currentPage === 'athletics' ? 'text-slate-900' : (previewType === 'ada_compliance' && !showAfter ? 'text-slate-300' : 'hover:text-indigo-600'))} onClick={() => setCurrentPage('athletics')}>Athletics</span>
+          <span className={cn('cursor-pointer transition-colors', currentPage === 'team' ? 'text-slate-900' : (previewType === 'ada_compliance' && !showAfter ? 'text-slate-300' : 'hover:text-indigo-600'))} onClick={() => setCurrentPage('team')}>Team</span>
         </div>
-        <button className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20">
+        {/* ADA after: focus ring visible on CTA */}
+        <button className={cn(
+          'bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20',
+          previewType === 'ada_compliance' && showAfter && 'ring-4 ring-indigo-400 ring-offset-2'
+        )}>
           Parent Portal
         </button>
       </nav>
 
       {/* ── Home page content ───────────────────────────────────────── */}
       {currentPage === 'home' && (<>
+
+      {/* ADA compliance result banner */}
+      {previewType === 'ada_compliance' && showAfter && (
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="relative z-50 max-w-7xl mx-auto px-8 mt-4">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 flex items-center gap-3 text-xs text-emerald-800 font-semibold">
+            <span className="text-emerald-500 text-base">✓</span>
+            WCAG 2.1 AA Compliant — contrast ratio 7.3:1 · all images have alt text · keyboard focus indicators active
+          </div>
+        </motion.div>
+      )}
 
       {/* Quick Links Widget (Web Admin Action) */}
       {(previewType === 'quick_links' && showAfter) && (
@@ -85,6 +111,19 @@ export function SchoolAfterMagic({ previewType, showAfter, userLocationValue, on
             {/* Dark Gradient Overlay for text readable */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent z-10" />
             <img src={`${import.meta.env.BASE_URL}school_hero.png`} alt="Oakwood Campus" className="absolute inset-0 w-full h-full object-cover" />
+
+            {/* ADA before: missing alt text warning badge */}
+            {previewType === 'ada_compliance' && !showAfter && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute top-4 left-4 z-30 flex items-center gap-1.5 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                <span>⚠</span> Missing alt text
+              </motion.div>
+            )}
+            {/* ADA after: alt text confirmed */}
+            {previewType === 'ada_compliance' && showAfter && (
+              <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="absolute top-4 left-4 z-30 flex items-center gap-1.5 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                <span>✓</span> alt="Oakwood High campus aerial view"
+              </motion.div>
+            )}
             
             <div className="relative z-20 max-w-4xl mx-auto px-6">
               <motion.div 
@@ -144,16 +183,28 @@ export function SchoolAfterMagic({ previewType, showAfter, userLocationValue, on
           </div>
           
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center hover:shadow-md transition-shadow">
-               <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mr. Davis" className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white shadow-sm mb-3" />
-               <div className="font-bold text-slate-900">Mr. Davis</div>
-               <div className="text-xs font-bold text-slate-500 bg-slate-100 inline-block px-2 py-1 rounded-full mt-2">Advanced Calculus</div>
-            </div>
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center hover:shadow-md transition-shadow">
-               <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Ms. Johnson" className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white shadow-sm mb-3" />
-               <div className="font-bold text-slate-900">Ms. Johnson</div>
-               <div className="text-xs font-bold text-slate-500 bg-slate-100 inline-block px-2 py-1 rounded-full mt-2">World History</div>
-            </div>
+            {[
+              { src: 'https://randomuser.me/api/portraits/men/32.jpg', name: 'Mr. Davis', role: 'Advanced Calculus', alt: 'Mr. Davis, Math teacher' },
+              { src: 'https://randomuser.me/api/portraits/women/44.jpg', name: 'Ms. Johnson', role: 'World History', alt: 'Ms. Johnson, History teacher' },
+            ].map((f) => (
+              <div key={f.name} className={cn('bg-slate-50 border rounded-2xl p-4 text-center hover:shadow-md transition-all', previewType === 'ada_compliance' && !showAfter ? 'border-red-300 ring-2 ring-red-200' : 'border-slate-100')}>
+                <div className="relative w-24 mx-auto mb-3">
+                  <img src={f.src} alt={showAfter ? f.alt : ''} className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-sm" />
+                  {/* ADA indicators on photo */}
+                  {previewType === 'ada_compliance' && !showAfter && (
+                    <span className="absolute -bottom-1 -right-1 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">⚠ no alt</span>
+                  )}
+                  {previewType === 'ada_compliance' && showAfter && (
+                    <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -bottom-1 -right-1 bg-emerald-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">✓ alt</motion.span>
+                  )}
+                </div>
+                <div className="font-bold text-slate-900">{f.name}</div>
+                <div className="text-xs font-bold text-slate-500 bg-slate-100 inline-block px-2 py-1 rounded-full mt-2">{f.role}</div>
+                {previewType === 'ada_compliance' && showAfter && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-[10px] text-emerald-600 font-medium">"{f.alt}"</motion.div>
+                )}
+              </div>
+            ))}
           </div>
         </BentoCard>
 
@@ -182,7 +233,7 @@ export function SchoolAfterMagic({ previewType, showAfter, userLocationValue, on
       </section>
 
       {/* Blog Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6">
+      <section ref={blogRef} className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Latest News & Blogs</h2>
           <button className="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1">Browse All Posts <ArrowRight className="w-4 h-4" /></button>
